@@ -1,0 +1,12 @@
+survPen v1.1.0 
+==============
+
+Changes:
+
+* includes a vignette called Survival_analysis_with_survPen that shows detailed examples of the package functionalities
+* examples 5 and 6 from the help page were deleted as they were clumsy. More detailed examples are available in the vignette Survival_analysis_with_survPen 
+* returns a convergence indicator (converged = TRUE or FALSE)
+* when using a factor by variable, same.rho=FALSE is used as default instead of same.rho=TRUE
+* function crs returns knots when intercept=FALSE
+
+
