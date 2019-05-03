@@ -58,8 +58,8 @@ The main objective of the ``survPen`` package is to offer a fully automatic, fas
 procedure in order to model simultaneously non-proportional, non-linear effects of covariates and 
 interactions between them. A second objective is to extend the approach to excess hazard modelling 
 [@Esteve1990 ; @Remontet2007].
-``survPen`` is a free and open-source **R** package, available via GitHub at https://github.com/fauvernierma/survPen or 
-the CRAN repository https://CRAN.R-project.org/package=survPen. 
+``survPen`` is a free and open-source **R** package, available via GitHub at https://github.com/fauvernierma/survPen or via
+the CRAN repository at https://CRAN.R-project.org/package=survPen. 
 The major features of survPen are documented in a walkthrough vignette that is included with the package 
 https://htmlpreview.github.io/?https://github.com/fauvernierma/survPen/blob/master/inst/doc/survival_analysis_with_survPen.html
 
