@@ -1,5 +1,5 @@
 ---
-title: 'survPen: an R package for hazard and excess hazard modelling with multidimensional penalized splines'
+title: '``survPen``: an **R** package for hazard and excess hazard modelling with multidimensional penalized splines'
 tags:
   - R
   - survival
@@ -47,18 +47,21 @@ of net survival which is another important indicator in epidemiology [@Perme2012
 # Summary
 
 ``survPen`` is an implementation of multidimensional penalized hazard and excess hazard models 
-for time-to-event data in R [@R]. It implements the method detailed in 
+for time-to-event data in **R** [@R]. It implements the method detailed in 
 [@Fauvernier2019] which is itself included in the framework for general smooth models 
 proposed by [@Wood2016].
-Other R packages propose to fit flexible survival models via penalized regression splines 
-(rstpm2, bamlss, R2BayesX, etc). However, the way they estimate the smoothing parameters is not optimal
-as they rely on either derivative-free optimization (rstpm2) or MCMC (bamlss, R2BayesX), leading to possibly
+Other **R** packages propose to fit flexible survival models via penalized regression splines 
+(``rstpm2``, ``bamlss``, ``R2BayesX``, etc). However, the way they estimate the smoothing parameters is not optimal
+as they rely on either derivative-free optimization (``rstpm2``) or MCMC (``bamlss``, ``R2BayesX``), leading to possibly
 unstable or time-consuming analyses.
-The main objective of the survPen package is to offer a fully automatic, fast, stable and convergent 
+The main objective of the ``survPen`` package is to offer a fully automatic, fast, stable and convergent 
 procedure in order to model simultaneously non-proportional, non-linear effects of covariates and 
 interactions between them. A second objective is to extend the approach to excess hazard modelling 
 [@Esteve1990 ; @Remontet2007].
-The major features of survPen are documented in a walkthrough vignette that is included with the package. 
+``survPen`` is a free and open-source **R** package, available via GitHub at https://github.com/fauvernierma/survPen or 
+the CRAN repository https://CRAN.R-project.org/package=survPen. 
+The major features of survPen are documented in a walkthrough vignette that is included with the package 
+https://htmlpreview.github.io/?https://github.com/fauvernierma/survPen/blob/master/inst/doc/survival_analysis_with_survPen.html
 
 Those features include:
 
@@ -70,8 +73,24 @@ Those features include:
  likelihood (LAML, [@Wood2016]) or likelihood cross-validation criterion (LCV, [@OSullivan1988]).
  - Excess hazard modelling by specifying expected mortality rates.
 
-Using the survPen package for time-to-event data analyses will help choose the appropriate degree of 
+Using the ``survPen`` package for time-to-event data analyses will help choose the appropriate degree of 
 complexity in survival and net survival contexts while simplifying the model building process.
+
+
+Multidimensional splines with ``survPen`` are currently being used in three major ongoing projects:
+
+ - Modelling the effects of time since diagnosis, age at diagnosis and year of diagnosis on the mortality 
+ due to cancer using French cancer registries data (FRANCIM network, around 1,200,000 tumours diagnosed 
+ between 1989 and 2015). This study will provide the new national estimates of cancer survival in France and 
+ its results will be used in the evaluation of the French “Plan Cancer” at the end of 2019.
+ - Modelling the effect of the European Deprivation Index (EDI) on the mortality due to cancer in France, using 
+ data from the FRANCIM network; this is the first time that EDI is available in all FRANCIM registries 
+ (around 210,000 tumours, diagnosed between 2006 and 2009 in 18 registries).
+ - For the first time modelling the effects of time since onset, age at onset, current age, year of onset and 
+ sex on the mortality due to multiple sclerosis in the biggest cohort of multiple sclerosis patients in France 
+ (37,524 patients diagnosed over the period 1960-2014 in 18 OFSEP centres).
+
+
 
 # Acknowledgements
 This research was conducted as part of the first author’s PhD thesis supported by the French Ministère 
@@ -81,6 +100,7 @@ This research was also carried out within the context of a four-institute cancer
 partnership involving the Institut National du Cancer (INCa), Santé Publique France (SPF), the French 
 network of cancer registries (FRANCIM), and Hospices Civils de Lyon (HCL) through a grant from INCa 
 (attributive decision N° 2016-131). The authors are grateful Jacques Estève for his valuable advice.
+
 
 # References
 
