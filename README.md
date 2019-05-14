@@ -1,5 +1,6 @@
 # survPen
 ## hazard and excess hazard modelling with multidimensional penalized splines
+[![DOI](https://zenodo.org/badge/181266005.svg)](https://zenodo.org/badge/latestdoi/181266005)
 
 You can install this R package from GitHub:
 
