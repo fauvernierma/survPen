@@ -23,7 +23,6 @@ library(survPen)
 ```
 
 ## The functionalities of the *survPen* package are extensively detailed in the following vignette
-Available from github
-https://htmlpreview.github.io/?https://github.com/fauvernierma/survPen/blob/master/inst/doc/survival_analysis_with_survPen.html
-or from the CRAN repository 
-https://cran.r-project.org/web/packages/survPen/vignettes/survival_analysis_with_survPen.html
+Available from
+[GitHub](https://htmlpreview.github.io/?https://github.com/fauvernierma/survPen/blob/master/inst/doc/survival_analysis_with_survPen.html)
+or from [CRAN](https://cran.r-project.org/web/packages/survPen/vignettes/survival_analysis_with_survPen.html)
