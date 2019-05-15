@@ -26,3 +26,13 @@ library(survPen)
 Available from
 [GitHub](https://htmlpreview.github.io/?https://github.com/fauvernierma/survPen/blob/master/inst/doc/survival_analysis_with_survPen.html)
 or from [CRAN](https://cran.r-project.org/web/packages/survPen/vignettes/survival_analysis_with_survPen.html)
+
+
+## Citing 
+
+If using `survPen` please consider citing the package in the relevant work. Citation information can be generated in R using the following (after installing the package),
+
+```{r}
+citation("survPen")
+```
+
