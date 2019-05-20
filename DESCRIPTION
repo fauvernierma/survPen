@@ -6,7 +6,7 @@ Author: Mathieu Fauvernier [aut, cre], Laurent Roche [aut], Laurent Remontet [au
 Maintainer: Mathieu Fauvernier <mathieu.fauvernier@gmail.com>
 Imports: statmod, stats
 Description: Fits hazard and excess hazard models with multidimensional penalized splines allowing for time-dependent effects, non-linear effects and interactions between several continuous covariates. 
-Depends: R (>= 3.5.0)
+Depends: R (>= 3.2.0)
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
