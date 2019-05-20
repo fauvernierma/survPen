@@ -5,6 +5,7 @@ sudo: required
 env: _R_CHECK_CRAN_INCOMING_=FALSE
 
 r_packages:
+  - testthat
   - covr
   - devtools
 
