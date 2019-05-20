@@ -41,3 +41,11 @@ If using `survPen` please consider citing the package in the relevant work. Cita
 citation("survPen")
 ```
 
+You may also consider citing the method article:
+Fauvernier, M., Roche, L., Uhry, Z., Tron, L., Bossard, N., Remontet, L. and the CENSUR Working Survival Group (2019). Multidimensional penalized hazard model with continuous covariates: applications for studying trends and social inequalities in cancer survival, in revision in the Journal of the Royal Statistical Society, series C.
+
+
+
+
+
+
