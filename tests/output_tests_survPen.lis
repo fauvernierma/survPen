@@ -1,0 +1,336 @@
+
+ ______________________________________________________________________________________________ 
+
+ survPen test code 
+
+ ______________________________________________________________________________________________ 
+
+ ______________________________________________________________________________________________ 
+
+ example 0 
+
+ Comparison between restricted cubic splines and penalized restricted cubic splines 
+
+ -------------------------------- 
+
+ summary of the unpenalized model 
+hazard model 
+ 
+Call:
+survPen(formula = f, data = datCancer, t1 = fu, event = dead)
+
+Coefficients:
+                                                                  Estimate
+(Intercept)                                                      -1.880242
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))1 -0.029509
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))2  0.012000
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))3 -0.726988
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))4 -0.612175
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))5 -1.876409
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))6 -1.644222
+                                                                 Std. Error
+(Intercept)                                                        0.229846
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))1   0.256168
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))2   0.301039
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))3   0.314238
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))4   0.312224
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))5   0.558958
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))6   0.321442
+                                                                 z value
+(Intercept)                                                      -8.1804
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))1 -0.1152
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))2  0.0399
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))3 -2.3135
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))4 -1.9607
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))5 -3.3570
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))6 -5.1151
+                                                                  Pr(>|z|)    
+(Intercept)                                                      2.828e-16 ***
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))1  0.908291    
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))2  0.968204    
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))3  0.020696 *  
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))4  0.049915 *  
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))5  0.000788 ***
+ns(fu, knots = c(0.25, 0.5, 1, 2, 4), Boundary.knots = c(0, 5))6 3.135e-07 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+likelihood= -2318.98
+Number of parameters= 7
+converged= TRUE
+
+ -------------------------------- 
+
+ summary of the penalized model 
+penalized hazard model 
+ 
+Call:
+survPen(formula = f.pen, data = datCancer, t1 = fu, event = dead)
+
+Coefficients:
+            Estimate Std. Error z value  Pr(>|z|)    
+(Intercept) -3.04226    0.12344 -24.645 < 2.2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+likelihood= -2320.85 , penalized likelihood= -2321.66
+Number of parameters= 7 , effective degrees of freedom= 3.6549
+LAML = 2326.26 
+ 
+Smoothing parameter(s):
+ smf(fu) 
+1690.498 
+
+edf of smooth terms:
+ smf(fu) 
+2.654904 
+
+converged= TRUE
+null device 
+          1 
+
+ ______________________________________________________________________________________________ 
+
+ example 1 
+
+ hazard models with unpenalized formulas compared to a penalized tensor product smooth 
+null device 
+          1 
+
+ -------------------------------- 
+
+ difference between standard and lpmatrix predictions 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+      0       0       0       0       0       0 
+
+ -------------------------------- 
+
+ difference between standard and lpmatrix confidence intervals 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+      0       0       0       0       0       0 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+      0       0       0       0       0       0 
+
+ ______________________________________________________________________________________________ 
+
+ example 2 
+
+ smoothing parameter estimation, excess hazard and left truncation 
+
+ -------------------------------- 
+
+ summary of the LAML model 
+penalized hazard model 
+ 
+Call:
+survPen(formula = f1, data = datCancer, t1 = fu, event = dead, 
+    expected = NULL, method = "LAML")
+
+Coefficients:
+            Estimate Std. Error z value  Pr(>|z|)    
+(Intercept) -3.02234    0.11124  -27.17 < 2.2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+likelihood= -2321.25 , penalized likelihood= -2321.96
+Number of parameters= 5 , effective degrees of freedom= 3.44891
+LAML = 2326.58 
+ 
+Smoothing parameter(s):
+ smf(fu) 
+133.5351 
+
+edf of smooth terms:
+ smf(fu) 
+2.448915 
+
+converged= TRUE
+
+ -------------------------------- 
+
+ default knots location 
+[[1]]
+$term
+[1] "fu"
+
+$dim
+[1] 1
+
+$knots
+$knots[[1]]
+         0%         25%         50%         75%        100% 
+0.001455958 0.732075578 1.425060350 2.570586727 5.000000000 
+
+
+$df
+[1] 5
+
+$by
+[1] "NULL"
+
+$same.rho
+[1] FALSE
+
+$name
+[1] "smf(fu)"
+
+attr(,"class")
+[1] "smf.smooth.spec"
+
+
+ -------------------------------- 
+
+ summary of the LCV model 
+penalized hazard model 
+ 
+Call:
+survPen(formula = f1, data = datCancer, t1 = fu, event = dead, 
+    expected = NULL, method = "LCV")
+
+Coefficients:
+            Estimate Std. Error z value  Pr(>|z|)    
+(Intercept) -3.01983    0.10967 -27.535 < 2.2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+likelihood= -2321.32 , penalized likelihood= -2322.08
+Number of parameters= 5 , effective degrees of freedom= 3.3722
+LCV = 2324.7 
+ 
+Smoothing parameter(s):
+ smf(fu) 
+157.7597 
+
+edf of smooth terms:
+smf(fu) 
+ 2.3722 
+
+converged= TRUE
+
+ -------------------------------- 
+
+ summary of the left-truncated model 
+penalized hazard model 
+ 
+Call:
+survPen(formula = f1, data = datCancer, t1 = fu, t0 = begin, 
+    event = dead, expected = NULL, method = "LAML")
+
+Coefficients:
+             Estimate Std. Error z value  Pr(>|z|)    
+(Intercept) -2.917629   0.073679 -39.599 < 2.2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+likelihood= -2274.29 , penalized likelihood= -2274.33
+Number of parameters= 5 , effective degrees of freedom= 2.08173
+LAML = 2277.62 
+ 
+Smoothing parameter(s):
+ smf(fu) 
+11774.71 
+
+edf of smooth terms:
+ smf(fu) 
+1.081728 
+
+converged= TRUE
+
+ -------------------------------- 
+
+ summary of the excess hazard model 
+penalized excess hazard model 
+ 
+Call:
+survPen(formula = f1, data = datCancer, t1 = fu, event = dead, 
+    expected = rate, method = "LAML")
+
+Coefficients:
+            Estimate Std. Error z value  Pr(>|z|)    
+(Intercept) -3.44113    0.16832 -20.444 < 2.2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+likelihood= -2169.27 , penalized likelihood= -2170.26
+Number of parameters= 5 , effective degrees of freedom= 4.04136
+LAML = 2175.55 
+ 
+Smoothing parameter(s):
+smf(fu) 
+24.9228 
+
+edf of smooth terms:
+ smf(fu) 
+3.041357 
+
+converged= TRUE
+null device 
+          1 
+null device 
+          1 
+null device 
+          1 
+
+ ______________________________________________________________________________________________ 
+
+ example 3 
+
+ tensor product smooth vs tensor product interaction 
+
+ -------------------------------- 
+
+ summary of the tensor model 
+penalized hazard model 
+ 
+Call:
+survPen(formula = f2, data = datCancer, t1 = fu, event = dead)
+
+Coefficients:
+            Estimate Std. Error z value  Pr(>|z|)    
+(Intercept) -3.31334    0.17612 -18.813 < 2.2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+likelihood= -2106.15 , penalized likelihood= -2110
+Number of parameters= 25 , effective degrees of freedom= 11.6904
+LAML = 2121.7 
+ 
+Smoothing parameter(s):
+tensor(fu,age).1 tensor(fu,age).2 
+       0.7792689       21.6699606 
+
+edf of smooth terms:
+tensor(fu,age) 
+      10.69041 
+
+converged= TRUE
+
+ -------------------------------- 
+
+ summary of the tint model 
+penalized hazard model 
+ 
+Call:
+survPen(formula = f3, data = datCancer, t1 = fu, event = dead)
+
+Coefficients:
+            Estimate Std. Error z value  Pr(>|z|)    
+(Intercept) -3.23237    0.15164 -21.316 < 2.2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+likelihood= -2106.39 , penalized likelihood= -2109.6
+Number of parameters= 25 , effective degrees of freedom= 10.462
+LAML = 2122.7 
+ 
+Smoothing parameter(s):
+      tint(fu)      tint(age) tint(fu,age).1 tint(fu,age).2 
+  9.405365e-01   6.451661e+00   1.830722e-01   1.279995e+05 
+
+edf of smooth terms:
+    tint(fu)    tint(age) tint(fu,age) 
+    3.566385     2.519234     3.376361 
+
+converged= TRUE
+null device 
+          1 
