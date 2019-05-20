@@ -2,13 +2,21 @@
 output: github_document
 ---
 
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
 # survPen
 ## hazard and excess hazard modelling with multidimensional penalized splines
 [![DOI](https://zenodo.org/badge/181266005.svg)](https://zenodo.org/badge/latestdoi/181266005)
 
 You can install this R package from GitHub:
 
-```r
+```{r gh-installation, eval = FALSE}
 install.packages("devtools")
 library(devtools)
 install_github("fauvernierma/survPen")
@@ -16,13 +24,13 @@ install_github("fauvernierma/survPen")
 
 or directly from the CRAN repository:
 
-```r
+```{r cran-installation, eval = FALSE}
 install.packages("survPen")
 ```
 
 and then use it by typing
 
-```r
+```{r loading, eval = FALSE}
 library(survPen)
 ```
 
