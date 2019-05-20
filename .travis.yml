@@ -7,6 +7,10 @@ cache: packages
 latex: false
 fortran: true
 
+
+r_github_packages: r-lib/testthat
+
+
 jobs:
   include:
   - r: devel
