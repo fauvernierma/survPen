@@ -1,9 +1,3 @@
----
-output: github_document
----
-
-
-
 
 # survPen
 ## hazard and excess hazard modelling with multidimensional penalized splines
