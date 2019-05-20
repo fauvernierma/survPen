@@ -4,10 +4,12 @@ Title: Multidimensional Penalized Splines for Survival and Net Survival
 Version: 1.1.1
 Author: Mathieu Fauvernier [aut, cre], Laurent Roche [aut], Laurent Remontet [aut], Zoe Uhry [ctb], Nadine Bossard [ctb]
 Maintainer: Mathieu Fauvernier <mathieu.fauvernier@gmail.com>
-Imports: statmod, stats
+Imports: statmod, stats, testthat
 Description: Fits hazard and excess hazard models with multidimensional penalized splines allowing for time-dependent effects, non-linear effects and interactions between several continuous covariates. 
 Depends: R (>= 3.2.0)
-License: GPL (>= 2)
+License: GPL-3 | file LICENSE
+URL: https://github.com/fauvernierma/survPen
+BugReports: https://github.com/fauvernierma/survPen/issues
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
