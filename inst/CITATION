@@ -10,6 +10,6 @@ citEntry(entry = "Article",
   textVersion  =
   paste("Mathieu Fauvernier, Laurent Remontet, Zoé Uhry, Nadine Bossard, Laurent Roche and the CENSUR working survival group (2019).",
         "survPen: an R package for hazard and excess hazard modelling with multidimensional penalized splines",
-        "in revision in the Journal of Open Source Software"
+        "in revision in the Journal of Open Source Software")
       
 )
