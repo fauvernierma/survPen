@@ -11,5 +11,17 @@ r_packages:
 r_github_packages:
   - codecov/example-r
 
+jobs:
+  include:
+  - r: devel
+  - r: 3.5
+  - r: 3.4
+  - r: 3.3
+  - r: 3.2
+  - os:
+    - windows
+    - linux
+    - osx
+  
 after_success:
   - Rscript -e 'library(covr);codecov()'
