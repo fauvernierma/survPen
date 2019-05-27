@@ -35,13 +35,19 @@ bibliography: paper.bib
 In survival and net survival analysis, in addition to modelling the effect of time (via the baseline hazard), 
 one has often to deal with several continuous covariates and model their functional forms, their time-dependent 
 effects, and their interactions. Model specification becomes therefore a complex problem and penalized regression 
-splines [@Ruppert2003 ; @Wood2017] represent an appealing solution to that problem.
+splines [@Ruppert2003 ; @Wood2017] represent an appealing solution to that problem as splines offer the required 
+flexibility while penalization limits overfitting issues. 
+
+Current implementations of penalized survival models can be slow or unstable and sometimes lack some key features 
+like taking into account expected mortality to provide net survival and excess hazard estimates. In contrast, based 
+on the framework and algorithms developed by Wood, survPen provides an automated, fast, and stable implementation 
+(thanks to explicit calculation of the derivatives of the likelihood) and offers a unified framework for 
+multidimensional penalized hazard and excess hazard models.
 
 In epidemiology, as patients may die from their disease or from other causes, it is relevant to study the mortality 
 due to their disease; also called “excess mortality”. This excess mortality is useful to make comparisons between 
 different countries and time periods [@Uhry2017 ; @Allemani2018] and is directly linked to the concept 
 of net survival which is another important indicator in epidemiology [@Perme2012]. 
-
 
 
 # Summary
@@ -72,6 +78,10 @@ Those features include:
  - Automatic smoothing parameter estimation by either optimizing the Laplace approximate marginal 
  likelihood (LAML, [@Wood2016]) or likelihood cross-validation criterion (LCV, [@OSullivan1988]).
  - Excess hazard modelling by specifying expected mortality rates.
+
+``survPen`` may be of interest to those who 1) analyse any kind of time-to-event data: mortality, disease relapse, 
+machinery breakdown, unemployment, etc 2) wish to describe the associated hazard and to understand which predictors 
+impact its dynamics.
 
 Using the ``survPen`` package for time-to-event data analyses will help choose the appropriate degree of 
 complexity in survival and net survival contexts while simplifying the model building process.
