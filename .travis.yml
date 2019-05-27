@@ -19,7 +19,6 @@ jobs:
   - r: 3.3
   - r: 3.2
   - os:
-    - windows
     - linux
     - osx
   
