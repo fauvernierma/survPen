@@ -15,7 +15,6 @@ jobs:
   include:
   - r: devel
   - os: osx
-  - os: windows
   - r: release
   - r: 3.5
   - r: 3.4
