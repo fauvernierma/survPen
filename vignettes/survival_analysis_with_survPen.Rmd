@@ -297,7 +297,7 @@ lines(new.time,pred.pen$surv.sup,lty=2)
 
 Besides the basics hazard and survival predictions, the user may use the predict
 function to retrieve directly the design matrix corresponding to the new dataset specified. This functionality
-is available via the "type = lpmatrix" argument. This feature is particularly useful if the user wants to calculate
+is available via the `type = lpmatrix` argument. This feature is particularly useful if the user wants to calculate
 the predictions from the model on a arbitrary scale (beyond hazard, cumulative hazard and survival).  
 
 
