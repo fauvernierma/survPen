@@ -1,3 +1,17 @@
+
+survPen v1.2.0
+==============
+
+Changes:
+* the computation burden has been reduced by only calculating the diagonal
+elements of the fourth derivatives of the likelihood (without precision loss)
+* if the LU decompistion fails to invert the penlaty matrix, A QR decomposition is tried. 
+If the QR fails, a Cholesky decomposition is tried
+* corrected knots management when they are in a list format (takes into account the names of the list instead of the order of appearance)
+* all crossproducts are now evaluated by the crossprod function
+
+
+
 survPen v1.1.0 
 ==============
 
