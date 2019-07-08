@@ -65,31 +65,28 @@ If using `survPen` please consider citing the package in the relevant work. Cita
 ```r
 citation("survPen")
 #> 
-#> To cite package 'survPen' in publications use:
+#> To cite survPen in publications use:
 #> 
-#>   Mathieu Fauvernier, Laurent Roche, Laurent Remontet, Zoe Uhry
-#>   and Nadine Bossard (2019). survPen: Multidimensional Penalized
-#>   Splines for Survival and Net Survival Models. R package version
-#>   1.1.0. https://CRAN.R-project.org/package=survPen
+#>   Mathieu Fauvernier, Laurent Remontet, Zoe Uhry, Nadine Bossard,
+#>   Laurent Roche and the CENSUR working survival group (2019).
+#>   survPen: an R package for hazard and excess hazard modelling
+#>   with multidimensional penalized splines in revision in the
+#>   Journal of Open Source Software
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
-#>   @Manual{,
-#>     title = {survPen: Multidimensional Penalized Splines for Survival and Net Survival
-#> Models},
-#>     author = {Mathieu Fauvernier and Laurent Roche and Laurent Remontet and Zoe Uhry and Nadine Bossard},
+#>   @Article{,
+#>     title = {survPen: an R package for hazard and excess hazard modelling with multidimensional penalized splines},
+#>     author = {Mathieu Fauvernier and Laurent Remontet and Zoe Uhry and Nadine Bossard and Laurent Roche and the CENSUR working survival group},
+#>     journal = {in revision in the Journal of Open Source Software},
 #>     year = {2019},
-#>     note = {R package version 1.1.0},
-#>     url = {https://CRAN.R-project.org/package=survPen},
 #>   }
-#> 
-#> ATTENTION: This citation information has been auto-generated from
-#> the package DESCRIPTION file and may need manual editing, see
-#> 'help("citation")'.
 ```
 
 You may also consider citing the method article:
-Fauvernier, M., Roche, L., Uhry, Z., Tron, L., Bossard, N., Remontet, L. and the CENSUR Working Survival Group (2019). Multidimensional penalized hazard model with continuous covariates: applications for studying trends and social inequalities in cancer survival, in revision in the Journal of the Royal Statistical Society, series C.
+Fauvernier, M., Roche, L., Uhry, Z., Tron, L., Bossard, N., Remontet, L. and the CENSUR Working Survival Group (in press). Multi-dimensional penalized hazard model with continuous covariates: applications for studying trends and social inequalities in cancer survival, 
+Journal of the Royal Statistical Society, series C. doi: 10.1111/rssc.12368
+
 
 
 
