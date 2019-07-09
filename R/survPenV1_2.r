@@ -135,6 +135,16 @@ NULL
 #' @return Matrix of dimensions n*(p1*p2) representing the row tensor product of the matrices X1 and X2
 #' @export
 #'
+#' @examples
+#'
+#' library(survPen)
+#'
+#' set.seed(15)
+#'
+#' X1 <- matrix(rnorm(10*3),nrow=10,ncol=3)
+#' X2 <- matrix(rnorm(10*2),nrow=10,ncol=2)
+#' tensor.in(X1,X2)
+#' 
 tensor.in <- function(X1,X2){
 
 	# each column of X1 is multiplied by all the columns of X2
@@ -161,6 +171,17 @@ tensor.in <- function(X1,X2){
 #' \item{T}{Matrix of dimensions n*(p1*p2*...*pm) representing the row tensor product of the matrices in X}
 #' @export
 #'
+#' @examples
+#'
+#' library(survPen)
+#'
+#' set.seed(15)
+#'
+#' X1 <- matrix(rnorm(10*3),nrow=10,ncol=3)
+#' X2 <- matrix(rnorm(10*2),nrow=10,ncol=2)
+#' X3 <- matrix(rnorm(10*2),nrow=10,ncol=2)
+#' tensor.prod.X(list(X1,X2,X3))
+#' 
 tensor.prod.X <- function (X) 
 {
     m <- length(X) # number of matrices
@@ -207,6 +228,19 @@ tensor.prod.X <- function (X)
 #' \item{TS}{List of the penalty matrices associated with the tensor product smooth}
 #' @export
 #'
+#' @examples
+#'
+#' library(survPen)
+#'
+#' set.seed(15)
+#'
+#' S1 <- matrix(rnorm(3*3),nrow=3,ncol=3)
+#' S2 <- matrix(rnorm(2*2),nrow=2,ncol=2)
+#' 
+#' S1 <- 0.5*(S1 + t(S1) ) ; S2 <- 0.5*(S2 + t(S2) )
+#'
+#' tensor.prod.S(list(S1,S2))
+#' 
 tensor.prod.S <- function (S) 
 {
     m <- length(S)
@@ -409,6 +443,15 @@ crs <- function(x, knots=NULL,df=10, intercept=TRUE) {
 #' \item{P.mat}{penalty matrix}
 #' @export
 #'
+#' @examples
+#'
+#' library(survPen)
+#'
+#' knots <- c(0,0.25,0.5,0.75,1)
+#' diff.knots <- diff(knots)
+#'
+#' crs.FP(knots,diff.knots)
+#' 
 crs.FP <- function(knots,h){
   # constraints of second derivatives continuity and nullity beyond the boundaries
 
@@ -614,6 +657,16 @@ rd <- function(...){
 #' \item{name}{simplified name of the call to function smooth.spec}
 #' @export
 #'
+#' @examples
+#' 
+#' library(survPen)
+#'
+#' # standard spline of time with 10 unspecified knots
+#' smooth.spec(time)
+#'
+#' # tensor of time and age with 5*5 specified knots
+#' smooth.s <- smooth.spec(time,age,knots=list(time=seq(0,5,length=5),age=seq(20,80,length=5)), option="tensor")
+#'
 smooth.spec <- function(..., knots=NULL,df=NULL,by=NULL,option=NULL,same.rho=FALSE){
 
   if (is.null(option)) {
@@ -752,6 +805,16 @@ smooth.spec <- function(..., knots=NULL,df=NULL,by=NULL,option=NULL,same.rho=FAL
 #' \item{lambda.name}{name of the smoothing parameters}
 #' @export
 #'
+#' @examples
+#' 
+#' library(survPen)
+#'
+#' # standard spline of time with 4 knots (so we get a design matrix with 3 columns 
+#' # because of centering constraint)
+#'
+#' data <- data.frame(time=seq(0,5,length=100))
+#' smooth.c <- smooth.cons("time",knots=list(c(0,1,3,5)),df=4,option="smf",data.spec=data,name="smf(time)")
+#'
 smooth.cons <- function(term, knots, df, by=NULL, option, data.spec, same.rho=FALSE, name){
 
   if (option=="rd"){
@@ -781,6 +844,7 @@ smooth.cons <- function(term, knots, df, by=NULL, option, data.spec, same.rho=FA
   dim <- length(term)
 
   # for by variables
+  if(!is.character(by)) by <- deparse(by)
   by.var <- eval(parse(text=by),envir=as.environment(data.spec))
   
   if (!is.null(by.var)){ 
@@ -1063,6 +1127,17 @@ smooth.cons <- function(term, knots, df, by=NULL, option, data.spec, same.rho=FA
 #' \item{Z}{List of sum-to-zero constraint matrices}
 #' @export
 #'
+#' @examples
+#' 
+#' library(survPen)
+#'
+#' set.seed(15)
+#'
+#' X <- matrix(rnorm(10*3),nrow=10,ncol=3)
+#' S <- matrix(rnorm(3*3),nrow=3,ncol=3) ; S <- 0.5*( S + t(S))
+#'
+#' constr <- constraint(X,S) 
+#'
 constraint <- function(X,S,Z=NULL){
 
   if (is.null(Z)){
@@ -1125,6 +1200,21 @@ constraint <- function(X,S,Z=NULL){
 #' @return design matrix
 #' @export
 #'
+#' @examples
+#' 
+#' library(survPen)
+#'
+#' # standard spline of time with 4 knots (so we get a design matrix with 3 columns 
+#' # because of centering constraint)
+#'
+#' data <- data.frame(time=seq(0,5,length=100))
+#'
+#' Z.smf <- smooth.cons("time",knots=list(c(0,1,3,5)),df=4,option="smf",
+#' data.spec=data,name="smf(time)")$Z.smf
+#'
+#' smooth.c.int <- smooth.cons.integral("time",knots=list(c(0,1,3,5)),df=4,option="smf",data.spec=data,
+#' name="smf(time)",Z.smf=Z.smf,Z.tensor=NULL,Z.tint=NULL)
+#'
 smooth.cons.integral <- function(term, knots, df, by=NULL, option, data.spec, Z.smf, Z.tensor, Z.tint, name){
 
   
@@ -1146,6 +1236,7 @@ smooth.cons.integral <- function(term, knots, df, by=NULL, option, data.spec, Z.
   dim <- length(term)
 
   # for by variables
+  if(!is.character(by)) by <- deparse(by)
   by.var <- eval(parse(text=by),envir=as.environment(data.spec))
   
   if (!is.null(by.var)){ 
@@ -1276,6 +1367,12 @@ smooth.cons.integral <- function(term, knots, df, by=NULL, option, data.spec, Z.
 #' @return number representing the nth position of str2 in str1 
 #' @export
 #'
+#' @examples
+#' 
+#' library(survPen)
+#'
+#' instr("character test to find the position of the third letter r","r",n=3)
+#'
 instr <- function(str1,str2,startpos=1,n=1){
 			aa=unlist(strsplit(substring(str1,startpos),str2))
 			if(length(aa) < n+1 ) return(0);
@@ -1354,6 +1451,24 @@ instr <- function(str1,str2,startpos=1,n=1){
 #' \item{Z.tensor}{List of matrices that represents the sum-to-zero constraints to apply for \code{\link{tensor}} splines}
 #' \item{Z.tint}{List of matrices that represents the sum-to-zero constraints to apply for \code{\link{tint}} splines}
 #' @export
+#'
+#' @examples
+#' 
+#' library(survPen)
+#'
+#' # standard spline of time with 4 knots
+#'
+#' data <- data.frame(time=seq(0,5,length=100),event=1,t0=0)
+#'
+#' form <- ~ smf(time,knots=c(0,1,3,5))
+#'
+#' t1 <- eval(substitute(time), data)
+#' t0 <- eval(substitute(t0), data)
+#' event <- eval(substitute(event), data)
+#'	
+#' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
+#' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
+#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
 #'
 model.cons <- function(formula,lambda,data.spec,t1,t1.name,t0,t0.name,event,event.name,expected,expected.name,type,n.legendre,cl){
 
@@ -1890,6 +2005,29 @@ model.cons <- function(formula,lambda,data.spec,t1,t1.name,t0,t0.name,event,even
 #' @return design matrix for the model
 #' @export
 #'
+#' @examples
+#' 
+#' library(survPen)
+#'
+#' # standard spline of time with 4 knots
+#'
+#' data <- data.frame(time=seq(0,5,length=100),event=1,t0=0)
+#' 
+#' form <- ~ smf(time,knots=c(0,1,3,5))
+#' 
+#' t1 <- eval(substitute(time), data)
+#' t0 <- eval(substitute(t0), data)
+#' event <- eval(substitute(event), data)
+#' 	
+#' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
+#' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
+#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
+#'  
+#' Z.smf <- model.c$Z.smf ; list.smf <- model.c$list.smf
+#' 
+#' design.M <- design.matrix(form,data.spec=data,Z.smf=Z.smf,list.smf=list.smf,Z.tensor=NULL,Z.tint=NULL,
+#' list.tensor=NULL,list.tint=NULL,list.rd=NULL)
+#'
 design.matrix <- function(formula,data.spec,Z.smf,Z.tensor,Z.tint,list.smf,list.tensor,list.tint,list.rd){
 
   formula <- stats::as.formula(formula)
@@ -2067,6 +2205,26 @@ design.matrix <- function(formula,data.spec,Z.smf,Z.tensor,Z.tint,list.smf,list.
 #' \item{S.pen.ini}{initial penalty matrices}
 #' @export
 #'
+#' @examples
+#' 
+#' library(survPen)
+#'
+#' # standard spline of time with 4 knots
+#'
+#' data <- data.frame(time=seq(0,5,length=100),event=1,t0=0)
+#' 
+#' form <- ~ smf(time,knots=c(0,1,3,5))
+#' 
+#' t1 <- eval(substitute(time), data)
+#' t0 <- eval(substitute(t0), data)
+#' event <- eval(substitute(event), data)
+#' 	
+#' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
+#' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
+#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
+#'  
+#' re.model.c <- repam(model.c)
+#'
 repam <- function(build){
 	
 	coef.name <- colnames(build$X)
@@ -2120,7 +2278,6 @@ repam <- function(build){
 #' @param X.ini initial design matrix (before reparameterization)
 #' @param S.pen.ini initial penalty matrices
 #' @return survPen object with standard parameterization
-#' @export
 #'
 inv.repam <- function(model,X.ini,S.pen.ini){
 	
@@ -2181,7 +2338,6 @@ inv.repam <- function(model,X.ini,S.pen.ini){
 #'
 #' @param model survPen object, see \code{\link{survPen.fit}} for details
 #' @return survPen object with corrected variance Vc
-#' @export
 #'
 cor.var <- function(model){
 
@@ -2891,6 +3047,27 @@ survPen <- function(formula,data,t1,t0=NULL,event,expected=NULL,lambda=NULL,rho.
 #' @return Object of class "survPen" (see \code{\link{survPenObject}} for details)
 #' @export
 #'
+#' @examples
+#' 
+#' library(survPen)
+#'
+#' # standard spline of time with 4 knots
+#'
+#' data <- data.frame(time=seq(0,5,length=100),event=1,t0=0)
+#' 
+#' form <- ~ smf(time,knots=c(0,1,3,5))
+#' 
+#' t1 <- eval(substitute(time), data)
+#' t0 <- eval(substitute(t0), data)
+#' event <- eval(substitute(event), data)
+#' 	
+#' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
+#' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
+#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
+#'  
+#' # fitting
+#' mod <- survPen.fit(model.c,data,form)
+#'
 survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.beta=FALSE,method="LAML",tol.beta=1e-04)
 {
   # collecting information from the formula (design matrix, penalty matrices, ...)
@@ -3541,6 +3718,22 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
 #' @references
 #' Wood, S.N., Pya, N. and Saefken, B. (2016), Smoothing parameter and model selection for general smooth models (with discussion). Journal of the American Statistical Association 111, 1548-1575
 #'
+#' @examples
+#'
+#' library(survPen)
+#'
+#' data(datCancer) # simulated dataset with 2000 individuals diagnosed with cervical cancer
+#'
+#' # model : unidimensional penalized spline for time since diagnosis with 5 knots
+#' f1 <- ~smf(fu,df=5)
+#'
+#' # hazard model
+#' mod1 <- survPen(f1,data=datCancer,t1=fu,event=dead,expected=NULL,method="LAML")
+#'
+#' # predicting hazard and survival at time 1
+#' pred <- predict(mod1,data.frame(fu=1))
+#' pred$haz
+#' pred$surv
 #'
 predict.survPen <- function(object,newdata,n.legendre=50,conf.int=0.95,do.surv=TRUE,type="standard",exclude.random=FALSE,get.deriv.H=FALSE,...){
 
@@ -3706,6 +3899,21 @@ predict.survPen <- function(object,newdata,n.legendre=50,conf.int=0.95,do.surv=T
 #' \item{converged}{convergence indicator, TRUE or FALSE. TRUE if Hess.beta.modif=FALSE and Hess.rho.modif=FALSE (or NULL)}
 #' @export
 #'
+#' @examples
+#'
+#' library(survPen)
+#'
+#' data(datCancer) # simulated dataset with 2000 individuals diagnosed with cervical cancer
+#'
+#' # model : unidimensional penalized spline for time since diagnosis with 5 knots
+#' f1 <- ~smf(fu,df=5)
+#'
+#' # hazard model
+#' mod1 <- survPen(f1,data=datCancer,t1=fu,event=dead,expected=NULL,method="LAML")
+#'
+#' # summary
+#' summary(mod1)
+#'
 summary.survPen <- function(object,...){
 
 	if (!inherits(object,"survPen")) stop("object is not of class survPen")
@@ -3856,7 +4064,7 @@ summary.survPen <- function(object,...){
 #' @param x an object of class \code{summary.survPen}
 #' @param ... other arguments
 #' @return print of summary
-#' @export
+#'
 print.summary.survPen <- function(x, ...)
 {
 	cat(paste(noquote(x$type),"\n","\n"))
@@ -3877,9 +4085,6 @@ print.summary.survPen <- function(x, ...)
 	
 	if (substr(x$type,1,9)=="penalized"){
 
-		#cat("\nEffective degrees of freedom for smooth terms:\n")
-		#print(x$smooth.terms)
-	
 		cat("\n")
 		cat(paste("likelihood=",signif(x$likelihood,signif.precision),",","penalized likelihood=",signif(x$penalized.likelihood,signif.precision)))
 
@@ -3944,6 +4149,27 @@ print.summary.survPen <- function(x, ...)
 #' \item{haz.GL}{list of all the matrix-vector multiplications X.GL[[i]]\%*\%beta for Gauss Legendre integration. Useful to avoid repeating operations in \code{\link{survPen.fit}}}
 #' \item{iter.beta}{number of iterations needed to converge}
 #' @export
+#'
+#' @examples
+#' 
+#' library(survPen)
+#'
+#' # standard spline of time with 4 knots
+#'
+#' data <- data.frame(time=seq(0,5,length=100),event=1,t0=0)
+#' 
+#' form <- ~ smf(time,knots=c(0,1,3,5))
+#' 
+#' t1 <- eval(substitute(time), data)
+#' t0 <- eval(substitute(t0), data)
+#' event <- eval(substitute(event), data)
+#' 	
+#' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
+#' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
+#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
+#'  
+#' # fitting
+#' Newton1 <- NR.beta(model.c,beta.ini=rep(0,4),detail.beta=TRUE)
 #'
 NR.beta <- function(build,beta.ini,detail.beta,max.it.beta=200,tol.beta=1e-04){
 
@@ -4215,6 +4441,27 @@ NR.beta <- function(build,beta.ini,detail.beta,max.it.beta=200,tol.beta=1e-04){
 #'
 #' @return object of class survPen (see \code{\link{survPen.fit}} for details)
 #' @export
+#'
+#' @examples
+#' 
+#' library(survPen)
+#'
+#' # standard spline of time with 4 knots
+#'
+#' data <- data.frame(time=seq(0,5,length=100),event=1,t0=0)
+#' 
+#' form <- ~ smf(time,knots=c(0,1,3,5))
+#' 
+#' t1 <- eval(substitute(time), data)
+#' t0 <- eval(substitute(t0), data)
+#' event <- eval(substitute(event), data)
+#' 	
+#' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
+#' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
+#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
+#'  
+#' # we need to apply a reparameterization to model.c before fitting
+#' Newton2 <- NR.rho(repam(model.c)$build,rho.ini=-1,data,form,nb.smooth=1,detail.rho=TRUE)
 #'
 NR.rho <- function(build,rho.ini,data,formula,max.it.beta=200,max.it.rho=30,beta.ini=NULL,detail.rho=FALSE,detail.beta=FALSE,nb.smooth,tol.beta=1e-04,tol.rho=1e-04,step.max=5,method="LAML"){
 
@@ -4519,4 +4766,6 @@ NR.rho <- function(build,rho.ini,data,formula,max.it.beta=200,max.it.rho=30,beta
 
 
 #################################################################################################################
+
+
 
