@@ -33,8 +33,19 @@ test_that("wrong number of smf covariates gives error", {
 
 
 
+x <- seq(1,10,length=100)
+test_that("wrong df gives error", {
+expect_error(crs(x,df=2),
+  "Number of knots should be at least 3, 1 interior plus 2 boundaries")
+})
 
+test_that("wrong number of knots gives error", {
+expect_error(crs(x,knots=c(0,10)),
+  "Please specify at least 3 knots, 1 interior plus 2 boundaries")
+})
 
-
-
+test_that("wrong number of individuals gives error", {
+expect_error(crs(1,df=10),
+  "Please specify at least 2 values or specify at least 3 knots via knots=...")
+})
 
