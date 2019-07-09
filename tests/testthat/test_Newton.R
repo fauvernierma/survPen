@@ -18,7 +18,7 @@ expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,d
   
 mod <- survPen.fit(model.c,data,form)
 
-Newton <- NR.beta(model.c,beta.ini=rep(0,4),detail.beta=FALSE)
+Newton1 <- NR.beta(model.c,beta.ini=rep(0,4),detail.beta=FALSE)
  
 test_that("NR.beta ok", {
   expect_true(max(abs(mod$coef - Newton1$beta)) < 1e-10)
