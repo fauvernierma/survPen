@@ -22,11 +22,11 @@ S1 <- 0.5*(S1 + t(S1) ) ; S2 <- 0.5*(S2 + t(S2) )
 S <- tensor.prod.S(list(S1,S2))
 
 test_that("tensor penalty 1 ok", {
-  expect_equal(S[[1]],c(6,6))
+  expect_equal(dim(S[[1]]),c(6,6))
 })
 
 test_that("tensor penalty 2 ok", {
-  expect_equal(S[[2]],c(6,6))
+  expect_equal(dim(S[[2]]),c(6,6))
 })
 
 
