@@ -11,7 +11,7 @@ set.seed(1)
 NCluster <- 10
 datCancer$cluster <-  factor(sample(rep(1:NCluster,each=dim(datCancer)[1]/NCluster)))
 
-mod.rd <- survPen(~rd(cluster),data=datCancer,t1=fu,event=dead)
+mod.rd <- survPen(~rd(cluster),data=datCancer,t1=fu,event=dead,detail.beta=TRUE,detail.rho=TRUE)
 
 test_that("random effects models work", {
   expect_true(inherits(mod.rd,"survPen"))
@@ -32,6 +32,4 @@ test_that("penalized likelihoods from model and summary matches", {
 test_that("summary has right dimensions", {
   expect_true(all(dim(summary(mod.rd)$random.effects)==c(1,2)))
 })
-
-
 
