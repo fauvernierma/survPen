@@ -52,18 +52,39 @@ expect_error(crs(1,df=10),
 
   mod1 <- try(survPen(~tensor(fu,age),t1=fu,event=dead,lambda=exp(c(-15,15)),data=datCancer))
   
-  mod2 <- try(survPen(~tensor(fu,age),t1=fu,event=dead,lambda=exp(c(-20,20)),data=datCancer))
-  
-test_that("extreme case 1 smoothing parameter ok", {
+test_that("limit case is ok", {
 expect_true(inherits(mod1,"survPen"))
 })
 
-test_that("extreme case 2 smoothing parameter gives error", {
+
+ mod2 <- try(survPen(~tensor(fu,age),t1=fu,event=dead,lambda=exp(c(-20,20)),data=datCancer))
+  
+  mod3 <- try(survPen(~tensor(fu,age),t1=fu,event=dead,lambda=exp(c(55,45)),data=datCancer,max.it.beta=50))
+  
+  mod4 <- try(survPen(~tensor(fu,age),t1=fu,event=dead,data=datCancer[1:6,]))
+
+test_that("extreme cases give errors", {
 expect_true(class(mod2)=="try-error")
+expect_true(class(mod3)=="try-error")
+expect_true(class(mod4)=="try-error")
+})
+
+ 
+  don <- datCancer
+  don$event <- 0
+  don[don$fu < 0.03,]$event <- 1
+  mod5 <- try(survPen(~tensor(fu,age),t1=fu,event=event,data=don))
+	
+ test_that("Hessian perturbation at convergence", {
+expect_true(mod5$Hess.rho.modif)
+
 })
 
  
   
+  
+ 
+    
 
 
 
