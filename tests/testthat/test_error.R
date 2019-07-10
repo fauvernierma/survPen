@@ -49,3 +49,22 @@ expect_error(crs(1,df=10),
   "Please specify at least 2 values or specify at least 3 knots via knots=...")
 })
 
+
+  mod1 <- try(survPen(~tensor(fu,age),t1=fu,event=dead,lambda=exp(c(-15,15)),data=datCancer))
+  
+  mod2 <- try(survPen(~tensor(fu,age),t1=fu,event=dead,lambda=exp(c(-20,20)),data=datCancer))
+  
+test_that("extreme case 1 smoothing parameter ok", {
+expect_true(inherits(mod1,"survPen"))
+})
+
+test_that("extreme case 2 smoothing parameter gives error", {
+expect_true(class(mod2)=="try-error")
+})
+
+ 
+  
+
+
+
+
