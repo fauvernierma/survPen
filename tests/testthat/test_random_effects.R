@@ -62,16 +62,18 @@ test_that("estimated variance is ok", {
 })
 
 test_that("estimated variance is ok, 2", {
-  expect_true(summary(mod.rd)$random.effects[,"Estimate"] < -2.235 & summary(mod.rd)$random.effects[,"Estimate"] > -2.236)
+  expect_true(summary(mod.rd)$random.effects[,"Estimate"] < -2.235)
+  expect_true(summary(mod.rd)$random.effects[,"Estimate"] > -2.236)
 })
 
 test_that("prediction ok", {
-  expect_true(predict(mod.rd,data.frame(fu=5,cluster=1))$surv < 0.0905 & predict(mod.rd,data.frame(fu=5,cluster=1))$surv > 0.0904)
+  expect_true(predict(mod.rd,data.frame(fu=5,cluster=1))$surv < 0.0905) 
+  expect_true(predict(mod.rd,data.frame(fu=5,cluster=1))$surv > 0.0904)
 })
 	  
 test_that("excluding random effect for prediction ok", {
-  expect_true(predict(mod.rd,data.frame(fu=5,cluster=1),exclude.random=TRUE)$surv < 0.117 & 
-              predict(mod.rd,data.frame(fu=5,cluster=1),exclude.random=TRUE)$surv > 0.116)
+  expect_true(predict(mod.rd,data.frame(fu=5,cluster=1),exclude.random=TRUE)$surv < 0.117) 
+  expect_true(predict(mod.rd,data.frame(fu=5,cluster=1),exclude.random=TRUE)$surv > 0.116)
 })
 
 test_that("penalized likelihoods from model and summary matches", {
