@@ -138,7 +138,8 @@ NULL
 #' @examples
 #'
 #' library(survPen)
-#'
+#' 
+#' # row-wise tensor product between two design matrices
 #' set.seed(15)
 #'
 #' X1 <- matrix(rnorm(10*3),nrow=10,ncol=3)
@@ -175,6 +176,7 @@ tensor.in <- function(X1,X2){
 #'
 #' library(survPen)
 #'
+#' # row-wise tensor product between three design matrices
 #' set.seed(15)
 #'
 #' X1 <- matrix(rnorm(10*3),nrow=10,ncol=3)
@@ -232,6 +234,7 @@ tensor.prod.X <- function (X)
 #'
 #' library(survPen)
 #'
+#' # tensor product between three penalty matrices
 #' set.seed(15)
 #'
 #' S1 <- matrix(rnorm(3*3),nrow=3,ncol=3)
@@ -301,6 +304,7 @@ tensor.prod.S <- function (S)
 #'
 #' @examples
 #' x <- seq(1,10,length=100)
+#' # natural cubic spline with 3 knots
 #' crs(x,knots=c(1,5,10))
 #'
 crs <- function(x, knots=NULL,df=10, intercept=TRUE) {
@@ -447,6 +451,7 @@ crs <- function(x, knots=NULL,df=10, intercept=TRUE) {
 #'
 #' library(survPen)
 #'
+#' # construction of the penalty matrix using a sequence of knots
 #' knots <- c(0,0.25,0.5,0.75,1)
 #' diff.knots <- diff(knots)
 #'
@@ -1136,6 +1141,7 @@ smooth.cons <- function(term, knots, df, by=NULL, option, data.spec, same.rho=FA
 #' X <- matrix(rnorm(10*3),nrow=10,ncol=3)
 #' S <- matrix(rnorm(3*3),nrow=3,ncol=3) ; S <- 0.5*( S + t(S))
 #'
+#' # applying sum-to-zero constraint to a desgin matrix and a penalty matrix
 #' constr <- constraint(X,S) 
 #'
 constraint <- function(X,S,Z=NULL){
@@ -1209,9 +1215,11 @@ constraint <- function(X,S,Z=NULL){
 #'
 #' data <- data.frame(time=seq(0,5,length=100))
 #'
+#' # retrieving sum-to-zero constraint matrices
 #' Z.smf <- smooth.cons("time",knots=list(c(0,1,3,5)),df=4,option="smf",
 #' data.spec=data,name="smf(time)")$Z.smf
 #'
+#' # constructing the design matrices for Gauss-Legendre quadrature
 #' smooth.c.int <- smooth.cons.integral("time",knots=list(c(0,1,3,5)),df=4,option="smf",data.spec=data,
 #' name="smf(time)",Z.smf=Z.smf,Z.tensor=NULL,Z.tint=NULL)
 #'
@@ -1466,6 +1474,7 @@ instr <- function(str1,str2,startpos=1,n=1){
 #' t0 <- eval(substitute(t0), data)
 #' event <- eval(substitute(event), data)
 #'	
+#' # The following code sets up everything we need in order to fit the model
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
 #' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
@@ -2019,12 +2028,15 @@ model.cons <- function(formula,lambda,data.spec,t1,t1.name,t0,t0.name,event,even
 #' t0 <- eval(substitute(t0), data)
 #' event <- eval(substitute(event), data)
 #' 	
+#' # Setting up the model
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
 #' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
 #'  
+#' # Retrieving the sum-to-zero constraint matrices and the list of knots
 #' Z.smf <- model.c$Z.smf ; list.smf <- model.c$list.smf
 #' 
+#' # Calculating the design matrix
 #' design.M <- design.matrix(form,data.spec=data,Z.smf=Z.smf,list.smf=list.smf,Z.tensor=NULL,Z.tint=NULL,
 #' list.tensor=NULL,list.tint=NULL,list.rd=NULL)
 #'
@@ -2219,10 +2231,12 @@ design.matrix <- function(formula,data.spec,Z.smf,Z.tensor,Z.tint,list.smf,list.
 #' t0 <- eval(substitute(t0), data)
 #' event <- eval(substitute(event), data)
 #' 	
+#' # Setting up the model before fitting
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
 #' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
 #'  
+#' # Reparameterization allows separating the parameters into unpenalized and penalized ones for maximum numerical stability
 #' re.model.c <- repam(model.c)
 #'
 repam <- function(build){
@@ -3061,6 +3075,7 @@ survPen <- function(formula,data,t1,t0=NULL,event,expected=NULL,lambda=NULL,rho.
 #' t0 <- eval(substitute(t0), data)
 #' event <- eval(substitute(event), data)
 #' 	
+#' # Setting up the model before fitting
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
 #' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
@@ -3908,7 +3923,7 @@ predict.survPen <- function(object,newdata,n.legendre=50,conf.int=0.95,do.surv=T
 #' # model : unidimensional penalized spline for time since diagnosis with 5 knots
 #' f1 <- ~smf(fu,df=5)
 #'
-#' # hazard model
+#' # fitting hazard model
 #' mod1 <- survPen(f1,data=datCancer,t1=fu,event=dead,expected=NULL,method="LAML")
 #'
 #' # summary
@@ -4164,11 +4179,12 @@ print.summary.survPen <- function(x, ...)
 #' t0 <- eval(substitute(t0), data)
 #' event <- eval(substitute(event), data)
 #' 	
+#' # Setting up the model before fitting
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
 #' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
 #'  
-#' # fitting
+#' # Estimating the regression parameters at given smoothing parameter (here lambda=0)
 #' Newton1 <- NR.beta(model.c,beta.ini=rep(0,4),detail.beta=TRUE)
 #'
 NR.beta <- function(build,beta.ini,detail.beta,max.it.beta=200,tol.beta=1e-04){
@@ -4456,10 +4472,12 @@ NR.beta <- function(build,beta.ini,detail.beta,max.it.beta=200,tol.beta=1e-04){
 #' t0 <- eval(substitute(t0), data)
 #' event <- eval(substitute(event), data)
 #' 	
+#' # Setting up the model before fitting
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
 #' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
 #'  
+#' # Estimating the smoothing parameter and the regression parameters
 #' # we need to apply a reparameterization to model.c before fitting
 #' Newton2 <- NR.rho(repam(model.c)$build,rho.ini=-1,data,form,nb.smooth=1,detail.rho=TRUE)
 #'
@@ -4766,6 +4784,7 @@ NR.rho <- function(build,rho.ini,data,formula,max.it.beta=200,max.it.rho=30,beta
 
 
 #################################################################################################################
+
 
 
 
