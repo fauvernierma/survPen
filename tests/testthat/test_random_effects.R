@@ -61,20 +61,12 @@ test_that("estimated variance is ok", {
  - exp(-0.5*log(mod.rd$lambda)-0.5*log(mod.rd$S.scale))[2]) < 1e-08)
 })
 
-test_that("estimated variance is ok, 2", {
-  expect_true(summary(mod.rd)$random.effects[,"Estimate"] < -2.235)
-  expect_true(summary(mod.rd)$random.effects[,"Estimate"] > -2.236)
-})
 
 test_that("prediction ok", {
-  expect_true(predict(mod.rd,data.frame(fu=5,cluster=1))$surv < 0.0905) 
-  expect_true(predict(mod.rd,data.frame(fu=5,cluster=1))$surv > 0.0904)
+  expect_false(predict(mod.rd,data.frame(fu=5,cluster=1))$surv == predict(mod.rd,data.frame(fu=5,cluster=1),exclude.random=TRUE)$surv) 
 })
 	  
-test_that("excluding random effect for prediction ok", {
-  expect_true(predict(mod.rd,data.frame(fu=5,cluster=1),exclude.random=TRUE)$surv < 0.117) 
-  expect_true(predict(mod.rd,data.frame(fu=5,cluster=1),exclude.random=TRUE)$surv > 0.116)
-})
+
 
 test_that("penalized likelihoods from model and summary matches", {
   expect_equal(summary(mod.rd)$penalized.likelihood , mod.rd$ll)
