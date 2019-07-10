@@ -43,6 +43,11 @@ mod.pen <- survPen(f.smf,data=datCancer,t1=fu,event=dead,method="LCV")
   expect_true(inherits(mod.pen,"survPen"))
 })
 
+mod.pen.excess <- survPen(f.smf,data=datCancer,t1=fu,event=dead,expected=rate,method="LCV")
+
+test_that("LCV smoohting parameter estimation works with expected mortality rates", {
+  expect_true(inherits(mod.pen.excess,"survPen"))
+})
 
 # summary of the model
 
@@ -50,7 +55,9 @@ test_that("summary of the model works", {
   expect_equal(summary(mod.pen)$penalized.likelihood , mod.pen$ll)
 })
 
-
+test_that("summary of the model with expected rate works", {
+  expect_equal(summary(mod.pen.excess)$penalized.likelihood , mod.pen.excess$ll)
+})
 
 
 
