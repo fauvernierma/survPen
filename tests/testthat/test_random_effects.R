@@ -58,7 +58,7 @@ test_that("random effects models work", {
 
 test_that("estimated variance is ok", {
   expect_true(abs(exp(summary(mod.rd)$random.effects)[1]
- - exp(-0.5*log(mod.rd$lambda)-0.5*log(mod.rd$S.scale))[1]) < 1e-08)
+ - exp(-0.5*log(mod.rd$lambda)-0.5*log(mod.rd$S.scale))[2]) < 1e-08)
 })
 
 test_that("estimated variance is ok, 2", {
