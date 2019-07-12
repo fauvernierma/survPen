@@ -106,7 +106,7 @@ summary(mod.pen)
 
 ## ---- fig.show='hold'----------------------------------------------------
 mod.pen$ll.unpen
-mod.pen$ll
+mod.pen$ll.pen
 mod.pen$p
 sum(mod.pen$edf)
 mod.pen$LAML
@@ -461,15 +461,15 @@ datCancer$agec <- datCancer$age - 50
 
 ## ---- fig.show='hold'----------------------------------------------------
 m <- survPen(~smf(fu) + smf(fu,by=agec),data=datCancer,t1=fu,event=dead)
-m$ll
+m$ll.pen
 
 ## ---- fig.show='hold'----------------------------------------------------
 m.bis <- survPen(~smf(fu) + agec + tint(fu,by=agec,df=10),data=datCancer,t1=fu,event=dead)
-m.bis$ll # same penalized likelihood as m
+m.bis$ll.pen # same penalized log-likelihood as m
 
 ## ---- fig.show='hold'----------------------------------------------------
 m2 <- survPen(~tint(fu,df=10) + tint(agec,df=10) + tint(fu,by=agec,df=10),data=datCancer,t1=fu,event=dead)
-m2$ll 
+m2$ll.pen 
 
 ## ---- fig.show='hold'----------------------------------------------------
   set.seed(1)
@@ -599,4 +599,5 @@ mod.pen <- survPen(f.pen,data=datCancer,t1=fu,event=dead,detail.rho=TRUE)
 
 ## ---- fig.show='hold'----------------------------------------------------
 mod.pen <- survPen(f.pen,data=datCancer,t1=fu,event=dead,detail.rho=TRUE,detail.beta=TRUE)
+
 
