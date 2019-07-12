@@ -69,7 +69,7 @@ test_that("prediction ok", {
 
 
 test_that("penalized likelihoods from model and summary matches", {
-  expect_equal(summary(mod.rd)$penalized.likelihood , mod.rd$ll)
+  expect_equal(summary(mod.rd)$penalized.likelihood , mod.rd$ll.pen)
 })
 
 
