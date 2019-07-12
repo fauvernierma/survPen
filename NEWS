@@ -9,7 +9,7 @@ elements of the fourth derivatives of the likelihood (without precision loss)
 If the QR fails, a Cholesky decomposition is tried
 * corrected knots management when they are in a list format (takes into account the names of the list instead of the order of appearance)
 * all crossproducts are now evaluated by the crossprod function
-
+* the penalized log-likelihood at convergence was renamed ll.pen (instead of ll)
 
 
 survPen v1.1.0 
