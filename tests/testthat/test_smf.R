@@ -52,11 +52,11 @@ test_that("LCV smoohting parameter estimation works with expected mortality rate
 # summary of the model
 
 test_that("summary of the model works", {
-  expect_equal(summary(mod.pen)$penalized.likelihood , mod.pen$ll)
+  expect_equal(summary(mod.pen)$penalized.likelihood , mod.pen$ll.pen)
 })
 
 test_that("summary of the model with expected rate works", {
-  expect_equal(summary(mod.pen.excess)$penalized.likelihood , mod.pen.excess$ll)
+  expect_equal(summary(mod.pen.excess)$penalized.likelihood , mod.pen.excess$ll.pen)
 })
 
 
