@@ -21,7 +21,7 @@ test_that("alternative 1 for continuous by variables work", {
 })
 
 test_that("alternative 1 leads to the same penalized likelihood", {
-  expect_true(abs(mod.by$ll-mod.by2$ll) < 1e-8)
+  expect_true(abs(mod.by$ll.pen-mod.by2$ll.pen) < 1e-8)
 })
 
 
@@ -32,7 +32,7 @@ test_that("alternative 2 for continuous by variables work", {
 })
 
 test_that("alternative 2 leads to the same penalized likelihood", {
-  expect_true(abs(mod.by$ll-mod.by3$ll) < 1e-8)
+  expect_true(abs(mod.by$ll.pen-mod.by3$ll.pen) < 1e-8)
 })
 
 
