@@ -338,7 +338,7 @@ summary(mod.pen)
 Here we get:
 
 - the log-likelihood: `r mod.pen$ll.unpen`
-- the penalized log-likelihood: `r mod.pen$ll`
+- the penalized log-likelihood: `r mod.pen$ll.pen`
 - the number of regression parameters: `r mod.pen$p`
 - the effective degrees of freedom of the model: `r sum(mod.pen$edf)`
 - the **negative** LAML criterion at convergence: `r mod.pen$LAML`
@@ -349,7 +349,7 @@ All these values can respectively be retrieved as follows:
 
 ```{r, fig.show='hold'}
 mod.pen$ll.unpen
-mod.pen$ll
+mod.pen$ll.pen
 mod.pen$p
 sum(mod.pen$edf)
 mod.pen$LAML
@@ -996,13 +996,13 @@ Penalized cubic spline of time with linear interaction with age:
 
 ```{r, fig.show='hold'}
 m <- survPen(~smf(fu) + smf(fu,by=agec),data=datCancer,t1=fu,event=dead)
-m$ll
+m$ll.pen
 ```
 
 Another option to fit the same model
 ```{r, fig.show='hold'}
 m.bis <- survPen(~smf(fu) + agec + tint(fu,by=agec,df=10),data=datCancer,t1=fu,event=dead)
-m.bis$ll # same penalized likelihood as m
+m.bis$ll.pen # same penalized log-likelihood as m
 ```
 
 Penalized cubic spline of time, penalized cubic spline of age and penalized cubic spline 
@@ -1011,7 +1011,7 @@ of time with linear interaction with age:
 
 ```{r, fig.show='hold'}
 m2 <- survPen(~tint(fu,df=10) + tint(agec,df=10) + tint(fu,by=agec,df=10),data=datCancer,t1=fu,event=dead)
-m2$ll 
+m2$ll.pen 
 ```
 
 Be careful here. In model *m*, the effect of age is included in the term `smf(fu,by=agec)`. In *m.bis*, the
@@ -1289,9 +1289,9 @@ parameters, you get:
 - beta =  current values of the regression parameters
 - abs((beta-betaold)/betaold) =  absolute value of the relative difference between current and former 
 regression parameters values (criterion used to check for convergence)
-- llold =  former value of the penalized log-likelihood
-- ll =  current value of the penalized log-likelihood
-- ll-llold =  difference of the two values above
+- ll.pen.old =  former value of the penalized log-likelihood
+- ll.pen =  current value of the penalized log-likelihood
+- ll.pen - ll.pen.old =  difference of the two values above
  
 
 When using `detail.rho` or `detail.beta`, you might also see from time to time a warning message indicating that the
@@ -1315,9 +1315,15 @@ smoothing or regression parameters), it might indicate a convergence issue (see 
 - O Sullivan, F. (1988), Fast computation of fully automated log-density and log-hazard estimators. SIAM Journal on scientific and statistical computing, 9(2), 363-379.
 - Remontet, L., Bossard, N., Belot, A., and Esteve, J. (2007), An overall strategy based on regression models to estimate relative survival and model the effects of prognostic factors in cancer survival studies. Statistics in medicine, 26(10), 2214-2228. 
 - Remontet, L., Uhry, Z., Bossard, N., Iwaz, J., Belot, A., Danieli, C., Charvat, H., Roche, L. and CENSUR Working Survival Group (2018) Flexible and structured survival model for a simultaneous estimation of non-linear and non-proportional effects and complex interactions between continuous variables: Performance of this multidimensional penalized spline approach in net survival trend analysis. Stat Methods Med Res. 2018 Jan 1:962280218779408. doi: 10.1177/0962280218779408. [Epub ahead of print].
-- Wood, S.N. (2006). Low‐rank scale‐invariant tensor product smooths for generalized additive mixed models. Biometrics, 62(4), 1025-1036.
+- Wood, S.N. (2006). Low-rank scale-invariant tensor product smooths for generalized additive mixed models. Biometrics, 62(4), 1025-1036.
 - Wood, S. N. (2017) Generalized additive models: an introduction with R: Chapman and Hall/CRC.
 - Wood, S.N., Pya, N. and Saefken, B. (2016), Smoothing parameter and model selection for general smooth models (with discussion). Journal of the American Statistical Association 111, 1548-1575
+
+
+
+
+
+
 
 
 
