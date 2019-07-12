@@ -79,7 +79,7 @@ NULL
 #' \item{Hess.beta}{hessian of the penalized log-likelihood with respect to the regression parameters}
 #' \item{Hess.beta.modif}{if TRUE, the hessian of the penalized log-likelihood has been perturbed at convergence}
 #' \item{ll.unpen}{log-likelihood at convergence}
-#' \item{ll}{penalized log-likelihood at convergence}
+#' \item{ll.pen}{penalized log-likelihood at convergence}
 #' \item{deriv.rho.beta}{transpose of the Jacobian of beta with respect to the log smoothing parameters}
 #' \item{deriv.rho.inv.Hess.beta}{list containing the derivatives of the inverse of \code{Hess} with respect to the log smoothing parameters}
 #' \item{deriv.rho.Hess.unpen.beta}{list containing the derivatives of \code{Hess.unpen} with respect to the log smoothing parameters}
@@ -3179,7 +3179,7 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
   beta <- Algo.optim$beta
   names(beta) <- colnames(X)
   ll.unpen <- Algo.optim$ll.unpen
-  ll <- Algo.optim$ll
+  ll.pen <- Algo.optim$ll.pen
   haz.GL <- Algo.optim$haz.GL
   iter.beta <- Algo.optim$iter.beta
   #-------------------------------------------------------------------
@@ -3301,7 +3301,7 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
 	log.det.Hess.beta <- as.numeric(2*determinant(R,logarithm=TRUE)$modulus)
 
 	# this is actually the negative LAML so that we can minimize it
-	LAML <- -(ll+0.5*log.abs.S-0.5*log.det.Hess.beta+0.5*M.p*log(2*pi))
+	LAML <- -(ll.pen+0.5*log.abs.S-0.5*log.det.Hess.beta+0.5*M.p*log(2*pi))
 
 	if(method=="LAML"){
 
@@ -3687,7 +3687,7 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
 	haz=ft1,coefficients=beta,type=type,df.para=df.para,df.smooth=df.smooth,p=p,edf=edf,edf2=edf2,aic=2*sum(edf)-2*ll.unpen,aic2=aic2,iter.beta=iter.beta,X=X,S=S,S.scale=S.scale,
 	S.list=S.list,S.smf=S.smf,S.tensor=S.tensor,S.tint=S.tint,S.rd=S.rd,smooth.name.smf=smooth.name.smf,smooth.name.tensor=smooth.name.tensor,smooth.name.tint=smooth.name.tint,smooth.name.rd=smooth.name.rd,
 	S.pen=build$S.pen,grad.unpen.beta=grad.unpen.beta,grad.beta=grad.beta,Hess.unpen.beta=Hess.unpen.beta,Hess.beta=Hess.beta,
-	Hess.beta.modif=Hess.beta.modif,ll.unpen=ll.unpen,ll=ll,deriv.rho.beta=deriv.rho.beta,deriv.rho.inv.Hess.beta=deriv.rho.inv.Hess.beta,lambda=lambda,
+	Hess.beta.modif=Hess.beta.modif,ll.unpen=ll.unpen,ll.pen=ll.pen,deriv.rho.beta=deriv.rho.beta,deriv.rho.inv.Hess.beta=deriv.rho.inv.Hess.beta,lambda=lambda,
 	nb.smooth=nb.smooth,iter.rho=iter.rho,optim.rho=optim.rho,method=method,criterion.val=criterion.val,LCV=LCV,LAML=LAML,grad.rho=grad.rho,Hess.rho=Hess.rho,inv.Hess.rho=inv.Hess.rho,
 	Hess.rho.modif=Hess.rho.modif,Ve=Ve,Vp=Vp,Vc=Vc,Vc.approx=Vc.approx,Z.smf=Z.smf,Z.tensor=Z.tensor,Z.tint=Z.tint,
 	list.smf=list.smf,list.tensor=list.tensor,list.tint=list.tint,list.rd=list.rd,U.F=U.F)
@@ -4046,7 +4046,7 @@ summary.survPen <- function(object,...){
 			random=random,
 			random.effects=TAB.random,
 			likelihood = object$ll.unpen,
-			penalized.likelihood = object$ll,
+			penalized.likelihood = object$ll.pen,
 			nb.smooth = object$nb.smooth,
 			smoothing.parameter = object$lambda,
 			parameters = object$p,
@@ -4101,7 +4101,7 @@ print.summary.survPen <- function(x, ...)
 	if (substr(x$type,1,9)=="penalized"){
 
 		cat("\n")
-		cat(paste("likelihood=",signif(x$likelihood,signif.precision),",","penalized likelihood=",signif(x$penalized.likelihood,signif.precision)))
+		cat(paste("log-likelihood=",signif(x$likelihood,signif.precision),",","penalized log-likelihood=",signif(x$penalized.likelihood,signif.precision)))
 
 		cat("\n")
 		cat(paste("Number of parameters=",x$parameters,",","effective degrees of freedom=",signif(x$edf,signif.precision)))
@@ -4153,14 +4153,14 @@ print.summary.survPen <- function(x, ...)
 #' @param tol.beta convergence tolerance for regression parameters; default is \code{1e-04}
 #'
 #' @details
-#' If we note \code{ll} and \code{beta} respectively the current penalized log-likelihood and estimated parameters and
-#' \code{llold} and \code{betaold} the previous ones, the algorithm goes on while
-#' (abs(ll-llold)>tol.beta) or any(abs((beta-betaold)/betaold)>tol.beta)
+#' If we note \code{ll.pen} and \code{beta} respectively the current penalized log-likelihood and estimated parameters and
+#' \code{ll.pen.old} and \code{betaold} the previous ones, the algorithm goes on while
+#' (abs(ll.pen-ll.pen.old)>tol.beta) or any(abs((beta-betaold)/betaold)>tol.beta)
 #'
 #' @return List of objects:
 #' \item{beta}{estimated regression parameters}
 #' \item{ll.unpen}{log-likelihood at convergence}
-#' \item{ll}{penalized log-likelihood at convergence}
+#' \item{ll.pen}{penalized log-likelihood at convergence}
 #' \item{haz.GL}{list of all the matrix-vector multiplications X.GL[[i]]\%*\%beta for Gauss Legendre integration. Useful to avoid repeating operations in \code{\link{survPen.fit}}}
 #' \item{iter.beta}{number of iterations needed to converge}
 #' @export
@@ -4209,8 +4209,8 @@ NR.beta <- function(build,beta.ini,detail.beta,max.it.beta=200,tol.beta=1e-04){
 	p <- build$p # number of regression parameters
 
 	k=1
-	ll=100
-	llold=1
+	ll.pen=100
+	ll.pen.old=1
 
 	if (length(beta.ini)==1) beta.ini <- rep(beta.ini,p)
 	
@@ -4226,7 +4226,7 @@ NR.beta <- function(build,beta.ini,detail.beta,max.it.beta=200,tol.beta=1e-04){
 	
     }
 	# beginning of the while loop
-	while(abs(ll-llold)>tol.beta|any(abs((beta1-betaold)/betaold)>tol.beta))
+	while(abs(ll.pen-ll.pen.old)>tol.beta|any(abs((beta1-betaold)/betaold)>tol.beta))
 	{
 
 		if(k > max.it.beta)
@@ -4237,7 +4237,7 @@ NR.beta <- function(build,beta.ini,detail.beta,max.it.beta=200,tol.beta=1e-04){
 
 		if(k>=2)
 		{
-			llold=ll
+			ll.pen.old <- ll.pen
 			betaold <- beta1
 		}
 
@@ -4321,9 +4321,9 @@ NR.beta <- function(build,beta.ini,detail.beta,max.it.beta=200,tol.beta=1e-04){
 			ll.unpenold <- sum(-integral + event*predold)
 		}
 
-		llold <- ll.unpenold-as.numeric(t(betaold)%*%S%*%betaold)*0.5
+		ll.pen.old <- ll.unpenold-as.numeric(t(betaold)%*%S%*%betaold)*0.5
 
-		if (is.nan(llold)) stop("message NR.beta: convergence issues, cannot evaluate log-likelihood")
+		if (is.nan(ll.pen.old)) stop("message NR.beta: convergence issues, cannot evaluate log-likelihood")
 
 		# New set of parameters
 		pas <- as.vector(neg.inv.Hess%*%grad)
@@ -4349,15 +4349,15 @@ NR.beta <- function(build,beta.ini,detail.beta,max.it.beta=200,tol.beta=1e-04){
 			ll.unpen <- sum(-integral + event*pred1)
 		}
 		
-		ll <- ll.unpen-as.numeric(t(beta1)%*%S%*%beta1)*0.5
+		ll.pen <- ll.unpen - as.numeric(t(beta1)%*%S%*%beta1)*0.5
 
-		if (is.nan(ll)) {ll <- llold-1}
+		if (is.nan(ll.pen)) {ll.pen <- ll.pen.old - 1}
 		
-		if (ll<llold-1e-03){ # at each step, the current log-likelihood should not be inferior to
+		if (ll.pen < ll.pen.old - 1e-03){ # at each step, the current log-likelihood should not be inferior to
 		# the previous one with a certain tolerence (1e-03)
 			cpt.beta <- 1
 			# if the penalized log-likelihood is not maximized, the step is halved until it is
-			while (ll<llold-1e-03){
+			while (ll.pen < ll.pen.old - 1e-03){
 
 				if(cpt.beta>52) stop("message NR.beta: step has been divided by two 52 times in a row, Log-likelihood could not be optimized")
 				# we use 52 because 2^(-52) is machine precision
@@ -4385,9 +4385,9 @@ NR.beta <- function(build,beta.ini,detail.beta,max.it.beta=200,tol.beta=1e-04){
 					ll.unpen <- sum(-integral + event*pred1)
 				}
 
-				ll <- ll.unpen-as.numeric(t(beta1)%*%S%*%beta1)*0.5
+				ll.pen <- ll.unpen - as.numeric(t(beta1)%*%S%*%beta1)*0.5
 
-				if (is.nan(ll)) {ll <- llold-1}
+				if (is.nan(ll.pen)) {ll.pen <- ll.pen.old - 1}
 			}
 
 		}
@@ -4398,9 +4398,9 @@ NR.beta <- function(build,beta.ini,detail.beta,max.it.beta=200,tol.beta=1e-04){
 			  "betaold= ", round(betaold,4),"\n",
 			  "beta= ", round(beta1,4),"\n",
 			  "abs((beta-betaold)/betaold)= ", round(abs((beta1-betaold)/betaold),5),"\n",
-			  "llold= ", round(llold,4),"\n",
-			  "ll= ", round(ll,4),"\n",
-			  "ll-llold= ", round(ll-llold,5),"\n",
+			  "ll.pen.old= ", round(ll.pen.old,4),"\n",
+			  "ll.pen= ", round(ll.pen,4),"\n",
+			  "ll.pen-ll.pen.old= ", round(ll.pen-ll.pen.old,5),"\n",
 			  "\n"
 		  )
 		}
@@ -4418,7 +4418,7 @@ NR.beta <- function(build,beta.ini,detail.beta,max.it.beta=200,tol.beta=1e-04){
 
 	}
 
-	list(beta=beta1,ll.unpen=ll.unpen,ll=ll,haz.GL=haz.GL,iter.beta=k-1)
+	list(beta=beta1,ll.unpen=ll.unpen,ll.pen=ll.pen,haz.GL=haz.GL,iter.beta=k-1)
 
 }
 
