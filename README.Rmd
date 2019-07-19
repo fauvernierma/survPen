@@ -92,7 +92,7 @@ lines(new.time,pred.excess$haz,col="red",lwd=lwd1,lty=2)
 legend("topright",legend=c("total","excess"),col=c("black","red"),lty=c(1,2), lwd=rep(lwd1,2))
 
 plot(new.time,pred.total$surv,type="l",ylim=c(0,1),main="survival vs net survival",
-xlab="time",ylab="survival",lwd=lwd1)
+xlab="time since diagnosis (years)",ylab="survival",lwd=lwd1)
 lines(new.time,pred.excess$surv,col="red",lwd=lwd1,lty=2)
 legend("bottomleft",legend=c("overall survival","net survival"), col=c("black","red"), lty=c(1,2), lwd=rep(lwd1,2)) 
 
@@ -134,7 +134,7 @@ facet <- function(z){
 theta1 = 30
 zmax=1.1
 
-# plot the hazard surface
+# plot the excess hazard surface
 par(mfrow=c(1,1))
 persp(new.time,new.age,Z.tensor,col=colors[facet(Z.tensor)],main="tensor",theta=theta1,
 xlab="\n time since diagnosis",ylab="\n age",zlab="\n excess hazard",
