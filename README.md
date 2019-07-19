@@ -1,9 +1,7 @@
 
 # survPen
 ## hazard and excess hazard modelling with multidimensional penalized splines
-[![badge](https://img.shields.io/badge/Launch-survPen-blue.svg)](https://mybinder.org/v2/gh/fauvernierma/survPen/master?urlpath=rstudio)
 [![Travis-CI Build Status](https://travis-ci.org/fauvernierma/survPen.svg?branch=master)](https://travis-ci.org/fauvernierma/survPen)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/fauvernierma/survPen?branch=master&svg=true)](https://ci.appveyor.com/project/fauvernierma/survpen)
 [![Coverage Status](https://img.shields.io/codecov/c/github/fauvernierma/survPen/master.svg)](https://codecov.io/github/fauvernierma/survPen?branch=master)
 [![DOI](https://zenodo.org/badge/181266005.svg)](https://zenodo.org/badge/latestdoi/181266005)
 
@@ -41,17 +39,129 @@ or directly from the CRAN repository:
 install.packages("survPen")
 ```
 
-and then use it by typing
-
-
-```r
-library(survPen)
-```
 
 ## The functionalities of the `survPen` package are extensively detailed in the following vignette
 Available from
 [GitHub](https://htmlpreview.github.io/?https://github.com/fauvernierma/survPen/blob/master/inst/doc/survival_analysis_with_survPen.html)
 or from [CRAN](https://cran.r-project.org/web/packages/survPen/vignettes/survival_analysis_with_survPen.html)
+
+
+## Quick start
+
+In the following section, we will use a simulated dataset that contains artificial data from 2,000 women 
+diagnosed with cervical cancer between 1990 and 2010. End of follow-up is June 30th 2013.
+
+Let's fit a penalized hazard model and a penalized excess hazard model. Without covariates for now.
+
+```r
+library(survPen)
+
+f1 <- ~ smf(fu) # penalized natural cubic spline of time with 10 knots placed at the quantiles
+
+mod.total <- survPen(f1,data=datCancer,t1=fu,event=dead,method="LAML")
+
+mod.excess <- survPen(f1,data=datCancer,t1=fu,event=dead,expected=rate,method="LAML")
+```
+
+Now let's look at the predicted dynamics of the hazard (and excess hazard) as well as the predicted 
+survival curve (and net survival curve)
+
+
+```r
+lwd1 = 2
+
+# compare the predictions of the models
+new.time <- seq(0,5,length=100)
+pred.total <- predict(mod.total,data.frame(fu=new.time))
+pred.excess <- predict(mod.excess,data.frame(fu=new.time))
+
+# hazard vs excess hazard
+par(mfrow=c(1,2))
+plot(new.time,pred.total$haz,type="l",ylim=c(0,0.2),main="hazard vs excess hazard",
+xlab="time since diagnosis (years)",ylab="hazard",lwd=lwd1)
+lines(new.time,pred.excess$haz,col="red",lwd=lwd1,lty=2)
+legend("topright",legend=c("total","excess"),col=c("black","red"),lty=c(1,2), lwd=rep(lwd1,2))
+
+plot(new.time,pred.total$surv,type="l",ylim=c(0,1),main="survival vs net survival",
+xlab="time",ylab="survival",lwd=lwd1)
+lines(new.time,pred.excess$surv,col="red",lwd=lwd1,lty=2)
+legend("bottomleft",legend=c("overall survival","net survival"), col=c("black","red"), lty=c(1,2), lwd=rep(lwd1,2)) 
+```
+
+![plot of chunk plot-haz](figure/plot-haz-1.png)
+
+Now we want to include the effect of age at diagnosis on the excess hazard. The dynamics of the excess hazard 
+may be different from one age to another. Therefore we need to take into account an interaction between time and age.
+Thus, let's fit a penalized tensor product spline of time and age 
+
+
+```r
+f.tensor <- ~ tensor(fu,age) # penalized tensor product spline of time and age with 5*5 = 25 knots placed 
+# at the quantiles
+
+mod.tensor <- survPen(f.tensor,data=datCancer,t1=fu,event=dead,expected=rate)
+
+summary(mod.tensor)
+#> penalized excess hazard model 
+#>  
+#> Call:
+#> survPen(formula = f.tensor, data = datCancer, t1 = fu, event = dead, 
+#>     expected = rate)
+#> 
+#> Coefficients:
+#>             Estimate Std. Error z value  Pr(>|z|)    
+#> (Intercept) -3.42360    0.19153 -17.875 < 2.2e-16 ***
+#> ---
+#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#> 
+#> likelihood= -2042.38 , penalized likelihood= -2045.62
+#> Number of parameters= 25 , effective degrees of freedom= 10.5342
+#> LAML = 2055.64 
+#>  
+#> Smoothing parameter(s):
+#> tensor(fu,age).1 tensor(fu,age).2 
+#>          0.66055         39.46194 
+#> 
+#> edf of smooth terms:
+#> tensor(fu,age) 
+#>       9.534214 
+#> 
+#> converged= TRUE
+```
+
+Now let's predict the predicted hazard surface
+
+
+
+```r
+new.age <- seq(50,90,length=50)
+new.time <- seq(0,5,length=50)
+
+Z.tensor <- outer(new.time,new.age,function(t,a) predict(mod.tensor,data.frame(fu=t,age=a))$haz)
+
+# color settings
+col.pal <- colorRampPalette(c("white", "red"))
+colors <- col.pal(100)
+
+facet <- function(z){
+
+    facet.center <- (z[-1, -1] + z[-1, -ncol(z)] + z[-nrow(z), -1] + z[-nrow(z), -ncol(z)])/4
+    cut(facet.center, 100)
+    
+}
+
+theta1 = 30
+zmax=1.1
+
+# plot the hazard surface
+par(mfrow=c(1,1))
+persp(new.time,new.age,Z.tensor,col=colors[facet(Z.tensor)],main="tensor",theta=theta1,
+xlab="\n time since diagnosis",ylab="\n age",zlab="\n excess hazard",
+ticktype="detailed",zlim=c(0,zmax))
+```
+
+![plot of chunk plot-surface](figure/plot-surface-1.png)
+
 
 ## Contributing
 
@@ -88,6 +198,7 @@ citation("survPen")
 You may also consider citing the method article:
 Fauvernier, M., Roche, L., Uhry, Z., Tron, L., Bossard, N., Remontet, L. and the CENSUR Working Survival Group (in press). Multi-dimensional penalized hazard model with continuous covariates: applications for studying trends and social inequalities in cancer survival, 
 Journal of the Royal Statistical Society, series C. doi: 10.1111/rssc.12368
+
 
 
 
