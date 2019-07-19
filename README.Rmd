@@ -111,7 +111,7 @@ mod.tensor <- survPen(f.tensor,data=datCancer,t1=fu,event=dead,expected=rate)
 summary(mod.tensor)
 ```
 
-Now let's predict the predicted excess hazard surface
+Now let's predict the excess hazard surface
 
 
 ```{r plot-surface, fig.height = 8}
