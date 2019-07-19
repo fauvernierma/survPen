@@ -129,7 +129,7 @@ summary(mod.tensor)
 #> converged= TRUE
 ```
 
-Now let's predict the predicted excess hazard surface
+Now let's predict the excess hazard surface
 
 
 
