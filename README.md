@@ -163,6 +163,9 @@ ticktype="detailed",zlim=c(0,zmax))
 ![plot of chunk plot-surface](figure/plot-surface-1.png)
 
 
+As you can see, tensor product splines allow capturing complex effects and interactions while the penalization limits overfitting issues. The example above shows a bi-dimensional function but you can use tensor product splines to model the interaction structure of more than two covariates.
+
+
 ## Contributing
 
 File an issue [here](https://github.com/fauvernierma/survPen/issues) if there is a feature, or a dataset, that you think is missing from the package, or better yet submit a pull request!
