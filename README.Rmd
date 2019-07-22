@@ -141,6 +141,7 @@ xlab="\n time since diagnosis",ylab="\n age",zlab="\n excess hazard",
 ticktype="detailed",zlim=c(0,zmax))
 ```
 
+As you can see, tensor product splines allow capturing complex effects and interactions while the penalization limits overfitting issues. The example above shows a bi-dimensional function but you can use tensor product splines to model the interaction structure of more than two covariates.
 
 ## Contributing
 
