@@ -166,6 +166,14 @@ ticktype="detailed",zlim=c(0,zmax))
 
 As you can see, tensor product splines allow capturing complex effects and interactions while the penalization limits overfitting issues. The example above shows a bi-dimensional function but you can use tensor product splines to model the interaction structure of more than two covariates.
 
+## Comparison with existing approaches and simulation study
+
+`survPen` is based on the following method article (with associated supplementary material)
+https://rss.onlinelibrary.wiley.com/doi/full/10.1111/rssc.12368
+
+The supplementary provides a comparison between `survPen` and existing approaches. The code associated with this comparison and with the simulation study from the article is available here
+https://github.com/fauvernierma/code_Fauvernier_JRSSC_2019
+
 
 ## Contributing
 
@@ -202,14 +210,6 @@ citation("survPen")
 You may also consider citing the method article:
 Fauvernier, M., Roche, L., Uhry, Z., Tron, L., Bossard, N., Remontet, L. and the CENSUR Working Survival Group (2019). Multi-dimensional penalized hazard model with continuous covariates: applications for studying trends and social inequalities in cancer survival, 
 Journal of the Royal Statistical Society, series C. doi: 10.1111/rssc.12368
-
-The article and its supplementary are available here
-https://rss.onlinelibrary.wiley.com/doi/full/10.1111/rssc.12368
-
-The supplementary provides a comparison between `survPen` and existing approaches. The code associated with this comparison and with the simulation study from the article is available here
-https://github.com/fauvernierma/code_Fauvernier_JRSSC_2019
-
-
 
 
 
