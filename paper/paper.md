@@ -16,10 +16,10 @@ authors:
     affiliation: 1, 2, 3
   - name: Nadine Bossard
     affiliation: 1, 2
-  - name: Laurent Roche
-    affiliation: 1, 2
   - name: the CENSUR working survival group
     affiliation: 4
+  - name: Laurent Roche
+    affiliation: 1, 2
 affiliations:
  - name: Hospices Civils de Lyon, Pôle Santé Publique, Service de Biostatistique - Bioinformatique, Lyon, France
    index: 1
