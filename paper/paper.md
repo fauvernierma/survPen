@@ -18,8 +18,6 @@ authors:
     affiliation: 1, 2
   - name: Laurent Roche
     affiliation: 1, 2
-  - name: the CENSUR working survival group
-    affiliation: 4
 affiliations:
  - name: Hospices Civils de Lyon, Pôle Santé Publique, Service de Biostatistique - Bioinformatique, Lyon, France
    index: 1
@@ -27,8 +25,6 @@ affiliations:
    index: 2
  - name: Département des Maladies Non-Transmissibles et des Traumatismes, Santé Publique France, Saint-Maurice, France
    index: 3
- - name: Challenges in the Estimation of Net SURvival, Marseille, France
-   index: 4
 date: 12 April 2019
 bibliography: paper.bib
 ---
