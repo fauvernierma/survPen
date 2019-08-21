@@ -40,7 +40,7 @@ flexibility while penalization limits overfitting issues.
 
 Current implementations of penalized survival models can be slow or unstable and sometimes lack some key features 
 like taking into account expected mortality to provide net survival and excess hazard estimates. In contrast, based 
-on the framework and algorithms developed by Wood, ``survPen`` provides an automated, fast, and stable implementation 
+on the framework and algorithms developed by @Wood2017, ``survPen`` provides an automated, fast, and stable implementation 
 (thanks to explicit calculation of the derivatives of the likelihood) and offers a unified framework for 
 multidimensional penalized hazard and excess hazard models.
 
@@ -75,7 +75,7 @@ Those features include:
  continuous covariates.
  - Interactions between penalized splines and unpenalized continuous or categorical variables.
  - Automatic smoothing parameter estimation by either optimizing the Laplace approximate marginal 
- likelihood (LAML [@Wood2016]) or likelihood cross-validation criterion (LCV [@OSullivan1988]).
+ likelihood [LAML; @Wood2016] or likelihood cross-validation criterion [LCV; @OSullivan1988].
  - Excess hazard modelling by specifying expected mortality rates.
 
 ``survPen`` may be of interest to those who 1) analyse any kind of time-to-event data: mortality, disease relapse, 
