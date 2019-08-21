@@ -108,7 +108,7 @@ Nationale de la Recherche) for supporting this study of the CENSUR group (ANR gr
 This research was also carried out within the context of a four-institute cancer surveillance program 
 partnership involving the Institut National du Cancer (INCa), Santé Publique France (SPF), the French 
 network of cancer registries (FRANCIM), and Hospices Civils de Lyon (HCL) through a grant from INCa 
-(attributive decision N° 2016-131). The authors are grateful Jacques Estève for his valuable advice.
+(attributive decision N° 2016-131). The authors are grateful to Jacques Estève for his valuable advice.
 
 
 # References
