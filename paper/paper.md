@@ -32,22 +32,14 @@ bibliography: paper.bib
 # Background
 
 
-In survival and net survival analysis, in addition to modelling the effect of time (via the baseline hazard), 
-one has often to deal with several continuous covariates and model their functional forms, their time-dependent 
-effects, and their interactions. Model specification becomes therefore a complex problem and penalized regression 
-splines [@Ruppert2003; @Wood2017] represent an appealing solution to that problem as splines offer the required 
-flexibility while penalization limits overfitting issues. 
+Survival analysis deals with studying the elapsed time until an event occurs. When the event of interest is death, it aims at describing the survival probability and its corresponding mortality hazard. In epidemiology, as patients may die from their disease or from other causes, it is relevant to study the mortality due to their disease; also called “excess mortality”. This excess mortality is useful to make comparisons between different countries and time periods [@Uhry2017; @Allemani2018] and is directly linked to the concept of net survival [@Perme2012], i.e. the survival that would be observed if patients could only die from their disease.
 
-Current implementations of penalized survival models can be slow or unstable and sometimes lack some key features 
-like taking into account expected mortality to provide net survival and excess hazard estimates. In contrast, based 
-on the framework and algorithms developed by @Wood2017, ``survPen`` provides an automated, fast, and stable implementation 
-(thanks to explicit calculation of the derivatives of the likelihood) and offers a unified framework for 
-multidimensional penalized hazard and excess hazard models.
+``survPen`` is an R package that implements flexible regression models for (net) survival analysis. Model specification is carried out on the logarithm of the (excess) hazard scale. ``survPen`` provides an efficient procedure to estimate the model parameters, and tools for (excess) hazard and (net) survival predictions with associated confidence intervals.
 
-In epidemiology, as patients may die from their disease or from other causes, it is relevant to study the mortality 
-due to their disease; also called “excess mortality”. This excess mortality is useful to make comparisons between 
-different countries and time periods [@Uhry2017; @Allemani2018] and is directly linked to the concept 
-of net survival which is another important indicator in epidemiology [@Perme2012]. 
+In survival and net survival analysis, in addition to modelling the effect of time (via the baseline hazard), one has often to deal with several continuous covariates and model their functional forms, their time-dependent effects, and their interactions. Model specification becomes therefore a complex problem and penalized regression splines [@Ruppert2003; @Wood2017] represent an appealing solution to that problem as splines offer the required flexibility while penalization limits overfitting issues. 
+
+Current implementations of penalized survival models can be slow or unstable and sometimes lack some key features like taking into account expected mortality to provide net survival and excess hazard estimates. In contrast, ``survPen`` provides an automated, fast, and stable implementation (thanks to explicit calculation of the derivatives of the likelihood) and offers a unified framework for multidimensional penalized hazard and excess hazard models.
+
 
 
 # Summary
