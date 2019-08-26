@@ -3,7 +3,7 @@ citHeader("To cite survPen in publications use:")
 citEntry(entry = "Article",
   title        = "survPen: an R package for hazard and excess hazard modelling with multidimensional penalized splines",
   author       = personList(as.person("Mathieu Fauvernier"),as.person("Laurent Remontet"),as.person("Zoé Uhry"),
-  as.person("Nadine Bossard"),as.person("Laurent Roche"),as.person("the CENSUR working survival group")),
+  as.person("Nadine Bossard"),as.person("Laurent Roche")),
   journal      = "Journal of Open Source Software",
   year         = "2019",
   volume       = "4",
