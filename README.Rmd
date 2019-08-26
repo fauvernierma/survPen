@@ -170,7 +170,7 @@ citation("survPen")
 ```
 
 You may also consider citing the method article:
-Fauvernier, M., Roche, L., Uhry, Z., Tron, L., Bossard, N., Remontet, L. and the CENSUR Working Survival Group (in press). Multi-dimensional penalized hazard model with continuous covariates: applications for studying trends and social inequalities in cancer survival, 
+Fauvernier, M., Roche, L., Uhry, Z., Tron, L., Bossard, N. and Remontet, L. (2019). Multi-dimensional penalized hazard model with continuous covariates: applications for studying trends and social inequalities in cancer survival, 
 Journal of the Royal Statistical Society, series C. doi: 10.1111/rssc.12368
 
 
