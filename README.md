@@ -217,7 +217,7 @@ citation("survPen")
 #> 
 #>   @Article{,
 #>     title = {survPen: an R package for hazard and excess hazard modelling with multidimensional penalized splines},
-#>     author = {Mathieu Fauvernier and Laurent Remontet and Zoé Uhry and Nadine Bossard and Laurent Roche and the CENSUR working survival group},
+#>     author = {Mathieu Fauvernier and Laurent Remontet and Zoé Uhry and Nadine Bossard and Laurent Roche},
 #>     journal = {Journal of Open Source Software},
 #>     year = {2019},
 #>     volume = {4},
