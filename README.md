@@ -6,6 +6,7 @@
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/fauvernierma/survPen?branch=master&svg=true)](https://ci.appveyor.com/project/fauvernierma/survpen)
 [![Coverage Status](https://img.shields.io/codecov/c/github/fauvernierma/survPen/master.svg)](https://codecov.io/github/fauvernierma/survPen?branch=master)
 [![DOI](https://zenodo.org/badge/181266005.svg)](https://zenodo.org/badge/latestdoi/181266005)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.01434/status.svg)](https://doi.org/10.21105/joss.01434)
 
 In survival and net survival analysis, in addition to modelling the effect of time (via the baseline hazard), 
 one has often to deal with several continuous covariates and model their functional forms, their time-dependent 
