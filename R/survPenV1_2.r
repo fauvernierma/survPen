@@ -670,7 +670,8 @@ rd <- function(...){
 #' smooth.spec(time)
 #'
 #' # tensor of time and age with 5*5 specified knots
-#' smooth.s <- smooth.spec(time,age,knots=list(time=seq(0,5,length=5),age=seq(20,80,length=5)), option="tensor")
+#' smooth.s <- smooth.spec(time,age,knots=list(time=seq(0,5,length=5),
+#' age=seq(20,80,length=5)), option="tensor")
 #'
 smooth.spec <- function(..., knots=NULL,df=NULL,by=NULL,option=NULL,same.rho=FALSE){
 
@@ -818,7 +819,8 @@ smooth.spec <- function(..., knots=NULL,df=NULL,by=NULL,option=NULL,same.rho=FAL
 #' # because of centering constraint)
 #'
 #' data <- data.frame(time=seq(0,5,length=100))
-#' smooth.c <- smooth.cons("time",knots=list(c(0,1,3,5)),df=4,option="smf",data.spec=data,name="smf(time)")
+#' smooth.c <- smooth.cons("time",knots=list(c(0,1,3,5)),df=4,option="smf",
+#' data.spec=data,name="smf(time)")
 #'
 smooth.cons <- function(term, knots, df, by=NULL, option, data.spec, same.rho=FALSE, name){
 
@@ -1477,7 +1479,8 @@ instr <- function(str1,str2,startpos=1,n=1){
 #' # The following code sets up everything we need in order to fit the model
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
-#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
+#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
+#' cl="survPen(form,data,t1=time,event=event)")
 #'
 model.cons <- function(formula,lambda,data.spec,t1,t1.name,t0,t0.name,event,event.name,expected,expected.name,type,n.legendre,cl){
 
@@ -2031,14 +2034,15 @@ model.cons <- function(formula,lambda,data.spec,t1,t1.name,t0,t0.name,event,even
 #' # Setting up the model
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
-#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
+#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
+#' cl="survPen(form,data,t1=time,event=event)")
 #'  
 #' # Retrieving the sum-to-zero constraint matrices and the list of knots
 #' Z.smf <- model.c$Z.smf ; list.smf <- model.c$list.smf
 #' 
 #' # Calculating the design matrix
-#' design.M <- design.matrix(form,data.spec=data,Z.smf=Z.smf,list.smf=list.smf,Z.tensor=NULL,Z.tint=NULL,
-#' list.tensor=NULL,list.tint=NULL,list.rd=NULL)
+#' design.M <- design.matrix(form,data.spec=data,Z.smf=Z.smf,list.smf=list.smf,
+#' Z.tensor=NULL,Z.tint=NULL,list.tensor=NULL,list.tint=NULL,list.rd=NULL)
 #'
 design.matrix <- function(formula,data.spec,Z.smf,Z.tensor,Z.tint,list.smf,list.tensor,list.tint,list.rd){
 
@@ -2234,9 +2238,11 @@ design.matrix <- function(formula,data.spec,Z.smf,Z.tensor,Z.tint,list.smf,list.
 #' # Setting up the model before fitting
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
-#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
+#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
+#' cl="survPen(form,data,t1=time,event=event)")
 #'  
-#' # Reparameterization allows separating the parameters into unpenalized and penalized ones for maximum numerical stability
+#' # Reparameterization allows separating the parameters into unpenalized and 
+#' # penalized ones for maximum numerical stability
 #' re.model.c <- repam(model.c)
 #'
 repam <- function(build){
@@ -2478,6 +2484,8 @@ cor.var <- function(model){
 #' to the effects of the covariates. Thus, time-dependent effects are naturally specified as interactions with some function of time via "*" or ":". See the examples below for more details.
 #' The main functions of the survPen package are \code{\link{survPen}}, \code{\link{smf}}, \code{\link{tensor}}, \code{\link{tint}} and \code{\link{rd}}. The first one fits the model while the other four are constructors for penalized splines. \cr \cr
 #' The user must be aware that the \code{survPen} package does not depend on \code{mgcv}. Thus, all the functionalities available in \code{mgcv} in terms of types of splines (such as thin plate regression splines or P-splines) are not available in \code{survPen} (yet).
+#' 
+#' The \code{survPen} package is described in Fauvernier et al. (2019a) while the method is detailed in Fauvernier et al. (2019b).
 #'
 #' @param formula formula object specifying the model. Penalized terms are specified using \code{\link{smf}} (comparable to \code{s(...,bs="cr")} in \code{mgcv}),
 #' \code{\link{tensor}} (comparable to \code{te(...,bs="cr")} in \code{mgcv}), \code{\link{tint}} (comparable to \code{ti(...,bs="cr")} in \code{mgcv}),
@@ -2508,7 +2516,7 @@ cor.var <- function(model){
 #' the data, the package \code{mgcv} can then be used to fit penalized hazard models (Remontet et al. 2018). The problem with this option is that the setup is rather complex and the method can fail with huge datasets (before splitting).  
 #' Wood et al. (2016) provided a general penalized framework that made available smooth function estimation to a wide variety of models. 
 #' They proposed to estimate smoothing parameters by maximizing a Laplace approximate marginal likelihood (LAML) criterion and demonstrate how statistical consistency is maintained by doing so.
-#' The \code{\link{survPen}} function implements the framework described by Wood et al. (2016) for modelling time-to-event data without requiring data splitting and Poisson likelihood approximation.
+#' The \code{\link{survPen}} function (Fauvernier et al. 2019a) implements the method described in Fauvernier et al. (2019b) which is itself based on the framework proposed by Wood et al. (2016). \code{\link{survPen}} aims at modelling time-to-event data without requiring data splitting and Poisson likelihood approximation.
 #' The effects of continuous covariates are represented using low rank spline bases with associated quadratic penalties. The \code{\link{survPen}} function allows to account simultaneously for time-dependent effects, non-linear effects and
 #' interactions between several continuous covariates without the need to build a possibly demanding model-selection procedure.
 #' Besides LAML, a likelihood cross-validation (LCV) criterion (O Sullivan 1988) can be used for smoothing parameter estimation.
@@ -2575,7 +2583,8 @@ cor.var <- function(model){
 #'
 #' @references
 #' Charvat, H., Remontet, L., Bossard, N., Roche, L., Dejardin, O., Rachet, B., ... and Belot, A. (2016), A multilevel excess hazard model to estimate net survival on hierarchical data allowing for non linear and non proportional effects of covariates. Statistics in medicine, 35(18), 3066-3084. \cr \cr
-#' Fauvernier, M., Roche, L., Uhry, Z., Tron, L., Bossard, N., Remontet, L. and the CENSUR Working Survival Group. Multidimensional penalized hazard model with continuous covariates: applications for studying trends and social inequalities in cancer survival, in revision in the Journal of the Royal Statistical Society, series C. \cr \cr
+#' Fauvernier, M., Remontet, L., Uhry, Z., Tron, L., Bossard, N. and Roche, L. (2019a), survPen: an R package for hazard and excess hazard modelling with multidimensional penalized splines,Journal of Open Source Software, 4(40), 1434. doi: 10.21105/joss.01434 \cr \cr
+#' Fauvernier, M., Roche, L., Uhry, Z., Tron, L., Bossard, N. and Remontet, L. (2019b), Multi-dimensional penalized hazard model with continuous covariates: applications for studying trends and social inequalities in cancer survival, Journal of the Royal Statistical Society, series C. doi: 10.1111/rssc.12368 \cr \cr
 #' O Sullivan, F. (1988), Fast computation of fully automated log-density and log-hazard estimators. SIAM Journal on scientific and statistical computing, 9(2), 363-379. \cr \cr
 #' Remontet, L., Bossard, N., Belot, A., & Esteve, J. (2007), An overall strategy based on regression models to estimate relative survival and model the effects of prognostic factors in cancer survival studies. Statistics in medicine, 26(10), 2214-2228. \cr \cr
 #' Remontet, L., Uhry, Z., Bossard, N., Iwaz, J., Belot, A., Danieli, C., Charvat, H., Roche, L. and CENSUR Working Survival Group (2018) Flexible and structured survival model for a simultaneous estimation of non-linear and non-proportional effects and complex interactions between continuous variables: Performance of this multidimensional penalized spline approach in net survival trend analysis. Stat Methods Med Res. 2018 Jan 1:962280218779408. doi: 10.1177/0962280218779408. [Epub ahead of print]. \cr \cr
@@ -3078,7 +3087,8 @@ survPen <- function(formula,data,t1,t0=NULL,event,expected=NULL,lambda=NULL,rho.
 #' # Setting up the model before fitting
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
-#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
+#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
+#' cl="survPen(form,data,t1=time,event=event)")
 #'  
 #' # fitting
 #' mod <- survPen.fit(model.c,data,form)
@@ -4182,7 +4192,8 @@ print.summary.survPen <- function(x, ...)
 #' # Setting up the model before fitting
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
-#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
+#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
+#' cl="survPen(form,data,t1=time,event=event)")
 #'  
 #' # Estimating the regression parameters at given smoothing parameter (here lambda=0)
 #' Newton1 <- NR.beta(model.c,beta.ini=rep(0,4),detail.beta=TRUE)
@@ -4475,7 +4486,8 @@ NR.beta <- function(build,beta.ini,detail.beta,max.it.beta=200,tol.beta=1e-04){
 #' # Setting up the model before fitting
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
-#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
+#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
+#' cl="survPen(form,data,t1=time,event=event)")
 #'  
 #' # Estimating the smoothing parameter and the regression parameters
 #' # we need to apply a reparameterization to model.c before fitting
@@ -4784,6 +4796,9 @@ NR.rho <- function(build,rho.ini,data,formula,max.it.beta=200,max.it.rho=30,beta
 
 
 #################################################################################################################
+
+
+
 
 
 
