@@ -600,4 +600,3 @@ mod.pen <- survPen(f.pen,data=datCancer,t1=fu,event=dead,detail.rho=TRUE)
 ## ---- fig.show='hold'----------------------------------------------------
 mod.pen <- survPen(f.pen,data=datCancer,t1=fu,event=dead,detail.rho=TRUE,detail.beta=TRUE)
 
-

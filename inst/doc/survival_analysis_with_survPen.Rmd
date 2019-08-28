@@ -1308,7 +1308,7 @@ smoothing or regression parameters), it might indicate a convergence issue (see 
 - Charvat, H., Remontet, L., Bossard, N., Roche, L., Dejardin, O., Rachet, B., ... and Belot, A. (2016), A multilevel excess hazard model to estimate net survival on hierarchical data allowing for non linear and non proportional effects of covariates. Statistics in medicine, 35(18), 3066-3084. 
 - Danieli, C., Remontet, L., Bossard, N., Roche, L., and Belot, A. (2012). Estimating net survival: the importance of allowing for informative censoring. Statistics in medicine, 31(8), 775-786.
 - Estève, J., Benhamou, E., Croasdale, M., and Raymond, L. (1990) Relative survival and the estimation of net survival: elements for further discussion. Stat. Med., 9, 529-538.
-- Fauvernier, M., Roche, L., Uhry, Z., Tron, L., Bossard, N., Remontet, L. and the CENSUR Working Survival Group. Multidimensional penalized hazard model with continuous covariates: applications for studying trends and social inequalities in cancer survival, in revision in the Journal of the Royal Statistical Society, series C. 
+- Fauvernier, M., Roche, L., Uhry, Z., Tron, L., Bossard, N. and Remontet, L. (2019). Multi-dimensional penalized hazard model with continuous covariates: applications for studying trends and social inequalities in cancer survival, Journal of the Royal Statistical Society, series C. doi:10.1111/rssc.12368. 
 - Hennerfeind, A., Held, L., and Sauleau, E. A. (2008) A Bayesian analysis of relative cancer survival with geoadditive models. Stat Modelling, 8, 117-139.
 - Kauermann, G. (2005) Penalized spline smoothing in multivariable survival models with varying coefficients. Comput. Stat. Data Anal., 49, 169-186.
 - Kneib, T. and Fahrmeir, L. (2007) A mixed model approach for geoadditive hazard regression. Scand. J. Statist., 34, 207-228.
@@ -1318,17 +1318,6 @@ smoothing or regression parameters), it might indicate a convergence issue (see 
 - Wood, S.N. (2006). Low-rank scale-invariant tensor product smooths for generalized additive mixed models. Biometrics, 62(4), 1025-1036.
 - Wood, S. N. (2017) Generalized additive models: an introduction with R: Chapman and Hall/CRC.
 - Wood, S.N., Pya, N. and Saefken, B. (2016), Smoothing parameter and model selection for general smooth models (with discussion). Journal of the American Statistical Association 111, 1548-1575
-
-
-
-
-
-
-
-
-
-
-
 
 
 
