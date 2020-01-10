@@ -1,3 +1,10 @@
+survPen v1.2.1
+==============
+
+Changes:
+* added functions '%mult%' and '%vec%' for matrix multiplication in compiled C code 
+in order to substantially reduce computation time 
+
 
 survPen v1.2.0
 ==============
