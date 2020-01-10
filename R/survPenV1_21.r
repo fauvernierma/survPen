@@ -3,38 +3,11 @@
 #--------------------------------------------------------------------------------------------------------------------------
 
 
-# see code from David in https://stackoverflow.com/questions/37191673/matrix-multiplication-in-rcpp
+#' @useDynLib survPen
+#' @import RcppEigen
+#' @importFrom Rcpp sourceCpp
+NULL
 
- # matrix product between two matrices
- '%mult%' <- inline::cxxfunction(signature(tm="NumericMatrix",
-                            tm2="NumericMatrix"),
-                  plugin="RcppEigen",
-                  body="
- NumericMatrix tm22(tm2);
- NumericMatrix tmm(tm);
-
- const Eigen::Map<Eigen::MatrixXd> ttm(as<Eigen::Map<Eigen::MatrixXd> >(tmm));
- const Eigen::Map<Eigen::MatrixXd> ttm2(as<Eigen::Map<Eigen::MatrixXd> >(tm22));
-
- Eigen::MatrixXd prod = ttm*ttm2;
- return(Rcpp::wrap(prod));
-                  ")
-
-				 
- # matrix product between matrix and vector
- '%vec%' <- inline::cxxfunction(signature(tm="NumericMatrix",
-                            tm2="NumericVector"),
-                  plugin="RcppEigen",
-                  body="
- NumericVector tm22(tm2);
- NumericMatrix tmm(tm);
-
- const Eigen::Map<Eigen::MatrixXd> ttm(as<Eigen::Map<Eigen::MatrixXd> >(tmm));
- const Eigen::Map<Eigen::VectorXd> ttm2(as<Eigen::Map<Eigen::VectorXd> >(tm22));
-
- Eigen::VectorXd prod = ttm*ttm2;
- return(Rcpp::wrap(prod));
-                  ")
 
 #----------------------------------------------------------------------------------------------------------------
 # datCancer : simulated cancer dataset
@@ -703,7 +676,8 @@ rd <- function(...){
 #' smooth.spec(time)
 #'
 #' # tensor of time and age with 5*5 specified knots
-#' smooth.s <- smooth.spec(time,age,knots=list(time=seq(0,5,length=5),age=seq(20,80,length=5)), option="tensor")
+#' smooth.s <- smooth.spec(time,age,knots=list(time=seq(0,5,length=5),age=seq(20,80,length=5)),
+#' option="tensor")
 #'
 smooth.spec <- function(..., knots=NULL,df=NULL,by=NULL,option=NULL,same.rho=FALSE){
 
@@ -851,7 +825,8 @@ smooth.spec <- function(..., knots=NULL,df=NULL,by=NULL,option=NULL,same.rho=FAL
 #' # because of centering constraint)
 #'
 #' data <- data.frame(time=seq(0,5,length=100))
-#' smooth.c <- smooth.cons("time",knots=list(c(0,1,3,5)),df=4,option="smf",data.spec=data,name="smf(time)")
+#' smooth.c <- smooth.cons("time",knots=list(c(0,1,3,5)),df=4,option="smf",
+#' data.spec=data,name="smf(time)")
 #'
 smooth.cons <- function(term, knots, df, by=NULL, option, data.spec, same.rho=FALSE, name){
 
@@ -1510,7 +1485,8 @@ instr <- function(str1,str2,startpos=1,n=1){
 #' # The following code sets up everything we need in order to fit the model
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
-#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
+#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
+#' cl="survPen(form,data,t1=time,event=event)")
 #'
 model.cons <- function(formula,lambda,data.spec,t1,t1.name,t0,t0.name,event,event.name,expected,expected.name,type,n.legendre,cl){
 
@@ -2064,14 +2040,15 @@ model.cons <- function(formula,lambda,data.spec,t1,t1.name,t0,t0.name,event,even
 #' # Setting up the model
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
-#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
+#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
+#' cl="survPen(form,data,t1=time,event=event)")
 #'  
 #' # Retrieving the sum-to-zero constraint matrices and the list of knots
 #' Z.smf <- model.c$Z.smf ; list.smf <- model.c$list.smf
 #' 
 #' # Calculating the design matrix
-#' design.M <- design.matrix(form,data.spec=data,Z.smf=Z.smf,list.smf=list.smf,Z.tensor=NULL,Z.tint=NULL,
-#' list.tensor=NULL,list.tint=NULL,list.rd=NULL)
+#' design.M <- design.matrix(form,data.spec=data,Z.smf=Z.smf,list.smf=list.smf,
+#' Z.tensor=NULL,Z.tint=NULL,list.tensor=NULL,list.tint=NULL,list.rd=NULL)
 #'
 design.matrix <- function(formula,data.spec,Z.smf,Z.tensor,Z.tint,list.smf,list.tensor,list.tint,list.rd){
 
@@ -2267,9 +2244,11 @@ design.matrix <- function(formula,data.spec,Z.smf,Z.tensor,Z.tint,list.smf,list.
 #' # Setting up the model before fitting
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
-#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
+#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
+#' cl="survPen(form,data,t1=time,event=event)")
 #'  
-#' # Reparameterization allows separating the parameters into unpenalized and penalized ones for maximum numerical stability
+#' # Reparameterization allows separating the parameters into unpenalized and 
+#' # penalized ones for maximum numerical stability
 #' re.model.c <- repam(model.c)
 #'
 repam <- function(build){
@@ -3111,7 +3090,8 @@ survPen <- function(formula,data,t1,t0=NULL,event,expected=NULL,lambda=NULL,rho.
 #' # Setting up the model before fitting
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
-#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
+#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
+#' cl="survPen(form,data,t1=time,event=event)")
 #'  
 #' # fitting
 #' mod <- survPen.fit(model.c,data,form)
@@ -4215,7 +4195,8 @@ print.summary.survPen <- function(x, ...)
 #' # Setting up the model before fitting
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
-#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
+#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
+#' cl="survPen(form,data,t1=time,event=event)")
 #'  
 #' # Estimating the regression parameters at given smoothing parameter (here lambda=0)
 #' Newton1 <- NR.beta(model.c,beta.ini=rep(0,4),detail.beta=TRUE)
@@ -4508,7 +4489,8 @@ NR.beta <- function(build,beta.ini,detail.beta,max.it.beta=200,tol.beta=1e-04){
 #' # Setting up the model before fitting
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
-#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
+#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
+#' cl="survPen(form,data,t1=time,event=event)")
 #'  
 #' # Estimating the smoothing parameter and the regression parameters
 #' # we need to apply a reparameterization to model.c before fitting
