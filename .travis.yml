@@ -1,8 +1,5 @@
 language: r
 
-
-install: travis_wait
-
 sudo: required
 
 env: _R_CHECK_CRAN_INCOMING_=FALSE
