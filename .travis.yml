@@ -1,7 +1,7 @@
 language: r
 
 
-install: travis_wait mvn install
+install: travis_wait
 
 sudo: required
 
