@@ -13,7 +13,7 @@ event <- eval(substitute(event), data)
 	
 model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 t0=rep(0,100),t0.name="t0",event=event,event.name="event",
-expected=rep(0,100),expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
+expected=rep(0,100),expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)",beta.ini=NULL)
 
   
 mod <- survPen.fit(model.c,data,form)
