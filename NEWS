@@ -3,7 +3,10 @@ survPen v1.2.1
 
 Changes:
 * added functions '%mult%' and '%vec%' for matrix multiplication in compiled C code 
-in order to substantially reduce computation time 
+in order to substantially reduce computation time
+
+Debugging:
+* beta.ini is now correctly reparameterized before fitting
 
 
 survPen v1.2.0
