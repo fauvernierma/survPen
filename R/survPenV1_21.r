@@ -1423,6 +1423,7 @@ instr <- function(str1,str2,startpos=1,n=1){
 #' @param type "net" or "overall"
 #' @param n.legendre number of nodes for Gauss-Legendre quadrature
 #' @param cl original \code{survPen} call
+#' @param beta.ini initial set of regression parameters
 #' @return List of objects with the following items:
 #' \item{cl}{original \code{survPen} call}
 #' \item{type}{"net" or "overall"}
@@ -1466,6 +1467,7 @@ instr <- function(str1,str2,startpos=1,n=1){
 #' \item{Z.smf}{List of matrices that represents the sum-to-zero constraints to apply for \code{\link{smf}} splines}
 #' \item{Z.tensor}{List of matrices that represents the sum-to-zero constraints to apply for \code{\link{tensor}} splines}
 #' \item{Z.tint}{List of matrices that represents the sum-to-zero constraints to apply for \code{\link{tint}} splines}
+#' \item{beta.ini}{initial set of regression parameters}
 #' @export
 #'
 #' @examples
@@ -1488,7 +1490,7 @@ instr <- function(str1,str2,startpos=1,n=1){
 #' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
 #' cl="survPen(form,data,t1=time,event=event)")
 #'
-model.cons <- function(formula,lambda,data.spec,t1,t1.name,t0,t0.name,event,event.name,expected,expected.name,type,n.legendre,cl){
+model.cons <- function(formula,lambda,data.spec,t1,t1.name,t0,t0.name,event,event.name,expected,expected.name,type,n.legendre,cl,beta.ini){
 
   #--------------------------------------------
   # extracting information from formula
@@ -1991,7 +1993,7 @@ model.cons <- function(formula,lambda,data.spec,t1,t1.name,t0,t0.name,event,even
   eventX=eventX,eventXexpected=eventXexpected,n=dim(X)[1],p=dim(X)[2],X.para=X.para,X.smooth=X.smooth,X=X,T.X=t(X),leg=leg,X.GL=X.GL,T.X.GL=T.X.GL,X.GL.w.tm=X.GL.w.tm,S=S,S.scale=S.scale,rank.S=rank.S,S.F=S.F,U.F=U.F,
   S.smf=S.smf,S.tensor=S.tensor,S.tint=S.tint,S.rd=S.rd,smooth.name.smf=smooth.name.smf,smooth.name.tensor=smooth.name.tensor,smooth.name.tint=smooth.name.tint,smooth.name.rd=smooth.name.rd,
   S.pen=S.pen,S.list=S.list,S.F.list=S.F.list,lambda=lambda,df.para=df.para,df.smooth=df.smooth,df.tot=df.tot,
-  list.smf=list.smf,list.tensor=list.tensor,list.tint=list.tint,list.rd=list.rd,nb.smooth=nb.smooth,Z.smf=Z.smf,Z.tensor=Z.tensor,Z.tint=Z.tint))
+  list.smf=list.smf,list.tensor=list.tensor,list.tint=list.tint,list.rd=list.rd,nb.smooth=nb.smooth,Z.smf=Z.smf,Z.tensor=Z.tensor,Z.tint=Z.tint,beta.ini=beta.ini))
 
 }
 
@@ -2255,7 +2257,7 @@ repam <- function(build){
 	
 	coef.name <- colnames(build$X)
 	
-	# We store X and S to given them back at convegence
+	# We store X and S to given them back at convergence
 	X.ini <- build$X
 	S.pen.ini <- build$S.pen
 	#--------
@@ -2265,6 +2267,10 @@ repam <- function(build){
 	colnames(build$X) <- coef.name
 	
 	build$T.X <- t(build$X)
+	
+	# We need to reparameterize the initial regression parameters too
+	if (!is.null(build$beta.ini)) build$beta.ini <- t(build$U.F)%vec%build$beta.ini
+	
 	
 	# penalty matrices
 	build$S.pen <- lapply(1:build$nb.smooth,function(i) t(build$U.F)%mult%build$S.pen[[i]]%mult%build$U.F)
@@ -2985,6 +2991,7 @@ survPen <- function(formula,data,t1,t0=NULL,event,expected=NULL,lambda=NULL,rho.
 			build <- param$build
 			X.ini <- param$X.ini
 			S.pen.ini <- param$S.pen.ini
+			beta.ini <- build$beta.ini
 			
 			# smoothing parameters are to be selected, optimization of LCV or LAML criterion
 			model <- NR.rho(build,rho.ini=rho.ini,data=data,formula=formula,max.it.beta=max.it.beta,max.it.rho=max.it.rho,beta.ini=beta.ini,
@@ -3028,7 +3035,8 @@ survPen <- function(formula,data,t1,t0=NULL,event,expected=NULL,lambda=NULL,rho.
 		build <- param$build
 		X.ini <- param$X.ini
 		S.pen.ini <- param$S.pen.ini
-	
+		beta.ini <- build$beta.ini
+		
 		# smoothing parameters are given by the user so no need for smoothing parameter selection
 		model <- survPen.fit(build,data=data,formula=formula,max.it.beta=max.it.beta,beta.ini=beta.ini,detail.beta=detail.beta,method=method,tol.beta=tol.beta)
 
