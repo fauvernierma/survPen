@@ -5,7 +5,7 @@
 \title{Design and penalty matrices for the model}
 \usage{
 model.cons(formula, lambda, data.spec, t1, t1.name, t0, t0.name, event,
-  event.name, expected, expected.name, type, n.legendre, cl)
+  event.name, expected, expected.name, type, n.legendre, cl, beta.ini)
 }
 \arguments{
 \item{formula}{formula object identifying the model}
