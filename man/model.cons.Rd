@@ -35,6 +35,8 @@ model.cons(formula, lambda, data.spec, t1, t1.name, t0, t0.name, event,
 \item{n.legendre}{number of nodes for Gauss-Legendre quadrature}
 
 \item{cl}{original \code{survPen} call}
+  
+\item{beta.ini}{initial set of regression parameters}
 }
 \value{
 List of objects with the following items:
@@ -80,6 +82,7 @@ S.scale=norm(X,type="I")^2/norm(pen[[i]],type="I")}
 \item{Z.smf}{List of matrices that represents the sum-to-zero constraints to apply for \code{\link{smf}} splines}
 \item{Z.tensor}{List of matrices that represents the sum-to-zero constraints to apply for \code{\link{tensor}} splines}
 \item{Z.tint}{List of matrices that represents the sum-to-zero constraints to apply for \code{\link{tint}} splines}
+\item{beta.ini}{initial set of regression parameters}  
 }
 \description{
 Sets up the model before optimization. Builds the design matrix, the penalty matrix and all the design matrices needed for Gauss-Legendre quadrature.
@@ -101,6 +104,6 @@ event <- eval(substitute(event), data)
 # The following code sets up everything we need in order to fit the model
 model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 t0=rep(0,100),t0.name="t0",event=event,event.name="event",
-expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)")
+expected=NULL,expected.name=NULL,type="overall",n.legendre=20,cl="survPen(form,data,t1=time,event=event)",beta.ini=NULL)
 
 }
