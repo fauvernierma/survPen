@@ -1488,7 +1488,7 @@ instr <- function(str1,str2,startpos=1,n=1){
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
 #' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
-#' cl="survPen(form,data,t1=time,event=event)")
+#' cl="survPen(form,data,t1=time,event=event)",beta.ini=NULL)
 #'
 model.cons <- function(formula,lambda,data.spec,t1,t1.name,t0,t0.name,event,event.name,expected,expected.name,type,n.legendre,cl,beta.ini){
 
@@ -2043,7 +2043,7 @@ model.cons <- function(formula,lambda,data.spec,t1,t1.name,t0,t0.name,event,even
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
 #' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
-#' cl="survPen(form,data,t1=time,event=event)")
+#' cl="survPen(form,data,t1=time,event=event)",beta.ini=NULL)
 #'  
 #' # Retrieving the sum-to-zero constraint matrices and the list of knots
 #' Z.smf <- model.c$Z.smf ; list.smf <- model.c$list.smf
@@ -2247,7 +2247,7 @@ design.matrix <- function(formula,data.spec,Z.smf,Z.tensor,Z.tint,list.smf,list.
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
 #' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
-#' cl="survPen(form,data,t1=time,event=event)")
+#' cl="survPen(form,data,t1=time,event=event)",beta.ini=NULL)
 #'  
 #' # Reparameterization allows separating the parameters into unpenalized and 
 #' # penalized ones for maximum numerical stability
@@ -3099,7 +3099,7 @@ survPen <- function(formula,data,t1,t0=NULL,event,expected=NULL,lambda=NULL,rho.
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
 #' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
-#' cl="survPen(form,data,t1=time,event=event)")
+#' cl="survPen(form,data,t1=time,event=event)",beta.ini=NULL)
 #'  
 #' # fitting
 #' mod <- survPen.fit(model.c,data,form)
@@ -4204,7 +4204,7 @@ print.summary.survPen <- function(x, ...)
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
 #' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
-#' cl="survPen(form,data,t1=time,event=event)")
+#' cl="survPen(form,data,t1=time,event=event)",beta.ini=NULL)
 #'  
 #' # Estimating the regression parameters at given smoothing parameter (here lambda=0)
 #' Newton1 <- NR.beta(model.c,beta.ini=rep(0,4),detail.beta=TRUE)
@@ -4498,7 +4498,7 @@ NR.beta <- function(build,beta.ini,detail.beta,max.it.beta=200,tol.beta=1e-04){
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
 #' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
-#' cl="survPen(form,data,t1=time,event=event)")
+#' cl="survPen(form,data,t1=time,event=event)",beta.ini=NULL)
 #'  
 #' # Estimating the smoothing parameter and the regression parameters
 #' # we need to apply a reparameterization to model.c before fitting
