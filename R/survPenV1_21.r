@@ -2963,7 +2963,7 @@ survPen <- function(formula,data,t1,t0=NULL,event,expected=NULL,lambda=NULL,rho.
 	#------------------------------------------
 	# setting up the design and penalty matrices 
 	
-	build <- model.cons(formula,lambda,data,t1,t1.name,t0,t0.name,event,event.name,expected,expected.name,type,n.legendre,cl)
+	build <- model.cons(formula,lambda,data,t1,t1.name,t0,t0.name,event,event.name,expected,expected.name,type,n.legendre,cl,beta.ini)
 	
 	#------------------------------------------
 	# optimization procedures. For given smoothing parameters we call survPen.fit. Otherwise we call NR.rho that
