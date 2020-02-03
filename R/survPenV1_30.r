@@ -4,7 +4,6 @@
 
 
 #' @useDynLib survPen
-#' @import RcppEigen
 #' @importFrom Rcpp sourceCpp
 NULL
 
