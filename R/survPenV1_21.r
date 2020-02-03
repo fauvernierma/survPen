@@ -3247,7 +3247,7 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
   Hess.beta.modif <- FALSE
 
   # Hessian perturbation if necessary (should not be the case at convergence though)
-  if(class(R)=="Error"|class(R)=="try-error")
+  if(inherits(R,"try-error"))
 	{
 		Hess.beta.modif <- TRUE
 		eigen.temp <- eigen(neg.Hess.beta,symmetric=TRUE)
@@ -3513,8 +3513,7 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
 			# called DGESV from LAPACK
 			inverse.new.S <- try(solve.default(sub.S),silent=TRUE) 
 			
-			
-			if (class(inverse.new.S) == "try-error"){
+			if(inherits(inverse.new.S,"try-error")){
 				
 				cat("\n","LU decomposition failed to invert penalty matrix, trying QR","\n",
 				"set detail.rho=TRUE for details","\n")
@@ -3523,7 +3522,7 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
 			
 			}
 			
-			if (class(inverse.new.S) == "try-error"){
+			if(inherits(inverse.new.S,"try-error")){
 
 				cat("\n","LU and QR decompositions failed to invert penalty matrix, trying Cholesky","\n",
 				"set detail.rho=TRUE for details","\n")
@@ -4304,11 +4303,11 @@ NR.beta <- function(build,beta.ini,detail.beta,max.it.beta=200,tol.beta=1e-04){
 		R <- try(chol(neg.Hess),silent=TRUE)
 		
 		# Hessian perturbation if need be (see Nocedal and Wright 2006)
-		if(class(R)=="Error"|class(R)=="try-error")
+		if(inherits(R,"try-error"))
 		{
 			u=0.001
 			cpt.while <- 0
-			while(class(R)=="Error"|class(R)=="try-error")
+			while(inherits(R,"try-error"))
 			{
 				if(cpt.while > 100)
 				{
@@ -4589,12 +4588,12 @@ NR.rho <- function(build,rho.ini,data,formula,max.it.beta=200,max.it.rho=30,beta
 	R <- try(chol(Hess),silent=TRUE)
 
 	# Hessian perturbation
-	if(class(R)=="Error"|class(R)=="try-error")
+	if(inherits(R,"try-error"))
 	{
 
 		u=0.001
 		cpt.while <- 0
-		while(class(R)=="Error"|class(R)=="try-error")
+		while(inherits(R,"try-error"))
 		{
 
 			if(cpt.while > 100)
@@ -4763,7 +4762,7 @@ NR.rho <- function(build,rho.ini,data,formula,max.it.beta=200,max.it.rho=30,beta
 	R <- try(chol(Hess),silent=TRUE)
 
 	# Hessian perturbation at convergence
-	if(class(R)=="Error"|class(R)=="try-error")
+	if(inherits(R,"try-error"))
 	{
 		Hess.rho.modif <- TRUE
 		
