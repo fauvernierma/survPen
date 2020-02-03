@@ -1,4 +1,4 @@
-survPen v1.2.1
+survPen v1.3.0
 ==============
 
 Changes:
@@ -7,6 +7,7 @@ in order to substantially reduce computation time
 
 Debugging:
 * beta.ini is now correctly reparameterized before fitting
+* the class of matrices are now tested using 'inherits' instead of 'class(object)=='
 
 
 survPen v1.2.0
