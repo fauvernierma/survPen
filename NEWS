@@ -1,3 +1,10 @@
+survPen v1.3.1
+==============
+
+Changes:
+* edf1 is taken as an upper bound for edf2 (as in mgcv)
+
+
 survPen v1.3.0
 ==============
 
