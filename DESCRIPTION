@@ -1,7 +1,7 @@
 Package: survPen
 Title: Multidimensional Penalized Splines for Survival and Net Survival
         Models
-Version: 1.3.0
+Version: 1.3.1
 Author: Mathieu Fauvernier [aut, cre], Laurent Roche [aut], Laurent Remontet [aut], Zoe Uhry [ctb], Nadine Bossard [ctb]
 Maintainer: Mathieu Fauvernier <mathieu.fauvernier@gmail.com>
 Description: Fits hazard and excess hazard models with multidimensional penalized splines allowing for 
