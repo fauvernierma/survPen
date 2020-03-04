@@ -2470,6 +2470,10 @@ cor.var <- function(model){
 	# corrected AIC
 	model$edf2<-rowSums(-model$Hess.unpen*model$Vc)
 			
+	edf1 <- 2*model$edf - rowSums(t(model$Vp%*%model$Hess.unpen.beta)*(model$Vp%*%model$Hess.unpen.beta)) 
+	# edf1 is supposed to be an upper bound for edf2 (see code from function gam.fit5.post.proc from package mgcv)
+	if (sum(model$edf2) >= sum(edf1)) model$edf2 <- edf1
+	
 	model$aic2 <- -2*model$ll.unpen+2*sum(model$edf2)
 		
 	model
