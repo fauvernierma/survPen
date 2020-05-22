@@ -11,7 +11,7 @@ Description: Fits hazard and excess hazard models with multidimensional penalize
 Depends: R (>= 3.4.0)
 License: GPL-3 | file LICENSE
 Imports: statmod, stats, Rcpp (>= 1.0.2)
-LinkingTo: Rcpp, RcppArmadillo, RcppEigen
+LinkingTo: Rcpp, RcppEigen
 URL: https://github.com/fauvernierma/survPen
 BugReports: https://github.com/fauvernierma/survPen/issues
 Encoding: UTF-8
