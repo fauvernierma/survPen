@@ -60,6 +60,7 @@ NULL
 #' \item{df.smooth}{degrees of freedom associated with penalized terms}
 #' \item{p}{number of regression parameters}
 #' \item{edf}{effective degrees of freedom}
+#' \item{edf1}{alternative effective degrees of freedom ; used as an upper bound for edf2}
 #' \item{edf2}{effective degrees of freedom corrected for smoothing parameter uncertainty}
 #' \item{aic}{Akaike information criterion with number of parameters replaced by edf when there are penalized terms. Corresponds to 2*edf - 2*ll.unpen}
 #' \item{aic2}{Akaike information criterion corrected for smoothing parameter uncertainty. Be careful though, this is still a work in progress, especially when one of the smoothing parameters tends to infinity.}
@@ -493,7 +494,7 @@ crs.FP <- function(knots,h){
 
   F.mat <- chol2inv(chol(B))%mult%D
   
-  P.mat <- t(D)%mult%F.mat # penalty matrix
+  P.mat <- D%cross%F.mat # penalty matrix
 
   P.mat <- (P.mat+t(P.mat))*0.5 # to make sure the penalty matrix is symmetric
 
@@ -1155,7 +1156,7 @@ constraint <- function(X,S,Z=NULL){
 
   if (is.null(Z)){
 
-	C <- colSums(X)
+	C <- colSums2(X)
 
 	qrc <- qr(C)
 
@@ -1171,11 +1172,11 @@ constraint <- function(X,S,Z=NULL){
 
 	length.S <- length(S)
 	
-	SZ <- lapply(1:length.S,function(i) t(Z)%mult%S[[i]]%mult%Z)
+	SZ <- lapply(1:length.S,function(i) Z%cross%S[[i]]%mult%Z)
 
   }else{
 
-    SZ <- t(Z)%mult%S%mult%Z
+    SZ <- Z%cross%S%mult%Z
 
   }
 
@@ -1432,11 +1433,8 @@ instr <- function(str1,str2,startpos=1,n=1){
 #' \item{X.para}{design matrix associated with fully parametric parameters (unpenalized)}
 #' \item{X.smooth}{design matrix associated with the penalized parameters}
 #' \item{X}{design matrix for the model}
-#' \item{T.X}{transpose of \code{X}}
 #' \item{leg}{list of nodes and weights for Gauss-Legendre integration on [-1;1] as returned by \code{\link[statmod]{gauss.quad}}}
 #' \item{X.GL}{list of matrices (\code{length(X.GL)=n.legendre}) for Gauss-Legendre quadrature}
-#' \item{T.X.GL}{list of the transposes of the elements of \code{X.GL}}
-#' \item{X.GL.w.tm}{list whose elements are \code{X.GL[[i]]*leg$weights[i]*tm}}
 #' \item{S}{penalty matrix for the model. Sum of the elements of \code{S.list}}
 #' \item{S.scale}{vector of rescaling factors for the penalty matrices}
 #' \item{rank.S}{rank of the penalty matrix}
@@ -1978,18 +1976,9 @@ model.cons <- function(formula,lambda,data.spec,t1,t1.name,t0,t0.name,event,even
   # list of n.legendre design matrices for numerical integration
   X.GL <- lapply(1:n.legendre, function(i) X.func(tm*leg$nodes[i]+(t0+t1)/2,t1.name,data.spec,formula,Z.smf,Z.tensor,Z.tint,list.smf,list.tensor,list.tint,list.rd))
   
-  # List of the transpose design matrices
-  T.X.GL <- lapply(1:n.legendre, function(i) t(X.GL[[i]]))
-
-  # List of the weighted design matrices 
-  X.GL.w.tm <- lapply(1:n.legendre, function(i) X.GL[[i]]*leg$weights[i]*tm)
-  
-  # To reduce execution time we perform some calculations in advance
-  eventX <- event*X
-  eventXexpected <- eventX*expected
 
   return(list(cl=cl,type=type,n.legendre=n.legendre,t0=t0,t0.name=t0.name,t1=t1,t1.name=t1.name,tm=tm,event=event,event.name=event.name,expected=expected,expected.name=expected.name,
-  eventX=eventX,eventXexpected=eventXexpected,n=dim(X)[1],p=dim(X)[2],X.para=X.para,X.smooth=X.smooth,X=X,T.X=t(X),leg=leg,X.GL=X.GL,T.X.GL=T.X.GL,X.GL.w.tm=X.GL.w.tm,S=S,S.scale=S.scale,rank.S=rank.S,S.F=S.F,U.F=U.F,
+  n=dim(X)[1],p=dim(X)[2],X.para=X.para,X.smooth=X.smooth,X=X,leg=leg,X.GL=X.GL,S=S,S.scale=S.scale,rank.S=rank.S,S.F=S.F,U.F=U.F,
   S.smf=S.smf,S.tensor=S.tensor,S.tint=S.tint,S.rd=S.rd,smooth.name.smf=smooth.name.smf,smooth.name.tensor=smooth.name.tensor,smooth.name.tint=smooth.name.tint,smooth.name.rd=smooth.name.rd,
   S.pen=S.pen,S.list=S.list,S.F.list=S.F.list,lambda=lambda,df.para=df.para,df.smooth=df.smooth,df.tot=df.tot,
   list.smf=list.smf,list.tensor=list.tensor,list.tint=list.tint,list.rd=list.rd,nb.smooth=nb.smooth,Z.smf=Z.smf,Z.tensor=Z.tensor,Z.tint=Z.tint,beta.ini=beta.ini))
@@ -2265,14 +2254,13 @@ repam <- function(build){
 	
 	colnames(build$X) <- coef.name
 	
-	build$T.X <- t(build$X)
 	
 	# We need to reparameterize the initial regression parameters too
 	if (!is.null(build$beta.ini)) build$beta.ini <- t(build$U.F)%vec%build$beta.ini
 	
 	
 	# penalty matrices
-	build$S.pen <- lapply(1:build$nb.smooth,function(i) t(build$U.F)%mult%build$S.pen[[i]]%mult%build$U.F)
+	build$S.pen <- lapply(1:build$nb.smooth,function(i) build$U.F%cross%build$S.pen[[i]]%mult%build$U.F)
 	build$S.pen <- lapply(1:build$nb.smooth,function(i) 0.5*(t(build$S.pen[[i]])+build$S.pen[[i]]))
 
 	build$S.list <- lapply(1:build$nb.smooth,function(i) build$lambda[i]*build$S.pen[[i]])
@@ -2280,14 +2268,7 @@ repam <- function(build){
 	
 	# List of the design matrices for Gauss-Legendre quadrature
 	build$X.GL <- lapply(1:build$n.legendre, function(i) build$X.GL[[i]]%mult%build$U.F)
-	build$T.X.GL <- lapply(1:build$n.legendre, function(i) t(build$X.GL[[i]]))
-
-	# List of the weighted design matrices
-	build$X.GL.w.tm <- lapply(1:build$n.legendre, function(i) build$X.GL[[i]]*build$leg$weights[i]*build$tm)
-			  
-	# To reduce execution time we do some calculations in advance
-	build$eventX <- build$event*build$X
-	build$eventXexpected <- build$eventX*build$expected
+		  
 	
 	return(list(build=build,X.ini=X.ini,S.pen.ini=S.pen.ini))
 						
@@ -2325,8 +2306,12 @@ inv.repam <- function(model,X.ini,S.pen.ini){
 
 	model$grad.unpen.beta <- U%vec%model$grad.unpen.beta
 	model$grad.beta <- U%vec%model$grad.beta
+	
 	model$Hess.unpen.beta <- U%mult%model$Hess.unpen.beta%mult%T.U
-	model$Hess.beta <- U%mult%model$Hess.beta%mult%T.U
+	model$Hess.unpen.beta <- 0.5*(model$Hess.unpen.beta + t(model$Hess.unpen.beta)) # to be sure Hess.unpen.beta is symmetric
+	
+	model$Hess.beta <- model$Hess.unpen.beta - model$S
+	
 	model$Ve <- U%mult%model$Ve%mult%T.U
 	model$Ve <- 0.5*(model$Ve + t(model$Ve)) # to be sure Ve is symmetric
 	
@@ -2337,9 +2322,11 @@ inv.repam <- function(model,X.ini,S.pen.ini){
 	# termwise edf
 	model$edf <- rowSums(-model$Vp*(model$Hess.beta + model$S))
 	
+	model$edf1 <- 2*model$edf - rowSums(t(model$Vp%mult%model$Hess.unpen.beta)*(model$Vp%mult%model$Hess.unpen.beta))
+	
 	rownames(model$Vp) <- colnames(model$Vp) <- rownames(model$Ve) <- colnames(model$Ve) <-
 	rownames(model$Hess.unpen.beta) <- colnames(model$Hess.unpen.beta) <- rownames(model$Hess.beta) <- colnames(model$Hess.beta) <-
-	names(model$edf) <- colnames(model$X) <- names(model$grad.beta) <- names(model$grad.unpen.beta) <- names(model$coefficients) <- coef.name
+	names(model$edf) <- names(model$edf1) <- colnames(model$X) <- names(model$grad.beta) <- names(model$grad.unpen.beta) <- names(model$coefficients) <- coef.name
 	
 	optim.rho <- !is.null(model$optim.rho)
 	
@@ -2374,56 +2361,8 @@ cor.var <- function(model){
 
 	#---------------------------------------------------------------------------------------------------------
 	# for corrected variance, we need the derivative of R wrt smooting parameters with t(R)%mult%R=Vp
-	deriv.Vp <- vector("list", model$nb.smooth)
-
-	deriv.R1 <- vector("list", model$nb.smooth)
-
-	B <- vector("list", model$nb.smooth)
-
-	R1 <- chol(model$Vp)
-	p <- model$p
+	model$deriv.R1 <- deriv_R(model$deriv.rho.inv.Hess.beta,model$p,chol(model$Vp))	
 		
-	inv.R1 <- backsolve(R1, diag(model$p))
-
-	for (m in 1:model$nb.smooth){
-
-		deriv.Vp[[m]] <- -(model$deriv.rho.inv.Hess.beta[[m]])
-
-		deriv.R1[[m]] <- matrix(0,p,p)
-
-		B <- deriv.Vp[[m]]
-
-		for (i in 1:p){
-			for (j in i:p){# R and its derivatives are triangular superior
-
-				if((i-1)>0){
-
-					for (k in 1:(i-1)){
-
-						B[i,j] <- B[i,j]-(deriv.R1[[m]][k,i]*R1[k,j]+R1[k,i]*deriv.R1[[m]][k,j])
-
-					}
-
-				}
-
-				if(i==j){
-
-					deriv.R1[[m]][i,j] <- 0.5*B[i,j]/R1[i,j]
-
-				}else{
-
-					deriv.R1[[m]][i,j] <- 1/R1[i,i]*(B[i,j]-R1[i,j]*deriv.R1[[m]][i,i])
-				
-				}
-
-			}
-
-		}
-			
-	}
-	
-	model$deriv.R1 <- deriv.R1
-	
 	#-------------- regularization of the inverse Hessian when a smoothing parameter tends to infinity
 	eigen.cor <- eigen(model$Hess.rho,symmetric=TRUE)
 	U.cor <- eigen.cor$vectors
@@ -2431,23 +2370,23 @@ cor.var <- function(model){
 
 	ind <- vp.cor <= 0
 	
-	vp.cor[ind] <- 0;vp.cor <- 1/sqrt(vp.cor+1/10) # same as mgcv version 1-8.6 
-	# (function gam.fit3.post.proc, line 971 in https://github.com/cran/mgcv/blob/master/R/gam.fit3.r)
+	vp.cor[ind] <- 0;vp.cor <- 1/sqrt(vp.cor+1/10) # same as mgcv version 1-8.29 
+	# function gam.fit3.post.proc, line 930 in https://github.com/cran/mgcv/blob/master/R/gam.fit3.r
     
 	rV <- (vp.cor*t(U.cor)) ## root of cov matrix
 	
     inv.Hess.rho <- crossprod(rV)
 	
-	# V second
-	V.second <- matrix(0,p,p)
+	# V second, second part of the corrected covariance matrix
+	V.second <- matrix(0,model$p,model$p)
 
 	for (l in 1:model$nb.smooth){
 
 		for (k in 1:model$nb.smooth){
 
-			prod.temp <- crossprod(deriv.R1[[k]],deriv.R1[[l]])*inv.Hess.rho[k,l]
+			prod.temp <- (model$deriv.R1[[k]]%cross%model$deriv.R1[[l]])*inv.Hess.rho[k,l]
 				
-			V.second <- V.second+prod.temp
+			V.second <- V.second + prod.temp
 				
 		}
 
@@ -2456,10 +2395,10 @@ cor.var <- function(model){
 	#---------------------------------------------------------------------------------------------------------
 
 	# corrected variance (for smoothing parameter uncertainty), Kass and Steffey approximation
-	Vc.approx <- model$Vp+crossprod(rV%mult%model$deriv.rho.beta)
+	Vc.approx <- model$Vp + crossprod(rV%mult%model$deriv.rho.beta)
 	
 	# full corrected variance
-	Vc <- Vc.approx+V.second
+	Vc <- Vc.approx + V.second
 		
 	coef.name <- colnames(model$X)
 	rownames(Vc.approx) <- colnames(Vc.approx) <- rownames(Vc) <- colnames(Vc) <- coef.name
@@ -2467,14 +2406,13 @@ cor.var <- function(model){
 	model$Vc.approx <- Vc.approx
 	model$Vc <- Vc
 			
-	# corrected AIC
-	model$edf2<-rowSums(-model$Hess.unpen*model$Vc)
-			
-	edf1 <- 2*model$edf - rowSums(t(model$Vp%*%model$Hess.unpen.beta)*(model$Vp%*%model$Hess.unpen.beta)) 
+	#----------------- corrected AIC
+	model$edf2 <- rowSums(-model$Hess.unpen*model$Vc)
+				
 	# edf1 is supposed to be an upper bound for edf2 (see code from function gam.fit5.post.proc from package mgcv)
-	if (sum(model$edf2) >= sum(edf1)) model$edf2 <- edf1
-	
-	model$aic2 <- -2*model$ll.unpen+2*sum(model$edf2)
+	if (sum(model$edf2) >= sum(model$edf1)) model$edf2 <- model$edf1		
+			
+	model$aic2 <- -2*model$ll.unpen + 2*sum(model$edf2)
 		
 	model
 		
@@ -3117,8 +3055,7 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
 
   n <- build$n
   X <- build$X
-  T.X <- build$T.X
-
+  
   S <- build$S
   
   S.smf <- build$S.smf
@@ -3165,9 +3102,6 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
 
   type <- build$type
 
-  eventX <- build$eventX
-  eventXexpected <- build$eventXexpected
-
   Z.smf <- build$Z.smf
   Z.tensor <- build$Z.tensor
   Z.tint <- build$Z.tint
@@ -3175,8 +3109,7 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
   leg <- build$leg
   n.legendre <- build$n.legendre
   X.GL <- build$X.GL
-  T.X.GL <- build$T.X.GL
-  X.GL.w.tm <- build$X.GL.w.tm
+  
   #-------------------------------------------------------------------
   # Optimization algorithm : Newton-Raphson
 
@@ -3215,17 +3148,17 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
   #-------------------------------------------------------------------
   # Gradient and Hessian at convergence
 
-  deriv.list <- lapply(1:n.legendre, function(i) X.GL.w.tm[[i]]*haz.GL[[i]])
+  deriv.list <- lapply(1:n.legendre, function(i) X.GL[[i]]*haz.GL[[i]]*tm*leg$weights[i])
 
-  deriv.2.list <- lapply(1:n.legendre, function(i) T.X.GL[[i]]%mult%(deriv.list[[i]]))
+  deriv.2.list <- lapply(1:n.legendre, function(i) X.GL[[i]]%cross%(deriv.list[[i]]))
 
   f.first <- Reduce("+",deriv.list)
 
   # gradient
   if (type=="net"){
-	  grad.unpen.beta <- colSums(-f.first + (eventX*ft1)/(ft1+expected))
+	  grad.unpen.beta <- colSums2(-f.first + X*event*ft1/(ft1+expected))
   }else{
-	  grad.unpen.beta <- colSums(-f.first + eventX)
+	  grad.unpen.beta <- colSums2(-f.first + X*event)
   }
 
   grad.beta <- grad.unpen.beta-S%vec%beta
@@ -3235,15 +3168,13 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
   f.second <- Reduce("+",deriv.2.list)
 
   if (type=="net"){
-	Hess.unpen.beta <- -f.second + T.X%mult%(eventXexpected*ft1/(ft1+expected)^2)
+	Hess.unpen.beta <- -f.second + X%cross%(X*event*expected*ft1/(ft1+expected)^2)
   }else{
 	Hess.unpen.beta <- -f.second
   }
 
-  Hess.beta <- Hess.unpen.beta-S
-
   # negative Hessian
-  neg.Hess.beta <- -Hess.beta
+  neg.Hess.beta <- -Hess.unpen.beta + S
 
   R <- try(chol(neg.Hess.beta),silent=TRUE)
 
@@ -3264,16 +3195,13 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
 		warning("beta Hessian was perturbed at convergence")
 	}
 
-  neg.inv.Hess.beta <- chol2inv(R)
-
-  inv.Hess.beta <- -neg.inv.Hess.beta
 
   neg.Hess.beta <- crossprod(R)
-  Hess.beta <- -neg.Hess.beta
 
   # Variance
-  Ve <- -inv.Hess.beta%mult%Hess.unpen.beta%mult%inv.Hess.beta # frequentist variance
-  Vp <- neg.inv.Hess.beta # Bayesian variance
+  Vp <- chol2inv(R) # Bayesian variance
+  Ve <- -Vp%mult%Hess.unpen.beta%mult%Vp # frequentist variance
+  
   
   rownames(Ve) <- colnames(Ve) <- rownames(Vp) <- colnames(Vp) <- colnames(X)
   #-------------------------------------------------------------------
@@ -3293,7 +3221,10 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
 	#------------------------------------------------------------------------
 
 	# effective degrees of freedom
-	edf <- rowSums(Hess.unpen.beta*inv.Hess.beta)
+	edf <- rowSums(-Hess.unpen.beta*Vp)
+	
+	# alternative definition
+	edf1 <- 2*edf - rowSums(t(Vp%mult%Hess.unpen.beta)*(Vp%mult%Hess.unpen.beta))
 
 	# LCV
 	LCV <- -ll.unpen+sum(edf)
@@ -3345,171 +3276,42 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
 		
 		for (i in 1:nb.smooth){
 
-			deriv.rho.beta[i,] <- inv.Hess.beta%vec%S.beta[[i]]
+			deriv.rho.beta[i,] <- (-Vp)%vec%S.beta[[i]]
 
 			GL.temp[[i]] <- lapply(1:n.legendre, function(j) (X.GL[[j]]%vec%deriv.rho.beta[i,])*haz.GL[[j]])
 			
 		}
 			
+		if (type=="net"){
+		
+			temp.deriv3 <- (X*ft1*(-ft1+expected)/(ft1+expected)^3)
+				
+			temp.deriv4 <- (X*ft1*(ft1^2-4*expected*ft1+expected^2)/(ft1+expected)^4)
+			
+		}else{
+
+			temp.deriv3 <- temp.deriv4 <- matrix(0)
+		
+		}
+			
+			
 		if(method=="LCV"){
 
 			# this calculation is done before to save time
-			mat.temp <- inv.Hess.beta+Ve
+			mat.temp <- -Vp + Ve
+			temp.LAML <- vector("list", 0)
+			temp.LAML2 <- vector("list", 0)
+			inverse.new.S <- matrix(0)
+			minus.eigen.inv.Hess.beta <- 0
 			
-			#------------------------------- gradient of LCV
-
-			grad.rho.edf <- vector(length=nb.smooth)
-			deriv.rho.Hess.unpen.beta <- vector("list", nb.smooth)
-			deriv.rho.inv.Hess.beta <- vector("list", nb.smooth)
-
-			if (type=="net"){
-				temp2.matrix2 <- (X*ft1*(-ft1+expected)/(ft1+expected)^3)
-			}
-
-			# first derivatives of beta Hessian
-
-			for (j in 1:nb.smooth){
-
-				f.third <- matrix(0,nrow=p,ncol=p)
-
-				for (i in 1:n.legendre){
-
-					f.third <- f.third+T.X.GL[[i]]%mult%(X.GL.w.tm[[i]]*GL.temp[[j]][[i]])
-
-					}
-
-				if (type=="net"){
-					deriv.rho.Hess.unpen.beta[[j]] <- (-f.third) + T.X%mult%(eventXexpected*(temp2.matrix2%vec%deriv.rho.beta[j,]))
-				}else{
-					deriv.rho.Hess.unpen.beta[[j]] <- (-f.third)
-				}
-
-				deriv.rho.inv.Hess.beta[[j]] <- -inv.Hess.beta%mult%(deriv.rho.Hess.unpen.beta[[j]]-S.list[[j]])%mult%inv.Hess.beta
-
-				# gradient of edf
-				grad.rho.edf[j] <- sum(mat.temp*deriv.rho.Hess.unpen.beta[[j]])+sum(-Ve*S.list[[j]])
-
-			}
-
-			grad.LCV1 <- deriv.rho.beta%vec%(-grad.unpen.beta)
-			grad.rho <- grad.LCV1+grad.rho.edf
-
-			deriv2.rho.beta <- lapply(1:nb.smooth, function(i) matrix(0,nrow=nb.smooth,ncol=p))
-
-			for (j in 1:nb.smooth){
-
-				for (j2 in 1:nb.smooth){
-
-					deriv2.rho.beta[[j2]][j,] <- deriv.rho.inv.Hess.beta[[j2]]%vec%S.beta[[j]]+
-					inv.Hess.beta%vec%(S.list[[j]]%vec%deriv.rho.beta[j2,])
-
-					if (j==j2){
-
-					deriv2.rho.beta[[j2]][j,] <- deriv2.rho.beta[[j2]][j,]+inv.Hess.beta%mult%S.beta[[j2]]
-
-					}
-
-				}
-
-			}
-
 			Hess.LCV1 <- matrix(0,nb.smooth,nb.smooth)
-
-			# first part of the Hessian of LCV
-			for (j2 in 1:nb.smooth){
-
-				Hess.LCV1[,j2] <- deriv2.rho.beta[[j2]]%vec%(-grad.unpen.beta)+deriv.rho.beta%vec%(-Hess.unpen.beta%vec%deriv.rho.beta[j2,])
-
-			}
-
-			# this calculation is done before to save time
-
-			deriv.rho.Ve <- lapply(1:nb.smooth, function(j2) -(  (deriv.rho.inv.Hess.beta[[j2]]%mult%Hess.unpen.beta+
-			inv.Hess.beta%mult%deriv.rho.Hess.unpen.beta[[j2]] )%mult%inv.Hess.beta +  inv.Hess.beta%mult%Hess.unpen.beta%mult%deriv.rho.inv.Hess.beta[[j2]])  )
-
-			deriv.mat.temp <- lapply(1:nb.smooth, function(j2) deriv.rho.Ve[[j2]]+deriv.rho.inv.Hess.beta[[j2]] )
-
-			#------------------------------- Hessian of LCV
-
-			Hess.edf <- matrix(0,nb.smooth,nb.smooth)
-
-			if (type=="net"){
-				temp2.matrix1 <- (X*ft1*(ft1^2-4*expected*ft1+expected^2)/(ft1+expected)^4)
-			}
-
-			# second derivatives of the beta Hessian
-			
-			# if we perform an eigen decomposition of mat.temp, we only need to compute the diagonal of 
-			# the second derivatives of Hess.unpen.beta (see section 6.6.2 of Wood (2017) Generalized Additive Models
-			# An introduction with R, Second Edition)
-					eigen2 <- eigen(mat.temp,symmetric=TRUE)
-					eigen.mat.temp <- eigen2$values
-					Q <- eigen2$vectors
-					
-					# then we multiply each design matrix (including the ones for Gauss-Legendre quadrature) by Q
-					X.GL2 <- lapply(1:n.legendre,function(i) X.GL[[i]]%mult%Q)
-
-					X.GL2.w.tm <- lapply(1:n.legendre, function(i) X.GL2[[i]]*leg$weights[i]*tm)
-		  
-					X2 <- X%mult%Q
-					
-					eventXexpected2 <- event*X2*expected
-			#----------------------------------------------------------------------------------------
-			
-			for (j in 1:nb.smooth){
-
-				for (j2 in 1:nb.smooth){
-
-					diag.f.fourth <- rep(0,p)
-
-					for (i in 1:n.legendre){
-
-						temp <- (X.GL[[i]]*GL.temp[[j2]][[i]])%vec%deriv.rho.beta[j,]+
-						(X.GL[[i]]*haz.GL[[i]])%vec%deriv2.rho.beta[[j2]][j,]
-
-						# using the transformed design matrices
-						diag.f.fourth <- diag.f.fourth + colSums(X.GL2[[i]] * X.GL2.w.tm[[i]]*as.vector(temp))
-						
-					}
-
-					if (type=="net"){
-
-						temp2 <- as.vector((X*(temp2.matrix1%vec%deriv.rho.beta[j2,]))%vec%deriv.rho.beta[j,])+
-						temp2.matrix2%vec%deriv2.rho.beta[[j2]][j,]
-
-						# using the transformed design matrices
-						diag.deriv2.Hess.unpen.beta <- (-diag.f.fourth) + colSums(X2 * (eventXexpected2*as.vector(temp2)))
-							
-						
-					}else{
-
-						diag.deriv2.Hess.unpen.beta <- (-diag.f.fourth)
-
-					}
-
-					# Hessian of edf
-					Hess.edf[j,j2] <- sum(eigen.mat.temp*diag.deriv2.Hess.unpen.beta)+
-					sum(deriv.mat.temp[[j2]]*deriv.rho.Hess.unpen.beta[[j]])+sum(-deriv.rho.Ve[[j2]]*S.list[[j]])
-
-					if (j==j2){
-
-						Hess.edf[j,j2] <- Hess.edf[j,j2]+sum(-Ve*S.list[[j2]])
-
-					}
-
-				}
-
-			}
-
-			Hess.rho <- Hess.LCV1+Hess.edf
-
 		}
-
-		#------------------------------------------------------------------------
-		# derivatives of LAML
-		#------------------------------------------------------------------------
-
 		if(method=="LAML"){
+
+			mat.temp <- matrix(0)
+			eigen.mat.temp <- 0
+			deriv.mat.temp <- vector("list",0)
+			deriv.rho.Ve <- vector("list",0)
 
 			# stable LU decomposition through solve.default that
 			# calls an internal R function written in C called La_solve. La_solve itself calls a Fortran routine
@@ -3536,60 +3338,39 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
 			
 			temp.LAML <- lapply(1:nb.smooth,function(i) S.list[[i]][1:rank.S,1:rank.S])
 
-			#------------------------------- gradient of LAML
+			temp.LAML2 <- lapply(1:nb.smooth,function(i) -inverse.new.S%mult%temp.LAML[[i]]%mult%inverse.new.S)
+		}
+		
 
-			grad.rho.log.det.Hess.beta <- vector(length=nb.smooth)
-			grad.rho.log.abs.S <- vector(length=nb.smooth)
-			deriv.rho.Hess.unpen.beta <- vector("list", nb.smooth)
-			deriv.rho.inv.Hess.beta <- vector("list", nb.smooth)
-			grad.rho.ll1 <- vector(length=nb.smooth)
+	#------------------------------- gradient of LAML and LCV
+			# first derivatives of beta Hessian
 			
-			# this calculation is done before to save time
-			if (type=="net"){
-				temp2.matrix2 <- (X*ft1*(-ft1+expected)/(ft1+expected)^3)
-			}
-
-			# first derivatives of Hess.beta
-			for (j in 1:nb.smooth){
-
-				f.third <- matrix(0,nrow=p,ncol=p)
-
-				for (i in 1:n.legendre){
-					
-					f.third <- f.third+T.X.GL[[i]]%mult%(X.GL.w.tm[[i]]*GL.temp[[j]][[i]])
-
-				}
-
-				if (type=="net"){
-					deriv.rho.Hess.unpen.beta[[j]] <- (-f.third) + T.X%mult%(eventXexpected*(temp2.matrix2%vec%deriv.rho.beta[j,]))
-				}else{
-					deriv.rho.Hess.unpen.beta[[j]] <- (-f.third)
-				}
-
-				deriv.rho.inv.Hess.beta[[j]] <- -inv.Hess.beta%mult%(deriv.rho.Hess.unpen.beta[[j]]-S.list[[j]])%mult%inv.Hess.beta
-
-				grad.rho.log.det.Hess.beta[j] <- sum(-inv.Hess.beta*(-deriv.rho.Hess.unpen.beta[[j]]+S.list[[j]]))
-
-				grad.rho.log.abs.S[j] <- sum(inverse.new.S*temp.LAML[[j]])
-
-				grad.rho.ll1[j] <- -0.5*sum(beta*S.beta[[j]])
-
-			}
-
-			grad.rho <- -(grad.rho.ll1+0.5*grad.rho.log.abs.S-0.5*grad.rho.log.det.Hess.beta)
-
+			grad.list <- grad_rho(X.GL, GL.temp, haz.GL, deriv.rho.beta, leg$weights,
+			tm, nb.smooth, p, n.legendre, S.list, temp.LAML, Vp, S.beta, beta, inverse.new.S,
+			X, temp.deriv3, event, expected, type, Ve, mat.temp, method)
+			
+			grad.rho <- grad.list$grad_rho
+			
+			if (method == "LCV") grad.rho <- grad.rho + deriv.rho.beta%vec%(-grad.unpen.beta)
+			
+			deriv.rho.inv.Hess.beta <- grad.list$deriv_rho_inv_Hess_beta
+			deriv.rho.Hess.unpen.beta <- grad.list$deriv_rho_Hess_unpen_beta
+			
+			
+	#------------------------------- Hessian of LAML and LCV
+	# Implicit second derivative of beta wrt rho
 			deriv2.rho.beta <- lapply(1:nb.smooth, function(i) matrix(0,nrow=nb.smooth,ncol=p))
 
 			for (j in 1:nb.smooth){
 
 				for (j2 in 1:nb.smooth){
 
-					deriv2.rho.beta[[j2]][j,] <- deriv.rho.inv.Hess.beta[[j2]]%vec%S.beta[[j]]+
-					inv.Hess.beta%vec%(S.list[[j]]%vec%deriv.rho.beta[j2,])
+					deriv2.rho.beta[[j2]][j,] <- deriv.rho.inv.Hess.beta[[j2]]%vec%S.beta[[j]] - 
+					Vp%vec%(S.list[[j]]%vec%deriv.rho.beta[j2,])
 
 					if (j==j2){
 
-					deriv2.rho.beta[[j2]][j,] <- deriv2.rho.beta[[j2]][j,]+inv.Hess.beta%vec%S.beta[[j2]]
+					deriv2.rho.beta[[j2]][j,] <- deriv2.rho.beta[[j2]][j,] - Vp%mult%S.beta[[j2]]
 
 					}
 
@@ -3597,97 +3378,57 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
 
 			}
 
-			# this calculation is done before to save time
-			temp.LAML3 <- lapply(1:nb.smooth,function(i) -inverse.new.S%mult%temp.LAML[[i]]%mult%inverse.new.S)
 			
-			#------------------------------- Hessian of LAML
+			if (method=="LCV"){
 
-			Hess.rho.log.det.Hess.beta <- matrix(0,nb.smooth,nb.smooth)
+				# first part of the Hessian of LCV
+				for (j2 in 1:nb.smooth){
 
-			Hess.rho.log.abs.S <- matrix(0,nb.smooth,nb.smooth)
+					Hess.LCV1[,j2] <- deriv2.rho.beta[[j2]]%vec%(-grad.unpen.beta)+deriv.rho.beta%vec%(-Hess.unpen.beta%vec%deriv.rho.beta[j2,])
 
-			Hess.rho.ll1 <- matrix(0,nb.smooth,nb.smooth)
+				}
 
-			if (type=="net"){
-				temp2.matrix1 <- (X*ft1*(ft1^2-4*expected*ft1+expected^2)/(ft1+expected)^4)
+				# this calculation is done before to save time
+
+				deriv.rho.Ve <- lapply(1:nb.smooth, function(j2) -(  (deriv.rho.inv.Hess.beta[[j2]]%mult%Hess.unpen.beta -
+				Vp%mult%deriv.rho.Hess.unpen.beta[[j2]] )%mult%(-Vp) -  Vp%mult%Hess.unpen.beta%mult%deriv.rho.inv.Hess.beta[[j2]])  )
+
+				deriv.mat.temp <- lapply(1:nb.smooth, function(j2) deriv.rho.Ve[[j2]]+deriv.rho.inv.Hess.beta[[j2]] )
+
+				# if we perform an eigen decomposition of mat.temp, we only need to compute the diagonal of 
+				# the second derivatives of Hess.unpen.beta (see section 6.6.2 of Wood (2017) Generalized Additive Models
+				# An introduction with R, Second Edition)
+					eigen2 <- eigen(mat.temp,symmetric=TRUE)
+					eigen.mat.temp <- eigen2$values
+					
 			}
 			
-			# second derivatives of the beta Hessian
-
+			if(method=="LAML"){
+			
 			# if we perform an eigen decomposition of -inv.Hess.beta, we only need to compute the diagonal of 
 			# the second derivatives of Hess.unpen.beta (see section 6.6.2 of Wood (2017) Generalized Additive Models
 			# An introduction with R, Second Edition)
-					eigen2 <- eigen(-inv.Hess.beta,symmetric=TRUE)
+					eigen2 <- eigen(Vp,symmetric=TRUE)
 					minus.eigen.inv.Hess.beta <- eigen2$values
-					Q <- eigen2$vectors
 					
-					# then we multiply each design matrix (including the ones for Gauss-Legendre quadrature) by Q
-					X.GL2 <- lapply(1:n.legendre,function(i) X.GL[[i]]%mult%Q)
+			}	
 
-					X.GL2.w.tm <- lapply(1:n.legendre, function(i) X.GL2[[i]]*leg$weights[i]*tm)
-		  
-					X2 <- X%mult%Q
+			Q <- eigen2$vectors
 					
-					eventXexpected2 <- event*X2*expected
+			X.Q <- X%mult%Q
+					
+			X.GL.Q <- lapply(1:n.legendre, function(i) X.GL[[i]]%mult%Q)	
 			#----------------------------------------------------------------------------------------
-			
-			for (j in 1:nb.smooth){
+		
+			Hess.rho <- Hess_rho(X.GL, X.GL.Q, GL.temp, haz.GL, deriv2.rho.beta, deriv.rho.beta, leg$weights,
+			tm, nb.smooth, p, n.legendre, deriv.rho.inv.Hess.beta, deriv.rho.Hess.unpen.beta, S.list, minus.eigen.inv.Hess.beta,
+			temp.LAML, temp.LAML2, Vp, S.beta, beta, inverse.new.S,
+			X, X.Q, temp.deriv3, temp.deriv4, event, expected, type,
+			Ve, deriv.rho.Ve, mat.temp, deriv.mat.temp, eigen.mat.temp, method)
 
-				for (j2 in 1:nb.smooth){
-
-					diag.f.fourth <- rep(0,p)
-
-					for (i in 1:n.legendre){
-
-						temp <- (X.GL[[i]]*GL.temp[[j2]][[i]])%vec%deriv.rho.beta[j,]+
-						(X.GL[[i]]*haz.GL[[i]])%vec%deriv2.rho.beta[[j2]][j,]
-
-						# using the transformed design matrices
-						diag.f.fourth <- diag.f.fourth + colSums(X.GL2[[i]] * X.GL2.w.tm[[i]]*as.vector(temp))
-						
-						
-					}
-
-					if (type=="net"){
-
-						temp2 <- as.vector((X*(temp2.matrix1%vec%deriv.rho.beta[j2,]))%vec%deriv.rho.beta[j,])+
-						temp2.matrix2%vec%deriv2.rho.beta[[j2]][j,]
-
-						# using the transformed design matrices	
-						diag.deriv2.Hess.unpen.beta <- (-diag.f.fourth) + colSums(X2 * (eventXexpected2*as.vector(temp2)))
-						
-							
-						
-					}else{
-
-						diag.deriv2.Hess.unpen.beta <- (-diag.f.fourth)
-
-					}
-
-					Hess.rho.log.det.Hess.beta[j,j2] <- sum(-deriv.rho.inv.Hess.beta[[j2]]*(-deriv.rho.Hess.unpen.beta[[j]]+S.list[[j]]))+
-					sum(-minus.eigen.inv.Hess.beta*diag.deriv2.Hess.unpen.beta)
-					
-					Hess.rho.log.abs.S[j,j2] <- sum(temp.LAML3[[j2]]*temp.LAML[[j]])
-
-					Hess.rho.ll1[j,j2] <- -sum(deriv.rho.beta[j2,]*S.beta[[j]])
-
-					if (j==j2){
-
-						Hess.rho.log.det.Hess.beta[j,j2] <- Hess.rho.log.det.Hess.beta[j,j2]+sum(-inv.Hess.beta*S.list[[j2]])
-
-						Hess.rho.log.abs.S[j,j2] <- Hess.rho.log.abs.S[j,j2]+sum(inverse.new.S*temp.LAML[[j2]])
-
-						Hess.rho.ll1[j,j2] <- Hess.rho.ll1[j,j2]-0.5*sum(beta*S.beta[[j2]])
-
-					}
-
-				}
-
-			}
-
-			Hess.rho <- -(Hess.rho.ll1+0.5*Hess.rho.log.abs.S-0.5*Hess.rho.log.det.Hess.beta)
-
-		}
+		
+			if(method=="LCV") Hess.rho <- Hess.rho + Hess.LCV1
+	
 
 	}else{
 	
@@ -3697,7 +3438,7 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
 		
   }else{
 
-	edf <- p
+	edf <- edf1 <- p
 
 	LCV <- LAML <- criterion.val <- grad.rho <- Hess.rho <- deriv.rho.beta <- deriv.rho.inv.Hess.beta <- NULL
 
@@ -3707,9 +3448,9 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
 	
 	# returns a model of class survPen
 	res <- list(call=cl,formula=formula,t0.name=build$t0.name,t1.name=build$t1.name,event.name=build$event.name,expected.name=build$expected.name,
-	haz=ft1,coefficients=beta,type=type,df.para=df.para,df.smooth=df.smooth,p=p,edf=edf,edf2=edf2,aic=2*sum(edf)-2*ll.unpen,aic2=aic2,iter.beta=iter.beta,X=X,S=S,S.scale=S.scale,
+	haz=ft1,coefficients=beta,type=type,df.para=df.para,df.smooth=df.smooth,p=p,edf=edf,edf1=edf1,edf2=edf2,aic=2*sum(edf)-2*ll.unpen,aic2=aic2,iter.beta=iter.beta,X=X,S=S,S.scale=S.scale,
 	S.list=S.list,S.smf=S.smf,S.tensor=S.tensor,S.tint=S.tint,S.rd=S.rd,smooth.name.smf=smooth.name.smf,smooth.name.tensor=smooth.name.tensor,smooth.name.tint=smooth.name.tint,smooth.name.rd=smooth.name.rd,
-	S.pen=build$S.pen,grad.unpen.beta=grad.unpen.beta,grad.beta=grad.beta,Hess.unpen.beta=Hess.unpen.beta,Hess.beta=Hess.beta,
+	S.pen=build$S.pen,grad.unpen.beta=grad.unpen.beta,grad.beta=grad.beta,Hess.unpen.beta=Hess.unpen.beta,Hess.beta=-neg.Hess.beta,
 	Hess.beta.modif=Hess.beta.modif,ll.unpen=ll.unpen,ll.pen=ll.pen,deriv.rho.beta=deriv.rho.beta,deriv.rho.inv.Hess.beta=deriv.rho.inv.Hess.beta,lambda=lambda,
 	nb.smooth=nb.smooth,iter.rho=iter.rho,optim.rho=optim.rho,method=method,criterion.val=criterion.val,LCV=LCV,LAML=LAML,grad.rho=grad.rho,Hess.rho=Hess.rho,inv.Hess.rho=inv.Hess.rho,
 	Hess.rho.modif=Hess.rho.modif,Ve=Ve,Vp=Vp,Vc=Vc,Vc.approx=Vc.approx,Z.smf=Z.smf,Z.tensor=Z.tensor,Z.tint=Z.tint,
@@ -3733,10 +3474,11 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
 #' Takes a fitted \code{survPen} object and produces hazard and survival predictions given a new set of values for the model covariates.
 #' @param object a fitted \code{survPen} object as produced by \code{\link{survPen.fit}}
 #' @param newdata data frame giving the new covariates value
+#' @param newdata.ref data frame giving the new covariates value for the reference population (used only when type="HR")
 #' @param n.legendre number of nodes to approximate the cumulative hazard by Gauss-Legendre quadrature; default is 50
 #' @param conf.int numeric value giving the precision of the confidence intervals; default is 0.95
 #' @param do.surv If TRUE, the survival and its lower and upper confidence values are computed. Survival computation requires numerical integration and can be time-consuming so if you only want the hazard use do.surv=FALSE; default is TRUE
-#' @param type, if type="lpmatrix" returns the design matrix (or linear predictor matrix) corresponding to the new values of the covariates; default is "standard" for classical hazard and survival estimation
+#' @param type, if type="lpmatrix" returns the design matrix (or linear predictor matrix) corresponding to the new values of the covariates; if equals "HR", returns the predicted HR and CIs between newdata and newdata.ref; default is "standard" for classical hazard and survival estimation
 #' @param exclude.random if TRUE all random effects are set to zero; default is FALSE
 #' @param get.deriv.H if TRUE, the derivatives wrt to the regression parameters of the cumulative hazard are returned; default is FALSE
 #' @param ... other arguments
@@ -3751,6 +3493,9 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
 #' \item{surv.inf}{lower value for the confidence interval on the survival based on the Bayesian covariance matrix Vp}
 #' \item{surv.sup}{Upper value for the confidence interval on the survival based on the Bayesian covariance matrix Vp}
 #' \item{deriv.H}{derivatives wrt to the regression parameters of the cumulative hazard. Useful to calculate standardized survival}
+#' \item{HR}{predicted hazard ratio ; only when type = "HR"}
+#' \item{HR.inf}{lower value for the confidence interval on the hazard ratio based on the Bayesian covariance matrix Vp  ; only when type = "HR"}
+#' \item{HR.sup}{Upper value for the confidence interval on the hazard ratio based on the Bayesian covariance matrix Vp  ; only when type = "HR"}
 #' @export
 #'
 #' @references
@@ -3773,7 +3518,13 @@ survPen.fit <- function(build,data,formula,max.it.beta=200,beta.ini=NULL,detail.
 #' pred$haz
 #' pred$surv
 #'
-predict.survPen <- function(object,newdata,n.legendre=50,conf.int=0.95,do.surv=TRUE,type="standard",exclude.random=FALSE,get.deriv.H=FALSE,...){
+#' # predicting hazard ratio between age 70 and age 30
+#' pred.HR <- predict(mod1,data.frame(fu=1,age=70),newdata.ref=data.frame(fu=1,age=30),type="HR")
+#' pred.HR$HR
+#' pred.HR$HR.inf
+#' pred.HR$HR.sup
+#'
+predict.survPen <- function(object,newdata,newdata.ref=NULL,n.legendre=50,conf.int=0.95,do.surv=TRUE,type="standard",exclude.random=FALSE,get.deriv.H=FALSE,...){
 
 	if (!inherits(object,"survPen")) stop("object is not of class survPen")
 	
@@ -3818,6 +3569,37 @@ predict.survPen <- function(object,newdata,n.legendre=50,conf.int=0.95,do.surv=T
 		}
 
 	}
+	
+	
+	if (type=="HR"){
+	
+		myMat.ref <- design.matrix(object$formula,data.spec=newdata.ref,Z.smf=object$Z.smf,Z.tensor=object$Z.tensor,Z.tint=object$Z.tint,list.smf=object$list.smf,list.tensor=object$list.tensor,list.tint=object$list.tint,list.rd=object$list.rd)
+
+		X <- myMat - myMat.ref
+		
+		log.haz.ratio <- as.vector(X%vec%beta)
+		
+		haz.ratio <- exp(log.haz.ratio)
+		
+		# Confidence intervals
+		if (!is.null(object$Vp)){
+		
+			std<-sqrt(rowSums((X%mult%object$Vp)*X))
+			haz.ratio.inf <- as.vector(exp(log.haz.ratio-qt.norm*std))
+			haz.ratio.sup <- as.vector(exp(log.haz.ratio+qt.norm*std))
+		
+		}else{
+		
+			haz.ratio.inf <- NULL
+			haz.ratio.sup <- NULL
+		
+		}
+		
+		return(list(HR=haz.ratio,HR.inf=haz.ratio.inf,HR.sup=haz.ratio.sup))
+		
+	}
+
+	
 	
 	# estimated linear predictor
 	pred.haz <- myMat%vec%beta
@@ -4216,14 +3998,12 @@ NR.beta <- function(build,beta.ini,detail.beta,max.it.beta=200,tol.beta=1e-04){
 	# get all the build elements
 	type <- build$type # net or overall 
 	X <- build$X # design matrix
-	T.X <- build$T.X # transpose of design matrix
+
 	X.GL <- build$X.GL # list of Gauss-Legendre design matrices
-	T.X.GL <- build$T.X.GL # list of their transposes
-	X.GL.w.tm <- build$X.GL.w.tm # List of weighted Gauss-Legendre design matrices
+	
 	event <- build$event # censoring indicators
-	eventX <- build$eventX # censoring indicators multiplied by design matrix
 	expected <- build$expected # expected mortality rates
-	eventXexpected <- build$eventXexpected 
+	
 	leg <- build$leg # weights and nodes for Gauss-Legendre quadrature
 	n.legendre <- build$n.legendre # number of nodes for Gauss-Legendre quadrature
 	t1 <- build$t1 # time-to-event vector
@@ -4273,27 +4053,27 @@ NR.beta <- function(build,beta.ini,detail.beta,max.it.beta=200,tol.beta=1e-04){
 		# first derivatives of the cumulative hazard
 		haz.GL.old <- lapply(1:n.legendre, function(i) exp(X.GL[[i]]%vec%betaold))
 		
-		deriv.list <- lapply(1:n.legendre, function(i) X.GL.w.tm[[i]]*haz.GL.old[[i]])
+		deriv.list <- lapply(1:n.legendre, function(i) X.GL[[i]]*haz.GL.old[[i]]*leg$weights[i]*tm)
 
 		f.first <- Reduce("+",deriv.list)
 		
 		# log-likelihoods gradients
 		if (type=="net"){
-			grad.unpen.beta <- colSums(-f.first + (eventX*ftold)/(ftold+expected))
+			grad.unpen.beta <- colSums2(-f.first + (event*X*ftold)/(ftold+expected))
 		}else{
-			grad.unpen.beta <- colSums(-f.first + eventX)
+			grad.unpen.beta <- colSums2(-f.first + event*X)
 		}
 
 		grad <- grad.unpen.beta-S%vec%betaold
 		
 		# second derivatives of the cumulative hazard
-		deriv.2.list <- lapply(1:n.legendre, function(i) T.X.GL[[i]]%mult%(deriv.list[[i]]))
-
+		deriv.2.list <- lapply(1:n.legendre, function(i) X.GL[[i]]%cross%(deriv.list[[i]]))
+		
 		f.second <- Reduce("+",deriv.2.list)
-
+        
 		# log-likelihoods Hessians
 		if (type=="net"){
-			Hess.unpen <- -f.second + T.X%mult%(eventXexpected*ftold/(ftold+expected)^2)
+			Hess.unpen <- -f.second + X%cross%(event*X*expected*ftold/(ftold+expected)^2)
     	}else{
 			Hess.unpen <- -f.second
 		}
@@ -4330,7 +4110,7 @@ NR.beta <- function(build,beta.ini,detail.beta,max.it.beta=200,tol.beta=1e-04){
 			if (detail.beta) {cat("beta Hessian perturbation, ", cpt.while, "iterations","\n","\n")}
 		}
 		
-		neg.inv.Hess <- chol2inv(R)
+		Vp <- chol2inv(R)
 
 
 		# cumulative hazard
@@ -4350,7 +4130,7 @@ NR.beta <- function(build,beta.ini,detail.beta,max.it.beta=200,tol.beta=1e-04){
 		if (is.nan(ll.pen.old)) stop("message NR.beta: convergence issues, cannot evaluate log-likelihood")
 
 		# New set of parameters
-		pas <- neg.inv.Hess%vec%grad
+		pas <- Vp%vec%grad
 		
 		beta1 <- betaold+pas
 
@@ -4499,7 +4279,7 @@ NR.beta <- function(build,beta.ini,detail.beta,max.it.beta=200,tol.beta=1e-04){
 #' # Setting up the model before fitting
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
-#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
+#' expected=0,expected.name=NULL,type="overall",n.legendre=20,
 #' cl="survPen(form,data,t1=time,event=event)",beta.ini=NULL)
 #'  
 #' # Estimating the smoothing parameter and the regression parameters
@@ -4532,7 +4312,6 @@ NR.rho <- function(build,rho.ini,data,formula,max.it.beta=200,max.it.rho=30,beta
 
   while(abs(val-val.old)>tol.rho|any(abs(grad)>tol.rho))
   {
-
     if(k.rho > max.it.rho)
     {
       stop("message NR.rho: Ran out of iterations (", k.rho, "), and did not converge ")
