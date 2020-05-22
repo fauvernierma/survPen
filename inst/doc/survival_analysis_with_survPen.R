@@ -1,4 +1,4 @@
-## ----setup, include = FALSE----------------------------------------------
+## ----setup, include = FALSE---------------------------------------------------
 library(survPen)
 library(splines) # for ns
 
@@ -9,38 +9,38 @@ knitr::opts_chunk$set(
   fig.height = 4.5
 )
 
-## ---- echo=TRUE, results='asis'------------------------------------------
+## ---- echo=TRUE, results='asis'-----------------------------------------------
 data(datCancer)
 knitr::kable(head(datCancer,10))
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 f.cst <- ~1
 mod.cst <- survPen(f.cst,data=datCancer,t1=fu,event=dead)
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 f.pwcst <- ~cut(fu,breaks=seq(0,5,by=0.5),include.lowest=TRUE)
 mod.pwcst <- survPen(f.pwcst,data=datCancer,t1=fu,event=dead,n.legendre=200)
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 f.lin <- ~fu
 mod.lin <- survPen(f.lin,data=datCancer,t1=fu,event=dead)
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 library(splines)
 
 f.rcs <- ~ns(fu,knots=c(0.25, 0.5, 1, 2, 4),Boundary.knots=c(0,5))
 
 mod.rcs <- survPen(f.rcs,data=datCancer,t1=fu,event=dead)
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 f.pen <- ~ smf(fu,knots=c(0,0.25, 0.5, 1, 2, 4,5)) # careful here: the boundary knots are included
 
 mod.pen <- survPen(f.pen,data=datCancer,t1=fu,event=dead)
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 mod.unpen <- survPen(f.pen,data=datCancer,t1=fu,event=dead,lambda=0)
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 new.time <- seq(0,5,length=100)
 pred.cst <- predict(mod.cst,data.frame(fu=new.time))
 pred.pwcst <- predict(mod.pwcst,data.frame(fu=new.time))
@@ -65,7 +65,7 @@ col=c("black","blue3","green3","orange","red"),
 lty=rep(1,5),lwd=rep(lwd1,5))
 
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 
 par(mfrow=c(1,2))
 plot(new.time,pred.pen$haz,type="l",ylim=c(0,0.2),main="Hazard from mod.pen with CIs",
@@ -78,7 +78,19 @@ xlab="time since diagnosis (years)",ylab="survival",col="red",lwd=lwd1)
 lines(new.time,pred.pen$surv.inf,lty=2)
 lines(new.time,pred.pen$surv.sup,lty=2)
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
+f.pen.age <- ~tensor(fu,age,df=c(5,5)) # see below for explanations about tensor models
+mod.pen.age <- survPen(f.pen.age,data=datCancer,t1=fu,event=dead)
+pred.pen.HR <- predict(mod.pen.age,data.frame(fu=new.time,age=70),newdata.ref=data.frame(fu=new.time,age=30),type="HR")
+
+par(mfrow=c(1,1))
+plot(new.time,pred.pen.HR$HR,type="l",ylim=c(0,15),main="Hazard ratio with CIs",
+xlab="time since diagnosis (years)",ylab="hazard ratio",col="red",lwd=lwd1)
+lines(new.time,pred.pen.HR$HR.inf,lty=2)
+lines(new.time,pred.pen.HR$HR.sup,lty=2)
+
+
+## ---- fig.show='hold'---------------------------------------------------------
 # you can also calculate the hazard yourself with the lpmatrix option.
 # For example, compare the following predictions:
 haz.pen <- pred.pen$haz
@@ -88,7 +100,7 @@ haz.pen.lpmatrix <- as.numeric(exp(X.pen%*%mod.pen$coefficients))
 
 summary(haz.pen.lpmatrix - haz.pen)
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 # standard errors from the Bayesian covariance matrix Vp
 std <- sqrt(rowSums((X.pen%*%mod.pen$Vp)*X.pen))
 
@@ -101,10 +113,10 @@ summary(haz.inf - pred.pen$haz.inf)
 summary(haz.sup - pred.pen$haz.sup)
 
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 summary(mod.pen)
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 mod.pen$ll.unpen
 mod.pen$ll.pen
 mod.pen$p
@@ -113,19 +125,19 @@ mod.pen$LAML
 mod.pen$lambda
 summary(mod.pen)$edf.per.smooth
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 mod.pen$aic
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 mod.pen$edf
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 mod.pen$aic2
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 mod.pen$edf2
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 f1 <- ~smf(fu)
 
 mod.LCV <- survPen(f1,data=datCancer,t1=fu,event=dead,expected=NULL,method="LCV")
@@ -146,7 +158,7 @@ lines(new.time,pred.LAML$haz,col="red",lwd=lwd1,lty=2)
 legend("topright",legend=c("LCV","LAML"),col=c("black","red"),lty=c(1,2),lwd=rep(lwd1,2))
 
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 rho.vec <- seq(-1,15,length=50)
 LCV <- rep(0,50)
 LAML <- rep(0,50)
@@ -163,23 +175,23 @@ plot(rho.vec,LCV,type="l",main="LCV vs log(lambda)",ylab="LCV",xlab="log(lambda)
 	
 plot(rho.vec,LAML,type="l",main="LAML vs log(lambda)",ylab="-LAML",xlab="log(lambda)",lwd=lwd1)	
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 f1 <- ~smf(fu,df=5)
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 df1 <- 5
 quantile(unique(datCancer$fu),seq(0,1,length=df1)) 
 
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 mod1 <- survPen(f1,data=datCancer,t1=fu,event=dead)
 
 mod1$list.smf
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 # f1 <- ~smf(fu,knots=c(0,1,3,6,8))
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 mod.total <- survPen(f1,data=datCancer,t1=fu,event=dead,method="LAML")
 
 mod.excess <- survPen(f1,data=datCancer,t1=fu,event=dead,expected=rate,method="LAML")
@@ -203,7 +215,7 @@ legend("bottomleft",legend=c("overall survival","net survival"), col=c("black","
 
 
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 f.tensor <- ~tensor(fu,age,df=c(5,5))
 
 f.tint <- ~tint(fu,df=5)+tint(age,df=5)+tint(fu,age,df=c(5,5))
@@ -247,16 +259,16 @@ xlab="\n time since diagnosis",ylab="\n age",zlab="\n excess hazard",
 ticktype="detailed",zlim=c(0,zmax))
 
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 set.seed(18)
 subdata <- datCancer[sample(1:2000,50),]
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 mod.tensor.sub <- survPen(f.tensor,data=subdata,t1=fu,event=dead)
 
 mod.tint.sub <- survPen(f.tint,data=subdata,t1=fu,event=dead)
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 # tensor
 mod.tensor.sub$lambda
 summary(mod.tensor.sub)$edf.per.smooth
@@ -265,7 +277,7 @@ summary(mod.tensor.sub)$edf.per.smooth
 mod.tint.sub$lambda
 summary(mod.tint.sub)$edf.per.smooth
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 new.age <- seq(quantile(subdata$age,0.10),quantile(subdata$age,0.90),length=50)
 new.time <- seq(0,max(subdata$fu),length=50)
 
@@ -284,7 +296,7 @@ persp(new.time,new.age,Z.tint.sub,col=colors[facet(Z.tint.sub)],main="tint",thet
 xlab="\n time since diagnosis",ylab="\n age",zlab="\n excess hazard",
 ticktype="detailed",zlim=c(0,zmax))
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 data2D <- expand.grid(fu=new.time,age=c(50,60,70,80))
 
 data2D$haz.tensor <- predict(mod.tensor.sub,data2D)$haz
@@ -304,12 +316,12 @@ main=paste("age", i),xlab="time since diagnosis",ylab="excess hazard",lwd=lwd1)
 lines(new.time,data2D[data2D$age==i,]$haz.tint,col="red",lty=2,lwd=lwd1)
 }
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 mod.tensor.sub$aic2
 
 mod.tint.sub$aic2
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 f4 <- ~tensor(fu,age,yod,df=c(5,5,5))
 
 # excess hazard model
@@ -343,7 +355,7 @@ persp(new.time,new.age,Z_2010,col=colors[facet(Z_2010)],main="2010",theta=20,
 xlab="\n time since diagnosis",ylab="\n age",zlab="\n excess hazard",
 ticktype="detailed",zlim=c(0,1))
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 n <- 10000
 don <- data.frame(num=1:n)
 
@@ -365,7 +377,7 @@ don$scale <- ifelse(don$sex=="men",scale_men,scale_women)
 don$fu <- rweibull(n,shape=don$shape,scale=don$scale)
 don$dead <- 1 # no censoring
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 hazard <- function(x,shape,scale){
 exp(dweibull(x,shape=shape,scale=scale,log=TRUE) - pweibull(x,shape=shape,scale=scale,log.p=TRUE,lower.tail=FALSE))
 }
@@ -387,7 +399,7 @@ xlab="time",ylab="hazard ratio",lwd=lwd1,
 ylim=c(0,2),
 main="Theoretical HR men / women")
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 # knots for time
 knots.t <- quantile(don$fu,seq(0,1,length=10))
 
@@ -404,7 +416,7 @@ m.TRUE <- survPen(~sex + smf(fu,by=sex,same.rho=TRUE,knots=knots.t),t1=fu,event=
 # difference smooth via ordered factor by variable
 m.difference <- survPen(~sex.order + smf(fu,knots=knots.t) +smf(fu,by=sex.order,same.rho=FALSE,knots=knots.t),t1=fu,event=dead,data=don)
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 newt <- seq(0,5,by=0.1)
 data.pred <- expand.grid(fu=newt,sex=c("women","men"))
 data.pred$men <- ifelse(data.pred$sex=="men",1,0)
@@ -438,7 +450,7 @@ lines(newt,data.pred[data.pred$sex=="women",]$haz.TRUE,col="green3",lwd=lwd1,lty
 lines(newt,data.pred[data.pred$sex=="women",]$haz.difference,col="orange",lwd=lwd1,lty=5)
 lines(nt,hazard(nt,shape_women,scale_women),col="blue3",lty=3)
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 # predicting hazard ratio men / women
 
 HR.stratified <- data.pred[data.pred$sex=="men",]$haz.men / data.pred[data.pred$sex=="women",]$haz.women
@@ -456,22 +468,22 @@ abline(h=hazard(nt,shape_men,scale_men)/hazard(nt,shape_women,scale_women),lty=3
 legend("bottomright",c("stratified","same.rho=FALSE","same.rho=TRUE","difference smooth","true"),lty=c(1,2,4,5,3),
 col=c("black","red","green3","orange","blue3"),lwd=c(rep(lwd1,4),1))
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 datCancer$agec <- datCancer$age - 50
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 m <- survPen(~smf(fu) + smf(fu,by=agec),data=datCancer,t1=fu,event=dead)
 m$ll.pen
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 m.bis <- survPen(~smf(fu) + agec + tint(fu,by=agec,df=10),data=datCancer,t1=fu,event=dead)
 m.bis$ll.pen # same penalized log-likelihood as m
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 m2 <- survPen(~tint(fu,df=10) + tint(agec,df=10) + tint(fu,by=agec,df=10),data=datCancer,t1=fu,event=dead)
 m2$ll.pen 
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
   set.seed(1)
   
   # Weibull parameters
@@ -505,7 +517,7 @@ m2$ll.pen
   max.time <- 5
   
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
   for (file in 1:NFile){
   
 	  wj <- rnorm(NCluster,mean=0,sd=sd1) 
@@ -531,27 +543,27 @@ m2$ll.pen
 # Relative Bias in percentage for sd1
 100*(mean(exp(log.sd.vec)) - sd1)/sd1
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 summary(mod.frailty)
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 exp(summary(mod.frailty)$random.effects)[1]
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 exp(-0.5*log(mod.frailty$lambda)-0.5*log(mod.frailty$S.scale))[2]
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 # 1-year survival for a patient in cluster 6
 predict(mod.frailty,data.frame(fu=1,cluster=6))$surv
 
 # 1-year survival for a patient in cluster 10
 predict(mod.frailty,data.frame(fu=1,cluster=10))$surv
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 # 1-year survival for a patient when random effect is set to zero 
 predict(mod.frailty,data.frame(fu=1,cluster=10),exclude.random=TRUE)$surv
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 # fitting
 f1 <- ~smf(fu)
 
@@ -570,7 +582,7 @@ plot(new.time,pred.trunc$surv,type="l",ylim=c(0,1),main="Survival",
 xlab="time since diagnosis (years)",ylab="survival",lwd=lwd1)
 
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 f.pen <- ~ smf(fu) 
 
 vec.lambda <- c(0,1000,10^6)
@@ -589,14 +601,14 @@ for (i in (1:3)){
 
 }
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 mod.pen <- survPen(f.pen,data=datCancer,t1=fu,event=dead,rho.ini=5)
 
 mod.excess.pen <- survPen(f.pen,data=datCancer,t1=fu,event=dead,expected=rate,rho.ini=5,beta.ini=mod.pen$coef)
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 mod.pen <- survPen(f.pen,data=datCancer,t1=fu,event=dead,detail.rho=TRUE)
 
-## ---- fig.show='hold'----------------------------------------------------
+## ---- fig.show='hold'---------------------------------------------------------
 mod.pen <- survPen(f.pen,data=datCancer,t1=fu,event=dead,detail.rho=TRUE,detail.beta=TRUE)
 
