@@ -1,3 +1,50 @@
+survPen v1.4.5
+==============
+
+Changes:
+* Gradient and Hessian of LCV and LAML are coded in compiled C code. The associated code has also been reorganized
+* colSums and cor.var are also rewritten in C
+* hazard ratios and associated CIs added to predict method
+* edf1 is taken as an upper bound for edf2 (as in mgcv)
+
+
+survPen v1.3.0
+==============
+
+Changes:
+* added functions '%mult%' and '%vec%' for matrix multiplication in compiled C code 
+in order to substantially reduce computation time
+
+Debugging:
+* beta.ini is now correctly reparameterized before fitting
+* the class of matrices are now tested using 'inherits' instead of 'class(object)=='
+
+
+survPen v1.2.0
+==============
+
+Changes:
+* the computation burden has been reduced by only calculating the diagonal
+elements of the fourth derivatives of the likelihood (without precision loss)
+* if the LU decompistion fails to invert the penlaty matrix, A QR decomposition is tried. 
+If the QR fails, a Cholesky decomposition is tried
+* corrected knots management when they are in a list format (takes into account the names of the list instead of the order of appearance)
+* all crossproducts are now evaluated by the crossprod function
+* the penalized log-likelihood at convergence was renamed ll.pen (instead of ll)
+
+
+survPen v1.1.0 
+==============
+
+Changes:
+
+* includes a vignette called Survival_analysis_with_survPen that shows detailed examples of the package functionalities
+* examples 5 and 6 from the help page were deleted as they were clumsy. More detailed examples are available in the vignette Survival_analysis_with_survPen 
+* returns a convergence indicator (converged = TRUE or FALSE)
+* when using a factor by variable, same.rho=FALSE is used as default instead of same.rho=TRUE
+* function crs returns knots when intercept=FALSE
+
+
 survPen v1.3.1
 ==============
 
