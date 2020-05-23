@@ -19,5 +19,4 @@ jobs:
   - r: 3.5
   - r: 3.4
 
-after_success:
-  - Rscript -e 'library(covr);codecov()'
+
