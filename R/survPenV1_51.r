@@ -3882,17 +3882,20 @@ summary.survPen <- function(object,...){
 #' print summary for a \code{survPen} fit
 #'
 #' @param x an object of class \code{summary.survPen}
+#' @param digits controls number of digits printed in output.
+#' @param signif.stars Should significance stars be printed alongside output.
 #' @param ... other arguments
 #' @return print of summary
 #'
-print.summary.survPen <- function(x, ...)
+print.summary.survPen <- function(x, digits = max(3, getOption("digits") - 2), 
+    signif.stars = getOption("show.signif.stars"), ...)
 {
 	cat(paste(noquote(x$type),"\n","\n"))
 
 	cat("Call:\n")
 	print(x$call)
-	cat("\nCoefficients:\n")
-	stats::printCoefmat(x$coefficients, P.value=TRUE, has.Pvalue=TRUE)
+	cat("\nParametric coefficients:\n")
+	stats::printCoefmat(x$coefficients, P.value=TRUE, has.Pvalue=TRUE, digits = digits, signif.stars = signif.stars, na.print = "NA", ...)
 
 	if (x$random){
 
@@ -3901,39 +3904,38 @@ print.summary.survPen <- function(x, ...)
 
 	}
 	
-	signif.precision <- 6
-	
 	if (substr(x$type,1,9)=="penalized"){
 
 		cat("\n")
-		cat(paste("log-likelihood=",signif(x$likelihood,signif.precision),",","penalized log-likelihood=",signif(x$penalized.likelihood,signif.precision)))
+		cat(paste0("log-likelihood = ",signif(x$likelihood,digits),","," penalized log-likelihood = ",signif(x$penalized.likelihood,digits)))
 
 		cat("\n")
-		cat(paste("Number of parameters=",x$parameters,",","effective degrees of freedom=",signif(x$edf,signif.precision)))
+		cat(paste0("Number of parameters = ",x$parameters,","," effective degrees of freedom = ",signif(x$edf,digits)))
 
 		cat("\n")
-		cat(paste(x$method,"=",signif(x$criterion.val,signif.precision)),"\n","\n")
+		cat(paste(x$method,"=",signif(x$criterion.val,digits)),"\n","\n")
 		
 		cat("Smoothing parameter(s):\n")
-		print(x$smoothing.parameter)
+		print(signif(x$smoothing.parameter,digits))
 		
 		cat("\n")
 		cat("edf of smooth terms:\n")
-		print(x$edf.per.smooth)
+		print(signif(x$edf.per.smooth,digits))
 
 	}else{
 	
 		cat("\n")
-		cat(paste("likelihood=",signif(x$likelihood,signif.precision)))
+		cat(paste("likelihood =",signif(x$likelihood,digits)))
 
 		cat("\n")
-		cat(paste("Number of parameters=",x$parameters))
+		cat(paste("Number of parameters =",x$parameters))
 
 	}
 
 	cat("\n")
 	cat(paste("converged=",x$converged))
 
+	invisible(x)
 	cat("\n")
 }
 
