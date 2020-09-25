@@ -3,8 +3,9 @@ survPen v1.5.1
 ==============
 
 Changes:
+* the call to OpenMP in the Makevars file in src folder has been removed. Indeed, this call made survPen tend to use all
+cores available on the machine. This behaviour can become problematic when used on servers.
 * the print.summary function now hides the object and only prints relevant information in a nice standard format
-
 
 
 survPen v1.5.0
