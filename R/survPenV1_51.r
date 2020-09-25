@@ -3886,6 +3886,7 @@ summary.survPen <- function(object,...){
 #' @param signif.stars Should significance stars be printed alongside output.
 #' @param ... other arguments
 #' @return print of summary
+#' @export
 #'
 print.summary.survPen <- function(x, digits = max(3, getOption("digits") - 2), 
     signif.stars = getOption("show.signif.stars"), ...)
