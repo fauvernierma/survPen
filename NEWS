@@ -1,3 +1,12 @@
+
+survPen v1.5.1
+==============
+
+Changes:
+* the print.summary function now hides the object and only prints relevant information in a nice standard format
+
+
+
 survPen v1.5.0
 ==============
 
