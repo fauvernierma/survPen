@@ -10,23 +10,10 @@
 
 
 
-<meta name="date" content="2020-05-20" />
+<meta name="date" content="2020-09-25" />
 
 <title>Survival analysis with survPen</title>
 
-<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
-// be compatible with the behavior of Pandoc < 2.8).
-document.addEventListener('DOMContentLoaded', function(e) {
-  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
-  var i, h, a;
-  for (i = 0; i < hs.length; i++) {
-    h = hs[i];
-    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
-    a = h.attributes;
-    while (a.length > 0) h.removeAttribute(a[0].name);
-  }
-});
-</script>
 <script>/*! jQuery v1.11.3 | (c) 2005, 2015 jQuery Foundation, Inc. | jquery.org/license */
 !function(a,b){"object"==typeof module&&"object"==typeof module.exports?module.exports=a.document?b(a,!0):function(a){if(!a.document)throw new Error("jQuery requires a window with a document");return b(a)}:b(a)}("undefined"!=typeof window?window:this,function(a,b){var c=[],d=c.slice,e=c.concat,f=c.push,g=c.indexOf,h={},i=h.toString,j=h.hasOwnProperty,k={},l="1.11.3",m=function(a,b){return new m.fn.init(a,b)},n=/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,o=/^-ms-/,p=/-([\da-z])/gi,q=function(a,b){return b.toUpperCase()};m.fn=m.prototype={jquery:l,constructor:m,selector:"",length:0,toArray:function(){return d.call(this)},get:function(a){return null!=a?0>a?this[a+this.length]:this[a]:d.call(this)},pushStack:function(a){var b=m.merge(this.constructor(),a);return b.prevObject=this,b.context=this.context,b},each:function(a,b){return m.each(this,a,b)},map:function(a){return this.pushStack(m.map(this,function(b,c){return a.call(b,c,b)}))},slice:function(){return this.pushStack(d.apply(this,arguments))},first:function(){return this.eq(0)},last:function(){return this.eq(-1)},eq:function(a){var b=this.length,c=+a+(0>a?b:0);return this.pushStack(c>=0&&b>c?[this[c]]:[])},end:function(){return this.prevObject||this.constructor(null)},push:f,sort:c.sort,splice:c.splice},m.extend=m.fn.extend=function(){var a,b,c,d,e,f,g=arguments[0]||{},h=1,i=arguments.length,j=!1;for("boolean"==typeof g&&(j=g,g=arguments[h]||{},h++),"object"==typeof g||m.isFunction(g)||(g={}),h===i&&(g=this,h--);i>h;h++)if(null!=(e=arguments[h]))for(d in e)a=g[d],c=e[d],g!==c&&(j&&c&&(m.isPlainObject(c)||(b=m.isArray(c)))?(b?(b=!1,f=a&&m.isArray(a)?a:[]):f=a&&m.isPlainObject(a)?a:{},g[d]=m.extend(j,f,c)):void 0!==c&&(g[d]=c));return g},m.extend({expando:"jQuery"+(l+Math.random()).replace(/\D/g,""),isReady:!0,error:function(a){throw new Error(a)},noop:function(){},isFunction:function(a){return"function"===m.type(a)},isArray:Array.isArray||function(a){return"array"===m.type(a)},isWindow:function(a){return null!=a&&a==a.window},isNumeric:function(a){return!m.isArray(a)&&a-parseFloat(a)+1>=0},isEmptyObject:function(a){var b;for(b in a)return!1;return!0},isPlainObject:function(a){var b;if(!a||"object"!==m.type(a)||a.nodeType||m.isWindow(a))return!1;try{if(a.constructor&&!j.call(a,"constructor")&&!j.call(a.constructor.prototype,"isPrototypeOf"))return!1}catch(c){return!1}if(k.ownLast)for(b in a)return j.call(a,b);for(b in a);return void 0===b||j.call(a,b)},type:function(a){return null==a?a+"":"object"==typeof a||"function"==typeof a?h[i.call(a)]||"object":typeof a},globalEval:function(b){b&&m.trim(b)&&(a.execScript||function(b){a.eval.call(a,b)})(b)},camelCase:function(a){return a.replace(o,"ms-").replace(p,q)},nodeName:function(a,b){return a.nodeName&&a.nodeName.toLowerCase()===b.toLowerCase()},each:function(a,b,c){var d,e=0,f=a.length,g=r(a);if(c){if(g){for(;f>e;e++)if(d=b.apply(a[e],c),d===!1)break}else for(e in a)if(d=b.apply(a[e],c),d===!1)break}else if(g){for(;f>e;e++)if(d=b.call(a[e],e,a[e]),d===!1)break}else for(e in a)if(d=b.call(a[e],e,a[e]),d===!1)break;return a},trim:function(a){return null==a?"":(a+"").replace(n,"")},makeArray:function(a,b){var c=b||[];return null!=a&&(r(Object(a))?m.merge(c,"string"==typeof a?[a]:a):f.call(c,a)),c},inArray:function(a,b,c){var d;if(b){if(g)return g.call(b,a,c);for(d=b.length,c=c?0>c?Math.max(0,d+c):c:0;d>c;c++)if(c in b&&b[c]===a)return c}return-1},merge:function(a,b){var c=+b.length,d=0,e=a.length;while(c>d)a[e++]=b[d++];if(c!==c)while(void 0!==b[d])a[e++]=b[d++];return a.length=e,a},grep:function(a,b,c){for(var d,e=[],f=0,g=a.length,h=!c;g>f;f++)d=!b(a[f],f),d!==h&&e.push(a[f]);return e},map:function(a,b,c){var d,f=0,g=a.length,h=r(a),i=[];if(h)for(;g>f;f++)d=b(a[f],f,c),null!=d&&i.push(d);else for(f in a)d=b(a[f],f,c),null!=d&&i.push(d);return e.apply([],i)},guid:1,proxy:function(a,b){var c,e,f;return"string"==typeof b&&(f=a[b],b=a,a=f),m.isFunction(a)?(c=d.call(arguments,2),e=function(){return a.apply(b||this,c.concat(d.call(arguments)))},e.guid=a.guid=a.guid||m.guid++,e):void 0},now:function(){return+new Date},support:k}),m.each("Boolean Number String Function Array Date RegExp Object Error".split(" "),function(a,b){h["[object "+b+"]"]=b.toLowerCase()});function r(a){var b="length"in a&&a.length,c=m.type(a);return"function"===c||m.isWindow(a)?!1:1===a.nodeType&&b?!0:"array"===c||0===b||"number"==typeof b&&b>0&&b-1 in a}var s=function(a){var b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u="sizzle"+1*new Date,v=a.document,w=0,x=0,y=ha(),z=ha(),A=ha(),B=function(a,b){return a===b&&(l=!0),0},C=1<<31,D={}.hasOwnProperty,E=[],F=E.pop,G=E.push,H=E.push,I=E.slice,J=function(a,b){for(var c=0,d=a.length;d>c;c++)if(a[c]===b)return c;return-1},K="checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped",L="[\\x20\\t\\r\\n\\f]",M="(?:\\\\.|[\\w-]|[^\\x00-\\xa0])+",N=M.replace("w","w#"),O="\\["+L+"*("+M+")(?:"+L+"*([*^$|!~]?=)"+L+"*(?:'((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\"|("+N+"))|)"+L+"*\\]",P=":("+M+")(?:\\((('((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\")|((?:\\\\.|[^\\\\()[\\]]|"+O+")*)|.*)\\)|)",Q=new RegExp(L+"+","g"),R=new RegExp("^"+L+"+|((?:^|[^\\\\])(?:\\\\.)*)"+L+"+$","g"),S=new RegExp("^"+L+"*,"+L+"*"),T=new RegExp("^"+L+"*([>+~]|"+L+")"+L+"*"),U=new RegExp("="+L+"*([^\\]'\"]*?)"+L+"*\\]","g"),V=new RegExp(P),W=new RegExp("^"+N+"$"),X={ID:new RegExp("^#("+M+")"),CLASS:new RegExp("^\\.("+M+")"),TAG:new RegExp("^("+M.replace("w","w*")+")"),ATTR:new RegExp("^"+O),PSEUDO:new RegExp("^"+P),CHILD:new RegExp("^:(only|first|last|nth|nth-last)-(child|of-type)(?:\\("+L+"*(even|odd|(([+-]|)(\\d*)n|)"+L+"*(?:([+-]|)"+L+"*(\\d+)|))"+L+"*\\)|)","i"),bool:new RegExp("^(?:"+K+")$","i"),needsContext:new RegExp("^"+L+"*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\("+L+"*((?:-\\d)?\\d*)"+L+"*\\)|)(?=[^-]|$)","i")},Y=/^(?:input|select|textarea|button)$/i,Z=/^h\d$/i,$=/^[^{]+\{\s*\[native \w/,_=/^(?:#([\w-]+)|(\w+)|\.([\w-]+))$/,aa=/[+~]/,ba=/'|\\/g,ca=new RegExp("\\\\([\\da-f]{1,6}"+L+"?|("+L+")|.)","ig"),da=function(a,b,c){var d="0x"+b-65536;return d!==d||c?b:0>d?String.fromCharCode(d+65536):String.fromCharCode(d>>10|55296,1023&d|56320)},ea=function(){m()};try{H.apply(E=I.call(v.childNodes),v.childNodes),E[v.childNodes.length].nodeType}catch(fa){H={apply:E.length?function(a,b){G.apply(a,I.call(b))}:function(a,b){var c=a.length,d=0;while(a[c++]=b[d++]);a.length=c-1}}}function ga(a,b,d,e){var f,h,j,k,l,o,r,s,w,x;if((b?b.ownerDocument||b:v)!==n&&m(b),b=b||n,d=d||[],k=b.nodeType,"string"!=typeof a||!a||1!==k&&9!==k&&11!==k)return d;if(!e&&p){if(11!==k&&(f=_.exec(a)))if(j=f[1]){if(9===k){if(h=b.getElementById(j),!h||!h.parentNode)return d;if(h.id===j)return d.push(h),d}else if(b.ownerDocument&&(h=b.ownerDocument.getElementById(j))&&t(b,h)&&h.id===j)return d.push(h),d}else{if(f[2])return H.apply(d,b.getElementsByTagName(a)),d;if((j=f[3])&&c.getElementsByClassName)return H.apply(d,b.getElementsByClassName(j)),d}if(c.qsa&&(!q||!q.test(a))){if(s=r=u,w=b,x=1!==k&&a,1===k&&"object"!==b.nodeName.toLowerCase()){o=g(a),(r=b.getAttribute("id"))?s=r.replace(ba,"\\$&"):b.setAttribute("id",s),s="[id='"+s+"'] ",l=o.length;while(l--)o[l]=s+ra(o[l]);w=aa.test(a)&&pa(b.parentNode)||b,x=o.join(",")}if(x)try{return H.apply(d,w.querySelectorAll(x)),d}catch(y){}finally{r||b.removeAttribute("id")}}}return i(a.replace(R,"$1"),b,d,e)}function ha(){var a=[];function b(c,e){return a.push(c+" ")>d.cacheLength&&delete b[a.shift()],b[c+" "]=e}return b}function ia(a){return a[u]=!0,a}function ja(a){var b=n.createElement("div");try{return!!a(b)}catch(c){return!1}finally{b.parentNode&&b.parentNode.removeChild(b),b=null}}function ka(a,b){var c=a.split("|"),e=a.length;while(e--)d.attrHandle[c[e]]=b}function la(a,b){var c=b&&a,d=c&&1===a.nodeType&&1===b.nodeType&&(~b.sourceIndex||C)-(~a.sourceIndex||C);if(d)return d;if(c)while(c=c.nextSibling)if(c===b)return-1;return a?1:-1}function ma(a){return function(b){var c=b.nodeName.toLowerCase();return"input"===c&&b.type===a}}function na(a){return function(b){var c=b.nodeName.toLowerCase();return("input"===c||"button"===c)&&b.type===a}}function oa(a){return ia(function(b){return b=+b,ia(function(c,d){var e,f=a([],c.length,b),g=f.length;while(g--)c[e=f[g]]&&(c[e]=!(d[e]=c[e]))})})}function pa(a){return a&&"undefined"!=typeof a.getElementsByTagName&&a}c=ga.support={},f=ga.isXML=function(a){var b=a&&(a.ownerDocument||a).documentElement;return b?"HTML"!==b.nodeName:!1},m=ga.setDocument=function(a){var b,e,g=a?a.ownerDocument||a:v;return g!==n&&9===g.nodeType&&g.documentElement?(n=g,o=g.documentElement,e=g.defaultView,e&&e!==e.top&&(e.addEventListener?e.addEventListener("unload",ea,!1):e.attachEvent&&e.attachEvent("onunload",ea)),p=!f(g),c.attributes=ja(function(a){return a.className="i",!a.getAttribute("className")}),c.getElementsByTagName=ja(function(a){return a.appendChild(g.createComment("")),!a.getElementsByTagName("*").length}),c.getElementsByClassName=$.test(g.getElementsByClassName),c.getById=ja(function(a){return o.appendChild(a).id=u,!g.getElementsByName||!g.getElementsByName(u).length}),c.getById?(d.find.ID=function(a,b){if("undefined"!=typeof b.getElementById&&p){var c=b.getElementById(a);return c&&c.parentNode?[c]:[]}},d.filter.ID=function(a){var b=a.replace(ca,da);return function(a){return a.getAttribute("id")===b}}):(delete d.find.ID,d.filter.ID=function(a){var b=a.replace(ca,da);return function(a){var c="undefined"!=typeof a.getAttributeNode&&a.getAttributeNode("id");return c&&c.value===b}}),d.find.TAG=c.getElementsByTagName?function(a,b){return"undefined"!=typeof b.getElementsByTagName?b.getElementsByTagName(a):c.qsa?b.querySelectorAll(a):void 0}:function(a,b){var c,d=[],e=0,f=b.getElementsByTagName(a);if("*"===a){while(c=f[e++])1===c.nodeType&&d.push(c);return d}return f},d.find.CLASS=c.getElementsByClassName&&function(a,b){return p?b.getElementsByClassName(a):void 0},r=[],q=[],(c.qsa=$.test(g.querySelectorAll))&&(ja(function(a){o.appendChild(a).innerHTML="<a id='"+u+"'></a><select id='"+u+"-\f]' msallowcapture=''><option selected=''></option></select>",a.querySelectorAll("[msallowcapture^='']").length&&q.push("[*^$]="+L+"*(?:''|\"\")"),a.querySelectorAll("[selected]").length||q.push("\\["+L+"*(?:value|"+K+")"),a.querySelectorAll("[id~="+u+"-]").length||q.push("~="),a.querySelectorAll(":checked").length||q.push(":checked"),a.querySelectorAll("a#"+u+"+*").length||q.push(".#.+[+~]")}),ja(function(a){var b=g.createElement("input");b.setAttribute("type","hidden"),a.appendChild(b).setAttribute("name","D"),a.querySelectorAll("[name=d]").length&&q.push("name"+L+"*[*^$|!~]?="),a.querySelectorAll(":enabled").length||q.push(":enabled",":disabled"),a.querySelectorAll("*,:x"),q.push(",.*:")})),(c.matchesSelector=$.test(s=o.matches||o.webkitMatchesSelector||o.mozMatchesSelector||o.oMatchesSelector||o.msMatchesSelector))&&ja(function(a){c.disconnectedMatch=s.call(a,"div"),s.call(a,"[s!='']:x"),r.push("!=",P)}),q=q.length&&new RegExp(q.join("|")),r=r.length&&new RegExp(r.join("|")),b=$.test(o.compareDocumentPosition),t=b||$.test(o.contains)?function(a,b){var c=9===a.nodeType?a.documentElement:a,d=b&&b.parentNode;return a===d||!(!d||1!==d.nodeType||!(c.contains?c.contains(d):a.compareDocumentPosition&&16&a.compareDocumentPosition(d)))}:function(a,b){if(b)while(b=b.parentNode)if(b===a)return!0;return!1},B=b?function(a,b){if(a===b)return l=!0,0;var d=!a.compareDocumentPosition-!b.compareDocumentPosition;return d?d:(d=(a.ownerDocument||a)===(b.ownerDocument||b)?a.compareDocumentPosition(b):1,1&d||!c.sortDetached&&b.compareDocumentPosition(a)===d?a===g||a.ownerDocument===v&&t(v,a)?-1:b===g||b.ownerDocument===v&&t(v,b)?1:k?J(k,a)-J(k,b):0:4&d?-1:1)}:function(a,b){if(a===b)return l=!0,0;var c,d=0,e=a.parentNode,f=b.parentNode,h=[a],i=[b];if(!e||!f)return a===g?-1:b===g?1:e?-1:f?1:k?J(k,a)-J(k,b):0;if(e===f)return la(a,b);c=a;while(c=c.parentNode)h.unshift(c);c=b;while(c=c.parentNode)i.unshift(c);while(h[d]===i[d])d++;return d?la(h[d],i[d]):h[d]===v?-1:i[d]===v?1:0},g):n},ga.matches=function(a,b){return ga(a,null,null,b)},ga.matchesSelector=function(a,b){if((a.ownerDocument||a)!==n&&m(a),b=b.replace(U,"='$1']"),!(!c.matchesSelector||!p||r&&r.test(b)||q&&q.test(b)))try{var d=s.call(a,b);if(d||c.disconnectedMatch||a.document&&11!==a.document.nodeType)return d}catch(e){}return ga(b,n,null,[a]).length>0},ga.contains=function(a,b){return(a.ownerDocument||a)!==n&&m(a),t(a,b)},ga.attr=function(a,b){(a.ownerDocument||a)!==n&&m(a);var e=d.attrHandle[b.toLowerCase()],f=e&&D.call(d.attrHandle,b.toLowerCase())?e(a,b,!p):void 0;return void 0!==f?f:c.attributes||!p?a.getAttribute(b):(f=a.getAttributeNode(b))&&f.specified?f.value:null},ga.error=function(a){throw new Error("Syntax error, unrecognized expression: "+a)},ga.uniqueSort=function(a){var b,d=[],e=0,f=0;if(l=!c.detectDuplicates,k=!c.sortStable&&a.slice(0),a.sort(B),l){while(b=a[f++])b===a[f]&&(e=d.push(f));while(e--)a.splice(d[e],1)}return k=null,a},e=ga.getText=function(a){var b,c="",d=0,f=a.nodeType;if(f){if(1===f||9===f||11===f){if("string"==typeof a.textContent)return a.textContent;for(a=a.firstChild;a;a=a.nextSibling)c+=e(a)}else if(3===f||4===f)return a.nodeValue}else while(b=a[d++])c+=e(b);return c},d=ga.selectors={cacheLength:50,createPseudo:ia,match:X,attrHandle:{},find:{},relative:{">":{dir:"parentNode",first:!0}," ":{dir:"parentNode"},"+":{dir:"previousSibling",first:!0},"~":{dir:"previousSibling"}},preFilter:{ATTR:function(a){return a[1]=a[1].replace(ca,da),a[3]=(a[3]||a[4]||a[5]||"").replace(ca,da),"~="===a[2]&&(a[3]=" "+a[3]+" "),a.slice(0,4)},CHILD:function(a){return a[1]=a[1].toLowerCase(),"nth"===a[1].slice(0,3)?(a[3]||ga.error(a[0]),a[4]=+(a[4]?a[5]+(a[6]||1):2*("even"===a[3]||"odd"===a[3])),a[5]=+(a[7]+a[8]||"odd"===a[3])):a[3]&&ga.error(a[0]),a},PSEUDO:function(a){var b,c=!a[6]&&a[2];return X.CHILD.test(a[0])?null:(a[3]?a[2]=a[4]||a[5]||"":c&&V.test(c)&&(b=g(c,!0))&&(b=c.indexOf(")",c.length-b)-c.length)&&(a[0]=a[0].slice(0,b),a[2]=c.slice(0,b)),a.slice(0,3))}},filter:{TAG:function(a){var b=a.replace(ca,da).toLowerCase();return"*"===a?function(){return!0}:function(a){return a.nodeName&&a.nodeName.toLowerCase()===b}},CLASS:function(a){var b=y[a+" "];return b||(b=new RegExp("(^|"+L+")"+a+"("+L+"|$)"))&&y(a,function(a){return b.test("string"==typeof a.className&&a.className||"undefined"!=typeof a.getAttribute&&a.getAttribute("class")||"")})},ATTR:function(a,b,c){return function(d){var e=ga.attr(d,a);return null==e?"!="===b:b?(e+="","="===b?e===c:"!="===b?e!==c:"^="===b?c&&0===e.indexOf(c):"*="===b?c&&e.indexOf(c)>-1:"$="===b?c&&e.slice(-c.length)===c:"~="===b?(" "+e.replace(Q," ")+" ").indexOf(c)>-1:"|="===b?e===c||e.slice(0,c.length+1)===c+"-":!1):!0}},CHILD:function(a,b,c,d,e){var f="nth"!==a.slice(0,3),g="last"!==a.slice(-4),h="of-type"===b;return 1===d&&0===e?function(a){return!!a.parentNode}:function(b,c,i){var j,k,l,m,n,o,p=f!==g?"nextSibling":"previousSibling",q=b.parentNode,r=h&&b.nodeName.toLowerCase(),s=!i&&!h;if(q){if(f){while(p){l=b;while(l=l[p])if(h?l.nodeName.toLowerCase()===r:1===l.nodeType)return!1;o=p="only"===a&&!o&&"nextSibling"}return!0}if(o=[g?q.firstChild:q.lastChild],g&&s){k=q[u]||(q[u]={}),j=k[a]||[],n=j[0]===w&&j[1],m=j[0]===w&&j[2],l=n&&q.childNodes[n];while(l=++n&&l&&l[p]||(m=n=0)||o.pop())if(1===l.nodeType&&++m&&l===b){k[a]=[w,n,m];break}}else if(s&&(j=(b[u]||(b[u]={}))[a])&&j[0]===w)m=j[1];else while(l=++n&&l&&l[p]||(m=n=0)||o.pop())if((h?l.nodeName.toLowerCase()===r:1===l.nodeType)&&++m&&(s&&((l[u]||(l[u]={}))[a]=[w,m]),l===b))break;return m-=e,m===d||m%d===0&&m/d>=0}}},PSEUDO:function(a,b){var c,e=d.pseudos[a]||d.setFilters[a.toLowerCase()]||ga.error("unsupported pseudo: "+a);return e[u]?e(b):e.length>1?(c=[a,a,"",b],d.setFilters.hasOwnProperty(a.toLowerCase())?ia(function(a,c){var d,f=e(a,b),g=f.length;while(g--)d=J(a,f[g]),a[d]=!(c[d]=f[g])}):function(a){return e(a,0,c)}):e}},pseudos:{not:ia(function(a){var b=[],c=[],d=h(a.replace(R,"$1"));return d[u]?ia(function(a,b,c,e){var f,g=d(a,null,e,[]),h=a.length;while(h--)(f=g[h])&&(a[h]=!(b[h]=f))}):function(a,e,f){return b[0]=a,d(b,null,f,c),b[0]=null,!c.pop()}}),has:ia(function(a){return function(b){return ga(a,b).length>0}}),contains:ia(function(a){return a=a.replace(ca,da),function(b){return(b.textContent||b.innerText||e(b)).indexOf(a)>-1}}),lang:ia(function(a){return W.test(a||"")||ga.error("unsupported lang: "+a),a=a.replace(ca,da).toLowerCase(),function(b){var c;do if(c=p?b.lang:b.getAttribute("xml:lang")||b.getAttribute("lang"))return c=c.toLowerCase(),c===a||0===c.indexOf(a+"-");while((b=b.parentNode)&&1===b.nodeType);return!1}}),target:function(b){var c=a.location&&a.location.hash;return c&&c.slice(1)===b.id},root:function(a){return a===o},focus:function(a){return a===n.activeElement&&(!n.hasFocus||n.hasFocus())&&!!(a.type||a.href||~a.tabIndex)},enabled:function(a){return a.disabled===!1},disabled:function(a){return a.disabled===!0},checked:function(a){var b=a.nodeName.toLowerCase();return"input"===b&&!!a.checked||"option"===b&&!!a.selected},selected:function(a){return a.parentNode&&a.parentNode.selectedIndex,a.selected===!0},empty:function(a){for(a=a.firstChild;a;a=a.nextSibling)if(a.nodeType<6)return!1;return!0},parent:function(a){return!d.pseudos.empty(a)},header:function(a){return Z.test(a.nodeName)},input:function(a){return Y.test(a.nodeName)},button:function(a){var b=a.nodeName.toLowerCase();return"input"===b&&"button"===a.type||"button"===b},text:function(a){var b;return"input"===a.nodeName.toLowerCase()&&"text"===a.type&&(null==(b=a.getAttribute("type"))||"text"===b.toLowerCase())},first:oa(function(){return[0]}),last:oa(function(a,b){return[b-1]}),eq:oa(function(a,b,c){return[0>c?c+b:c]}),even:oa(function(a,b){for(var c=0;b>c;c+=2)a.push(c);return a}),odd:oa(function(a,b){for(var c=1;b>c;c+=2)a.push(c);return a}),lt:oa(function(a,b,c){for(var d=0>c?c+b:c;--d>=0;)a.push(d);return a}),gt:oa(function(a,b,c){for(var d=0>c?c+b:c;++d<b;)a.push(d);return a})}},d.pseudos.nth=d.pseudos.eq;for(b in{radio:!0,checkbox:!0,file:!0,password:!0,image:!0})d.pseudos[b]=ma(b);for(b in{submit:!0,reset:!0})d.pseudos[b]=na(b);function qa(){}qa.prototype=d.filters=d.pseudos,d.setFilters=new qa,g=ga.tokenize=function(a,b){var c,e,f,g,h,i,j,k=z[a+" "];if(k)return b?0:k.slice(0);h=a,i=[],j=d.preFilter;while(h){(!c||(e=S.exec(h)))&&(e&&(h=h.slice(e[0].length)||h),i.push(f=[])),c=!1,(e=T.exec(h))&&(c=e.shift(),f.push({value:c,type:e[0].replace(R," ")}),h=h.slice(c.length));for(g in d.filter)!(e=X[g].exec(h))||j[g]&&!(e=j[g](e))||(c=e.shift(),f.push({value:c,type:g,matches:e}),h=h.slice(c.length));if(!c)break}return b?h.length:h?ga.error(a):z(a,i).slice(0)};function ra(a){for(var b=0,c=a.length,d="";c>b;b++)d+=a[b].value;return d}function sa(a,b,c){var d=b.dir,e=c&&"parentNode"===d,f=x++;return b.first?function(b,c,f){while(b=b[d])if(1===b.nodeType||e)return a(b,c,f)}:function(b,c,g){var h,i,j=[w,f];if(g){while(b=b[d])if((1===b.nodeType||e)&&a(b,c,g))return!0}else while(b=b[d])if(1===b.nodeType||e){if(i=b[u]||(b[u]={}),(h=i[d])&&h[0]===w&&h[1]===f)return j[2]=h[2];if(i[d]=j,j[2]=a(b,c,g))return!0}}}function ta(a){return a.length>1?function(b,c,d){var e=a.length;while(e--)if(!a[e](b,c,d))return!1;return!0}:a[0]}function ua(a,b,c){for(var d=0,e=b.length;e>d;d++)ga(a,b[d],c);return c}function va(a,b,c,d,e){for(var f,g=[],h=0,i=a.length,j=null!=b;i>h;h++)(f=a[h])&&(!c||c(f,d,e))&&(g.push(f),j&&b.push(h));return g}function wa(a,b,c,d,e,f){return d&&!d[u]&&(d=wa(d)),e&&!e[u]&&(e=wa(e,f)),ia(function(f,g,h,i){var j,k,l,m=[],n=[],o=g.length,p=f||ua(b||"*",h.nodeType?[h]:h,[]),q=!a||!f&&b?p:va(p,m,a,h,i),r=c?e||(f?a:o||d)?[]:g:q;if(c&&c(q,r,h,i),d){j=va(r,n),d(j,[],h,i),k=j.length;while(k--)(l=j[k])&&(r[n[k]]=!(q[n[k]]=l))}if(f){if(e||a){if(e){j=[],k=r.length;while(k--)(l=r[k])&&j.push(q[k]=l);e(null,r=[],j,i)}k=r.length;while(k--)(l=r[k])&&(j=e?J(f,l):m[k])>-1&&(f[j]=!(g[j]=l))}}else r=va(r===g?r.splice(o,r.length):r),e?e(null,g,r,i):H.apply(g,r)})}function xa(a){for(var b,c,e,f=a.length,g=d.relative[a[0].type],h=g||d.relative[" "],i=g?1:0,k=sa(function(a){return a===b},h,!0),l=sa(function(a){return J(b,a)>-1},h,!0),m=[function(a,c,d){var e=!g&&(d||c!==j)||((b=c).nodeType?k(a,c,d):l(a,c,d));return b=null,e}];f>i;i++)if(c=d.relative[a[i].type])m=[sa(ta(m),c)];else{if(c=d.filter[a[i].type].apply(null,a[i].matches),c[u]){for(e=++i;f>e;e++)if(d.relative[a[e].type])break;return wa(i>1&&ta(m),i>1&&ra(a.slice(0,i-1).concat({value:" "===a[i-2].type?"*":""})).replace(R,"$1"),c,e>i&&xa(a.slice(i,e)),f>e&&xa(a=a.slice(e)),f>e&&ra(a))}m.push(c)}return ta(m)}function ya(a,b){var c=b.length>0,e=a.length>0,f=function(f,g,h,i,k){var l,m,o,p=0,q="0",r=f&&[],s=[],t=j,u=f||e&&d.find.TAG("*",k),v=w+=null==t?1:Math.random()||.1,x=u.length;for(k&&(j=g!==n&&g);q!==x&&null!=(l=u[q]);q++){if(e&&l){m=0;while(o=a[m++])if(o(l,g,h)){i.push(l);break}k&&(w=v)}c&&((l=!o&&l)&&p--,f&&r.push(l))}if(p+=q,c&&q!==p){m=0;while(o=b[m++])o(r,s,g,h);if(f){if(p>0)while(q--)r[q]||s[q]||(s[q]=F.call(i));s=va(s)}H.apply(i,s),k&&!f&&s.length>0&&p+b.length>1&&ga.uniqueSort(i)}return k&&(w=v,j=t),r};return c?ia(f):f}return h=ga.compile=function(a,b){var c,d=[],e=[],f=A[a+" "];if(!f){b||(b=g(a)),c=b.length;while(c--)f=xa(b[c]),f[u]?d.push(f):e.push(f);f=A(a,ya(e,d)),f.selector=a}return f},i=ga.select=function(a,b,e,f){var i,j,k,l,m,n="function"==typeof a&&a,o=!f&&g(a=n.selector||a);if(e=e||[],1===o.length){if(j=o[0]=o[0].slice(0),j.length>2&&"ID"===(k=j[0]).type&&c.getById&&9===b.nodeType&&p&&d.relative[j[1].type]){if(b=(d.find.ID(k.matches[0].replace(ca,da),b)||[])[0],!b)return e;n&&(b=b.parentNode),a=a.slice(j.shift().value.length)}i=X.needsContext.test(a)?0:j.length;while(i--){if(k=j[i],d.relative[l=k.type])break;if((m=d.find[l])&&(f=m(k.matches[0].replace(ca,da),aa.test(j[0].type)&&pa(b.parentNode)||b))){if(j.splice(i,1),a=f.length&&ra(j),!a)return H.apply(e,f),e;break}}}return(n||h(a,o))(f,b,!p,e,aa.test(a)&&pa(b.parentNode)||b),e},c.sortStable=u.split("").sort(B).join("")===u,c.detectDuplicates=!!l,m(),c.sortDetached=ja(function(a){return 1&a.compareDocumentPosition(n.createElement("div"))}),ja(function(a){return a.innerHTML="<a href='#'></a>","#"===a.firstChild.getAttribute("href")})||ka("type|href|height|width",function(a,b,c){return c?void 0:a.getAttribute(b,"type"===b.toLowerCase()?1:2)}),c.attributes&&ja(function(a){return a.innerHTML="<input/>",a.firstChild.setAttribute("value",""),""===a.firstChild.getAttribute("value")})||ka("value",function(a,b,c){return c||"input"!==a.nodeName.toLowerCase()?void 0:a.defaultValue}),ja(function(a){return null==a.getAttribute("disabled")})||ka(K,function(a,b,c){var d;return c?void 0:a[b]===!0?b.toLowerCase():(d=a.getAttributeNode(b))&&d.specified?d.value:null}),ga}(a);m.find=s,m.expr=s.selectors,m.expr[":"]=m.expr.pseudos,m.unique=s.uniqueSort,m.text=s.getText,m.isXMLDoc=s.isXML,m.contains=s.contains;var t=m.expr.match.needsContext,u=/^<(\w+)\s*\/?>(?:<\/\1>|)$/,v=/^.[^:#\[\.,]*$/;function w(a,b,c){if(m.isFunction(b))return m.grep(a,function(a,d){return!!b.call(a,d,a)!==c});if(b.nodeType)return m.grep(a,function(a){return a===b!==c});if("string"==typeof b){if(v.test(b))return m.filter(b,a,c);b=m.filter(b,a)}return m.grep(a,function(a){return m.inArray(a,b)>=0!==c})}m.filter=function(a,b,c){var d=b[0];return c&&(a=":not("+a+")"),1===b.length&&1===d.nodeType?m.find.matchesSelector(d,a)?[d]:[]:m.find.matches(a,m.grep(b,function(a){return 1===a.nodeType}))},m.fn.extend({find:function(a){var b,c=[],d=this,e=d.length;if("string"!=typeof a)return this.pushStack(m(a).filter(function(){for(b=0;e>b;b++)if(m.contains(d[b],this))return!0}));for(b=0;e>b;b++)m.find(a,d[b],c);return c=this.pushStack(e>1?m.unique(c):c),c.selector=this.selector?this.selector+" "+a:a,c},filter:function(a){return this.pushStack(w(this,a||[],!1))},not:function(a){return this.pushStack(w(this,a||[],!0))},is:function(a){return!!w(this,"string"==typeof a&&t.test(a)?m(a):a||[],!1).length}});var x,y=a.document,z=/^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]*))$/,A=m.fn.init=function(a,b){var c,d;if(!a)return this;if("string"==typeof a){if(c="<"===a.charAt(0)&&">"===a.charAt(a.length-1)&&a.length>=3?[null,a,null]:z.exec(a),!c||!c[1]&&b)return!b||b.jquery?(b||x).find(a):this.constructor(b).find(a);if(c[1]){if(b=b instanceof m?b[0]:b,m.merge(this,m.parseHTML(c[1],b&&b.nodeType?b.ownerDocument||b:y,!0)),u.test(c[1])&&m.isPlainObject(b))for(c in b)m.isFunction(this[c])?this[c](b[c]):this.attr(c,b[c]);return this}if(d=y.getElementById(c[2]),d&&d.parentNode){if(d.id!==c[2])return x.find(a);this.length=1,this[0]=d}return this.context=y,this.selector=a,this}return a.nodeType?(this.context=this[0]=a,this.length=1,this):m.isFunction(a)?"undefined"!=typeof x.ready?x.ready(a):a(m):(void 0!==a.selector&&(this.selector=a.selector,this.context=a.context),m.makeArray(a,this))};A.prototype=m.fn,x=m(y);var B=/^(?:parents|prev(?:Until|All))/,C={children:!0,contents:!0,next:!0,prev:!0};m.extend({dir:function(a,b,c){var d=[],e=a[b];while(e&&9!==e.nodeType&&(void 0===c||1!==e.nodeType||!m(e).is(c)))1===e.nodeType&&d.push(e),e=e[b];return d},sibling:function(a,b){for(var c=[];a;a=a.nextSibling)1===a.nodeType&&a!==b&&c.push(a);return c}}),m.fn.extend({has:function(a){var b,c=m(a,this),d=c.length;return this.filter(function(){for(b=0;d>b;b++)if(m.contains(this,c[b]))return!0})},closest:function(a,b){for(var c,d=0,e=this.length,f=[],g=t.test(a)||"string"!=typeof a?m(a,b||this.context):0;e>d;d++)for(c=this[d];c&&c!==b;c=c.parentNode)if(c.nodeType<11&&(g?g.index(c)>-1:1===c.nodeType&&m.find.matchesSelector(c,a))){f.push(c);break}return this.pushStack(f.length>1?m.unique(f):f)},index:function(a){return a?"string"==typeof a?m.inArray(this[0],m(a)):m.inArray(a.jquery?a[0]:a,this):this[0]&&this[0].parentNode?this.first().prevAll().length:-1},add:function(a,b){return this.pushStack(m.unique(m.merge(this.get(),m(a,b))))},addBack:function(a){return this.add(null==a?this.prevObject:this.prevObject.filter(a))}});function D(a,b){do a=a[b];while(a&&1!==a.nodeType);return a}m.each({parent:function(a){var b=a.parentNode;return b&&11!==b.nodeType?b:null},parents:function(a){return m.dir(a,"parentNode")},parentsUntil:function(a,b,c){return m.dir(a,"parentNode",c)},next:function(a){return D(a,"nextSibling")},prev:function(a){return D(a,"previousSibling")},nextAll:function(a){return m.dir(a,"nextSibling")},prevAll:function(a){return m.dir(a,"previousSibling")},nextUntil:function(a,b,c){return m.dir(a,"nextSibling",c)},prevUntil:function(a,b,c){return m.dir(a,"previousSibling",c)},siblings:function(a){return m.sibling((a.parentNode||{}).firstChild,a)},children:function(a){return m.sibling(a.firstChild)},contents:function(a){return m.nodeName(a,"iframe")?a.contentDocument||a.contentWindow.document:m.merge([],a.childNodes)}},function(a,b){m.fn[a]=function(c,d){var e=m.map(this,b,c);return"Until"!==a.slice(-5)&&(d=c),d&&"string"==typeof d&&(e=m.filter(d,e)),this.length>1&&(C[a]||(e=m.unique(e)),B.test(a)&&(e=e.reverse())),this.pushStack(e)}});var E=/\S+/g,F={};function G(a){var b=F[a]={};return m.each(a.match(E)||[],function(a,c){b[c]=!0}),b}m.Callbacks=function(a){a="string"==typeof a?F[a]||G(a):m.extend({},a);var b,c,d,e,f,g,h=[],i=!a.once&&[],j=function(l){for(c=a.memory&&l,d=!0,f=g||0,g=0,e=h.length,b=!0;h&&e>f;f++)if(h[f].apply(l[0],l[1])===!1&&a.stopOnFalse){c=!1;break}b=!1,h&&(i?i.length&&j(i.shift()):c?h=[]:k.disable())},k={add:function(){if(h){var d=h.length;!function f(b){m.each(b,function(b,c){var d=m.type(c);"function"===d?a.unique&&k.has(c)||h.push(c):c&&c.length&&"string"!==d&&f(c)})}(arguments),b?e=h.length:c&&(g=d,j(c))}return this},remove:function(){return h&&m.each(arguments,function(a,c){var d;while((d=m.inArray(c,h,d))>-1)h.splice(d,1),b&&(e>=d&&e--,f>=d&&f--)}),this},has:function(a){return a?m.inArray(a,h)>-1:!(!h||!h.length)},empty:function(){return h=[],e=0,this},disable:function(){return h=i=c=void 0,this},disabled:function(){return!h},lock:function(){return i=void 0,c||k.disable(),this},locked:function(){return!i},fireWith:function(a,c){return!h||d&&!i||(c=c||[],c=[a,c.slice?c.slice():c],b?i.push(c):j(c)),this},fire:function(){return k.fireWith(this,arguments),this},fired:function(){return!!d}};return k},m.extend({Deferred:function(a){var b=[["resolve","done",m.Callbacks("once memory"),"resolved"],["reject","fail",m.Callbacks("once memory"),"rejected"],["notify","progress",m.Callbacks("memory")]],c="pending",d={state:function(){return c},always:function(){return e.done(arguments).fail(arguments),this},then:function(){var a=arguments;return m.Deferred(function(c){m.each(b,function(b,f){var g=m.isFunction(a[b])&&a[b];e[f[1]](function(){var a=g&&g.apply(this,arguments);a&&m.isFunction(a.promise)?a.promise().done(c.resolve).fail(c.reject).progress(c.notify):c[f[0]+"With"](this===d?c.promise():this,g?[a]:arguments)})}),a=null}).promise()},promise:function(a){return null!=a?m.extend(a,d):d}},e={};return d.pipe=d.then,m.each(b,function(a,f){var g=f[2],h=f[3];d[f[1]]=g.add,h&&g.add(function(){c=h},b[1^a][2].disable,b[2][2].lock),e[f[0]]=function(){return e[f[0]+"With"](this===e?d:this,arguments),this},e[f[0]+"With"]=g.fireWith}),d.promise(e),a&&a.call(e,e),e},when:function(a){var b=0,c=d.call(arguments),e=c.length,f=1!==e||a&&m.isFunction(a.promise)?e:0,g=1===f?a:m.Deferred(),h=function(a,b,c){return function(e){b[a]=this,c[a]=arguments.length>1?d.call(arguments):e,c===i?g.notifyWith(b,c):--f||g.resolveWith(b,c)}},i,j,k;if(e>1)for(i=new Array(e),j=new Array(e),k=new Array(e);e>b;b++)c[b]&&m.isFunction(c[b].promise)?c[b].promise().done(h(b,k,c)).fail(g.reject).progress(h(b,j,i)):--f;return f||g.resolveWith(k,c),g.promise()}});var H;m.fn.ready=function(a){return m.ready.promise().done(a),this},m.extend({isReady:!1,readyWait:1,holdReady:function(a){a?m.readyWait++:m.ready(!0)},ready:function(a){if(a===!0?!--m.readyWait:!m.isReady){if(!y.body)return setTimeout(m.ready);m.isReady=!0,a!==!0&&--m.readyWait>0||(H.resolveWith(y,[m]),m.fn.triggerHandler&&(m(y).triggerHandler("ready"),m(y).off("ready")))}}});function I(){y.addEventListener?(y.removeEventListener("DOMContentLoaded",J,!1),a.removeEventListener("load",J,!1)):(y.detachEvent("onreadystatechange",J),a.detachEvent("onload",J))}function J(){(y.addEventListener||"load"===event.type||"complete"===y.readyState)&&(I(),m.ready())}m.ready.promise=function(b){if(!H)if(H=m.Deferred(),"complete"===y.readyState)setTimeout(m.ready);else if(y.addEventListener)y.addEventListener("DOMContentLoaded",J,!1),a.addEventListener("load",J,!1);else{y.attachEvent("onreadystatechange",J),a.attachEvent("onload",J);var c=!1;try{c=null==a.frameElement&&y.documentElement}catch(d){}c&&c.doScroll&&!function e(){if(!m.isReady){try{c.doScroll("left")}catch(a){return setTimeout(e,50)}I(),m.ready()}}()}return H.promise(b)};var K="undefined",L;for(L in m(k))break;k.ownLast="0"!==L,k.inlineBlockNeedsLayout=!1,m(function(){var a,b,c,d;c=y.getElementsByTagName("body")[0],c&&c.style&&(b=y.createElement("div"),d=y.createElement("div"),d.style.cssText="position:absolute;border:0;width:0;height:0;top:0;left:-9999px",c.appendChild(d).appendChild(b),typeof b.style.zoom!==K&&(b.style.cssText="display:inline;margin:0;border:0;padding:1px;width:1px;zoom:1",k.inlineBlockNeedsLayout=a=3===b.offsetWidth,a&&(c.style.zoom=1)),c.removeChild(d))}),function(){var a=y.createElement("div");if(null==k.deleteExpando){k.deleteExpando=!0;try{delete a.test}catch(b){k.deleteExpando=!1}}a=null}(),m.acceptData=function(a){var b=m.noData[(a.nodeName+" ").toLowerCase()],c=+a.nodeType||1;return 1!==c&&9!==c?!1:!b||b!==!0&&a.getAttribute("classid")===b};var M=/^(?:\{[\w\W]*\}|\[[\w\W]*\])$/,N=/([A-Z])/g;function O(a,b,c){if(void 0===c&&1===a.nodeType){var d="data-"+b.replace(N,"-$1").toLowerCase();if(c=a.getAttribute(d),"string"==typeof c){try{c="true"===c?!0:"false"===c?!1:"null"===c?null:+c+""===c?+c:M.test(c)?m.parseJSON(c):c}catch(e){}m.data(a,b,c)}else c=void 0}return c}function P(a){var b;for(b in a)if(("data"!==b||!m.isEmptyObject(a[b]))&&"toJSON"!==b)return!1;
 
@@ -1547,7 +1534,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">Survival analysis with survPen</h1>
-<h4 class="date">2020-05-20</h4>
+<h4 class="date">2020-09-25</h4>
 
 </div>
 
@@ -1568,12 +1555,12 @@ text-align: justify}
 <div id="details" class="section level3">
 <h3>Details</h3>
 <p>In time-to-event analysis, we may deal with one or several covariates whose functional forms, time-dependent effects and interaction structure are challenging to specify. In this context, penalized hazard models represent an interesting tool (Kauermann 2005, Kneib and Fahrmeir 2007, Remontet et al. 2018). One possible way to implement such penalized models is to use the classical approximation of the survival likelihood by a Poisson likelihood by artificially splitting the data. The package <code>mgcv</code> can then be used to fit penalized hazard models (Remontet et al. 2018). The problem with this option is that the setup is rather complex and the method cannot be used on very large datasets for computational reasons.</p>
-<p>Wood et al. (2016) provided a general penalized framework that made available smooth function estimation to a wide variety of models. They proposed to estimate smoothing parameters by maximizing a Laplace approximate marginal likelihood (LAML) criterion and demonstrate how statistical consistency is maintained by doing so.</p>
-<p>The <code>survPen</code> function implements the framework described by Wood et al. (2016) for modelling time-to-event data. The effects of continuous covariates are represented using low rank spline bases associated with penalties on the second derivative (penalty terms are quadratic in the regression parameters in this case). The <code>survPen</code> function allows to account simultaneously for time-dependent effects, non-linear effects and interactions between several continuous covariates without the need to build a possibly demanding model-selection procedure. In addition to LAML, the likelihood cross-validation (LCV) criterion (O’Sullivan 1988) can be used for smoothing parameter estimation.</p>
-<p>A key feature of <code>survPen</code> is that the optimization of LCV and LAML relies on their first and second derivatives with respect to the smoothing parameters; this makes the optimization procedure fast and stable. The estimation procedure follows the optimization scheme proposed by Wood et al. (2016); it is based on two nested Newton-Raphson algorithms, an outer Newton-Raphson iterations for the smoothing parameters and an inner Newton-Raphson iterations for the regression parameters. Estimation of the regression parameters in the inner algorithm is performed maximizing directly the penalized likelihood of the survival model, therefore avoiding data augmentation and Poisson likelihood approximation.</p>
+<p>Wood et al. (2016) provided a general penalized framework that made available smooth function estimation to a wide variety of models. They proposed to estimate smoothing parameters by maximizing a Laplace approximate marginal likelihood (LAML) criterion and demonstrate how statistical consistency is maintained by doing so.</p>
+<p>The <code>survPen</code> function implements the framework described by Wood et al. (2016) for modelling time-to-event data. The effects of continuous covariates are represented using low rank spline bases associated with penalties on the second derivative (penalty terms are quadratic in the regression parameters in this case). The <code>survPen</code> function allows to account simultaneously for time-dependent effects, non-linear effects and interactions between several continuous covariates without the need to build a possibly demanding model-selection procedure. In addition to LAML, the likelihood cross-validation (LCV) criterion (O’Sullivan 1988) can be used for smoothing parameter estimation.</p>
+<p>A key feature of <code>survPen</code> is that the optimization of LCV and LAML relies on their first and second derivatives with respect to the smoothing parameters; this makes the optimization procedure fast and stable. The estimation procedure follows the optimization scheme proposed by Wood et al. (2016); it is based on two nested Newton-Raphson algorithms, an outer Newton-Raphson iterations for the smoothing parameters and an inner Newton-Raphson iterations for the regression parameters. Estimation of the regression parameters in the inner algorithm is performed maximizing directly the penalized likelihood of the survival model, therefore avoiding data augmentation and Poisson likelihood approximation.</p>
 <p>In practice, LAML optimization is generally both a bit faster and a bit more stable and is thus the default option in <code>survPen</code>. For <span class="math inline">\(m\)</span> covariates <span class="math inline">\((x_1,\ldots,x_m)\)</span>, if we note <span class="math inline">\(h(t,x_1,\ldots,x_m)\)</span> the hazard at time <span class="math inline">\(t\)</span>, the hazard model is the following : <span class="math display">\[log[h(t,x_1,\ldots,x_m)]=\sum_j g_j(t,x_1,\ldots,x_m) \]</span></p>
 <p>where each <span class="math inline">\(g_j\)</span> is either the marginal basis of a specific covariate or a tensor product smooth of any number of covariates. The marginal bases of the covariates are represented as natural (or restricted) cubic splines (as in function <code>ns</code> from library <code>splines</code>) with associated quadratic penalties. Full parametric (unpenalized) terms for the effects of covariates are also possible (see the examples below). Each <span class="math inline">\(g_j\)</span> is then associated with zero, one or several smoothing parameters. The cumulative hazard included in the log-likelihood is approximated by Gauss-Legendre quadrature for numerical stability.</p>
-<p>The method is detailed in Fauvernier et al. (in revision in the Journal of the Royal Statistical Society series C).</p>
+<p>The method is detailed in Fauvernier et al. (in revision in the Journal of the Royal Statistical Society series C).</p>
 </div>
 </div>
 <div id="the-datcancer-data" class="section level1">
@@ -1799,7 +1786,7 @@ haz.pen.lpmatrix &lt;- as.numeric(exp(X.pen%*%mod.pen$coefficients))
 
 summary(haz.pen.lpmatrix - haz.pen)
 #&gt;       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
-#&gt; -5.551e-17  0.000e+00  0.000e+00  4.580e-18  0.000e+00  8.327e-17</code></pre>
+#&gt; -1.110e-16  0.000e+00  0.000e+00 -2.325e-18  0.000e+00  8.327e-17</code></pre>
 <p>The 95% confidence intervals can be calculated like this:</p>
 <pre class="r"><code># standard errors from the Bayesian covariance matrix Vp
 std &lt;- sqrt(rowSums((X.pen%*%mod.pen$Vp)*X.pen))
@@ -1811,68 +1798,39 @@ haz.sup &lt;- as.vector(exp(X.pen%*%mod.pen$coefficients+qt.norm*std))
 # checking that they are similar to the ones given by the predict function
 summary(haz.inf - pred.pen$haz.inf)
 #&gt;       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
-#&gt; -5.551e-17  0.000e+00  0.000e+00  3.608e-18  0.000e+00  6.939e-17
+#&gt; -9.714e-17  0.000e+00  0.000e+00 -1.874e-18  0.000e+00  6.939e-17
 summary(haz.sup - pred.pen$haz.sup)
 #&gt;       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
-#&gt; -8.327e-17  0.000e+00  0.000e+00  4.372e-18  0.000e+00  9.714e-17</code></pre>
+#&gt; -1.110e-16  0.000e+00  0.000e+00 -1.318e-18  0.000e+00  9.714e-17</code></pre>
 </div>
 <div id="summary-of-the-model" class="section level3">
 <h3>Summary of the model</h3>
 <p>Let’s look at the summary of <em>mod.pen</em></p>
 <pre class="r"><code>summary(mod.pen)
-#&gt; $type
-#&gt; [1] &quot;penalized hazard model&quot;
-#&gt; 
-#&gt; $call
+#&gt; penalized hazard model 
+#&gt;  
+#&gt; Call:
 #&gt; survPen(formula = f.pen, data = datCancer, t1 = fu, event = dead)
 #&gt; 
-#&gt; $formula
-#&gt; ~smf(fu, knots = c(0, 0.25, 0.5, 1, 2, 4, 5))
+#&gt; Parametric coefficients:
+#&gt;             Estimate Std. Error z value  Pr(&gt;|z|)    
+#&gt; (Intercept) -3.04226    0.12344 -24.645 &lt; 2.2e-16 ***
+#&gt; ---
+#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #&gt; 
-#&gt; $coefficients
-#&gt;              Estimate Std. Error   z value      Pr(&gt;|z|)
-#&gt; (Intercept) -3.042261  0.1234448 -24.64471 4.193984e-134
+#&gt; log-likelihood = -2320.8, penalized log-likelihood = -2321.7
+#&gt; Number of parameters = 7, effective degrees of freedom = 3.6549
+#&gt; LAML = 2326.3 
+#&gt;  
+#&gt; Smoothing parameter(s):
+#&gt; smf(fu) 
+#&gt;  1690.5 
 #&gt; 
-#&gt; $edf.per.smooth
-#&gt;  smf(fu) 
-#&gt; 2.654904 
+#&gt; edf of smooth terms:
+#&gt; smf(fu) 
+#&gt;  2.6549 
 #&gt; 
-#&gt; $random
-#&gt; [1] FALSE
-#&gt; 
-#&gt; $random.effects
-#&gt; NULL
-#&gt; 
-#&gt; $likelihood
-#&gt; [1] -2320.848
-#&gt; 
-#&gt; $penalized.likelihood
-#&gt; [1] -2321.659
-#&gt; 
-#&gt; $nb.smooth
-#&gt; [1] 1
-#&gt; 
-#&gt; $smoothing.parameter
-#&gt;  smf(fu) 
-#&gt; 1690.498 
-#&gt; 
-#&gt; $parameters
-#&gt; [1] 7
-#&gt; 
-#&gt; $edf
-#&gt; [1] 3.654904
-#&gt; 
-#&gt; $method
-#&gt; [1] &quot;LAML&quot;
-#&gt; 
-#&gt; $criterion.val
-#&gt; [1] 2326.262
-#&gt; 
-#&gt; $converged
-#&gt; [1] TRUE
-#&gt; 
-#&gt; attr(,&quot;class&quot;)
-#&gt; [1] &quot;summary.survPen&quot;</code></pre>
+#&gt; converged= TRUE</code></pre>
 <p>Here we get:</p>
 <ul>
 <li>the log-likelihood: -2320.847587</li>
@@ -1915,13 +1873,13 @@ summary(mod.pen)$edf.per.smooth
 <p>If we sum them we get the effective degrees of freedom associated with the model.</p>
 <p>If we want to compare penalized models, we can use the AIC corrected for smoothing parameter uncertainty (Wood et al. 2016)</p>
 <pre class="r"><code>mod.pen$aic2
-#&gt; [1] 4650.505</code></pre>
+#&gt; [1] 4650.141</code></pre>
 <p>The corrected AIC comes with a new definition for the effective degrees of freedom</p>
 <pre class="r"><code>mod.pen$edf2
 #&gt; (Intercept)   smf(fu).1   smf(fu).2   smf(fu).3   smf(fu).4   smf(fu).5 
-#&gt;   0.9721194   0.3122769   0.2586096   1.0338980   0.9670615   0.5633620 
+#&gt;   1.0000000   0.3359034   0.3698893   0.5671458   0.9895824   0.5720775 
 #&gt;   smf(fu).6 
-#&gt;   0.2976867</code></pre>
+#&gt;   0.3881477</code></pre>
 </div>
 </div>
 <div id="smoothing-parameter-estimation" class="section level1">
@@ -2068,116 +2026,57 @@ f.tint &lt;- ~tint(fu,df=5)+tint(age,df=5)+tint(fu,age,df=c(5,5))
 # hazard model
 mod.tensor &lt;- survPen(f.tensor,data=datCancer,t1=fu,event=dead)
 summary(mod.tensor)
-#&gt; $type
-#&gt; [1] &quot;penalized hazard model&quot;
-#&gt; 
-#&gt; $call
+#&gt; penalized hazard model 
+#&gt;  
+#&gt; Call:
 #&gt; survPen(formula = f.tensor, data = datCancer, t1 = fu, event = dead)
 #&gt; 
-#&gt; $formula
-#&gt; ~tensor(fu, age, df = c(5, 5))
+#&gt; Parametric coefficients:
+#&gt;             Estimate Std. Error z value  Pr(&gt;|z|)    
+#&gt; (Intercept) -3.31334    0.17612 -18.813 &lt; 2.2e-16 ***
+#&gt; ---
+#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #&gt; 
-#&gt; $coefficients
-#&gt;              Estimate Std. Error   z value    Pr(&gt;|z|)
-#&gt; (Intercept) -3.313336  0.1761197 -18.81298 5.91178e-79
-#&gt; 
-#&gt; $edf.per.smooth
-#&gt; tensor(fu,age) 
-#&gt;       10.69041 
-#&gt; 
-#&gt; $random
-#&gt; [1] FALSE
-#&gt; 
-#&gt; $random.effects
-#&gt; NULL
-#&gt; 
-#&gt; $likelihood
-#&gt; [1] -2106.152
-#&gt; 
-#&gt; $penalized.likelihood
-#&gt; [1] -2110.003
-#&gt; 
-#&gt; $nb.smooth
-#&gt; [1] 2
-#&gt; 
-#&gt; $smoothing.parameter
+#&gt; log-likelihood = -2106.2, penalized log-likelihood = -2110
+#&gt; Number of parameters = 25, effective degrees of freedom = 11.69
+#&gt; LAML = 2121.7 
+#&gt;  
+#&gt; Smoothing parameter(s):
 #&gt; tensor(fu,age).1 tensor(fu,age).2 
-#&gt;        0.7792689       21.6699606 
+#&gt;          0.77927         21.67000 
 #&gt; 
-#&gt; $parameters
-#&gt; [1] 25
+#&gt; edf of smooth terms:
+#&gt; tensor(fu,age) 
+#&gt;          10.69 
 #&gt; 
-#&gt; $edf
-#&gt; [1] 11.69041
-#&gt; 
-#&gt; $method
-#&gt; [1] &quot;LAML&quot;
-#&gt; 
-#&gt; $criterion.val
-#&gt; [1] 2121.695
-#&gt; 
-#&gt; $converged
-#&gt; [1] TRUE
-#&gt; 
-#&gt; attr(,&quot;class&quot;)
-#&gt; [1] &quot;summary.survPen&quot;
+#&gt; converged= TRUE
 
 mod.tint &lt;- survPen(f.tint,data=datCancer,t1=fu,event=dead)
 summary(mod.tint)
-#&gt; $type
-#&gt; [1] &quot;penalized hazard model&quot;
-#&gt; 
-#&gt; $call
+#&gt; penalized hazard model 
+#&gt;  
+#&gt; Call:
 #&gt; survPen(formula = f.tint, data = datCancer, t1 = fu, event = dead)
 #&gt; 
-#&gt; $formula
-#&gt; ~tint(fu, df = 5) + tint(age, df = 5) + tint(fu, age, df = c(5, 
-#&gt;     5))
+#&gt; Parametric coefficients:
+#&gt;             Estimate Std. Error z value  Pr(&gt;|z|)    
+#&gt; (Intercept) -3.23237    0.15164 -21.316 &lt; 2.2e-16 ***
+#&gt; ---
+#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #&gt; 
-#&gt; $coefficients
-#&gt;              Estimate Std. Error   z value      Pr(&gt;|z|)
-#&gt; (Intercept) -3.232368  0.1516431 -21.31563 8.130486e-101
-#&gt; 
-#&gt; $edf.per.smooth
-#&gt;     tint(fu)    tint(age) tint(fu,age) 
-#&gt;     3.566385     2.519234     3.376361 
-#&gt; 
-#&gt; $random
-#&gt; [1] FALSE
-#&gt; 
-#&gt; $random.effects
-#&gt; NULL
-#&gt; 
-#&gt; $likelihood
-#&gt; [1] -2106.394
-#&gt; 
-#&gt; $penalized.likelihood
-#&gt; [1] -2109.601
-#&gt; 
-#&gt; $nb.smooth
-#&gt; [1] 4
-#&gt; 
-#&gt; $smoothing.parameter
+#&gt; log-likelihood = -2106.4, penalized log-likelihood = -2109.6
+#&gt; Number of parameters = 25, effective degrees of freedom = 10.462
+#&gt; LAML = 2122.7 
+#&gt;  
+#&gt; Smoothing parameter(s):
 #&gt;       tint(fu)      tint(age) tint(fu,age).1 tint(fu,age).2 
-#&gt;   9.405365e-01   6.451661e+00   1.830722e-01   1.279996e+05 
+#&gt;     9.4054e-01     6.4517e+00     1.8307e-01     1.2800e+05 
 #&gt; 
-#&gt; $parameters
-#&gt; [1] 25
+#&gt; edf of smooth terms:
+#&gt;     tint(fu)    tint(age) tint(fu,age) 
+#&gt;       3.5664       2.5192       3.3764 
 #&gt; 
-#&gt; $edf
-#&gt; [1] 10.46198
-#&gt; 
-#&gt; $method
-#&gt; [1] &quot;LAML&quot;
-#&gt; 
-#&gt; $criterion.val
-#&gt; [1] 2122.697
-#&gt; 
-#&gt; $converged
-#&gt; [1] TRUE
-#&gt; 
-#&gt; attr(,&quot;class&quot;)
-#&gt; [1] &quot;summary.survPen&quot;
+#&gt; converged= TRUE
 
 # predictions
 new.age &lt;- seq(50,90,length=50)
@@ -2232,7 +2131,7 @@ summary(mod.tensor.sub)$edf.per.smooth
 # tint
 mod.tint.sub$lambda
 #&gt;       tint(fu)      tint(age) tint(fu,age).1 tint(fu,age).2 
-#&gt;   5.207423e+05   2.637023e+04   7.333033e+00   1.228636e+00
+#&gt;   5.206939e+05   2.637023e+04   7.333033e+00   1.228636e+00
 summary(mod.tint.sub)$edf.per.smooth
 #&gt;     tint(fu)    tint(age) tint(fu,age) 
 #&gt;     1.000020     1.000036     1.576766</code></pre>
@@ -2280,10 +2179,10 @@ lines(new.time,data2D[data2D$age==i,]$haz.tint,col=&quot;red&quot;,lty=2,lwd=lwd
 <p><img src="data:image/png;base64,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" /><!-- --></p>
 <p>In order to choose between the two models, one can choose the model with minimum AIC corrected for smoothing parameter uncertainty (details in Wood et al. 2016).</p>
 <pre class="r"><code>mod.tensor.sub$aic2
-#&gt; [1] 114.9611
+#&gt; [1] 111.2178
 
 mod.tint.sub$aic2
-#&gt; [1] 114.5413</code></pre>
+#&gt; [1] 111.7636</code></pre>
 <p>In this case, the <code>tensor</code> model is to be preferred.</p>
 </div>
 <div id="three-dimensions" class="section level3">
@@ -2294,60 +2193,31 @@ mod.tint.sub$aic2
 # excess hazard model
 mod6 &lt;- survPen(f4,data=datCancer,t1=fu,event=dead,expected=rate)
 summary(mod6)
-#&gt; $type
-#&gt; [1] &quot;penalized excess hazard model&quot;
-#&gt; 
-#&gt; $call
+#&gt; penalized excess hazard model 
+#&gt;  
+#&gt; Call:
 #&gt; survPen(formula = f4, data = datCancer, t1 = fu, event = dead, 
 #&gt;     expected = rate)
 #&gt; 
-#&gt; $formula
-#&gt; ~tensor(fu, age, yod, df = c(5, 5, 5))
+#&gt; Parametric coefficients:
+#&gt;             Estimate Std. Error z value  Pr(&gt;|z|)    
+#&gt; (Intercept) -3.43068    0.19226 -17.844 &lt; 2.2e-16 ***
+#&gt; ---
+#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #&gt; 
-#&gt; $coefficients
-#&gt;              Estimate Std. Error   z value    Pr(&gt;|z|)
-#&gt; (Intercept) -3.430679  0.1922579 -17.84415 3.20928e-71
-#&gt; 
-#&gt; $edf.per.smooth
-#&gt; tensor(fu,age,yod) 
-#&gt;           16.78903 
-#&gt; 
-#&gt; $random
-#&gt; [1] FALSE
-#&gt; 
-#&gt; $random.effects
-#&gt; NULL
-#&gt; 
-#&gt; $likelihood
-#&gt; [1] -2035.521
-#&gt; 
-#&gt; $penalized.likelihood
-#&gt; [1] -2040.367
-#&gt; 
-#&gt; $nb.smooth
-#&gt; [1] 3
-#&gt; 
-#&gt; $smoothing.parameter
+#&gt; log-likelihood = -2035.5, penalized log-likelihood = -2040.4
+#&gt; Number of parameters = 125, effective degrees of freedom = 17.789
+#&gt; LAML = 2046.5 
+#&gt;  
+#&gt; Smoothing parameter(s):
 #&gt; tensor(fu,age,yod).1 tensor(fu,age,yod).2 tensor(fu,age,yod).3 
-#&gt;            0.2725013           14.1288872           82.3996449 
+#&gt;               0.2725              14.1290              82.4000 
 #&gt; 
-#&gt; $parameters
-#&gt; [1] 125
+#&gt; edf of smooth terms:
+#&gt; tensor(fu,age,yod) 
+#&gt;             16.789 
 #&gt; 
-#&gt; $edf
-#&gt; [1] 17.78903
-#&gt; 
-#&gt; $method
-#&gt; [1] &quot;LAML&quot;
-#&gt; 
-#&gt; $criterion.val
-#&gt; [1] 2046.544
-#&gt; 
-#&gt; $converged
-#&gt; [1] TRUE
-#&gt; 
-#&gt; attr(,&quot;class&quot;)
-#&gt; [1] &quot;summary.survPen&quot;
+#&gt; converged= TRUE
 
 
 # predictions of surfaces for years 1990, 1997, 2003 and 2010
@@ -2474,7 +2344,7 @@ m.difference &lt;- survPen(~sex.order + smf(fu,knots=knots.t) +smf(fu,by=sex.ord
 data.pred &lt;- expand.grid(fu=newt,sex=c(&quot;women&quot;,&quot;men&quot;))
 data.pred$men &lt;- ifelse(data.pred$sex==&quot;men&quot;,1,0)
 data.pred$women &lt;- ifelse(data.pred$sex==&quot;women&quot;,1,0)
-data.pred$sex.order &lt;- data.pred$sex # no need to reorder here as the model keeps track of the factor&#39;s structure
+data.pred$sex.order &lt;- data.pred$sex # no need to reorder here as the model keeps track of the factor's structure
 
 data.pred$haz.men &lt;- predict(m.men,data.pred)$haz
 data.pred$haz.women &lt;- predict(m.women,data.pred)$haz
@@ -2630,61 +2500,35 @@ m2$ll.pen
 <p>As we can see from this very simple simulation, the standard deviation is pretty well estimated.</p>
 <p>Let’s look at the summary of the last model</p>
 <pre class="r"><code>summary(mod.frailty)
-#&gt; $type
-#&gt; [1] &quot;penalized hazard model&quot;
-#&gt; 
-#&gt; $call
+#&gt; penalized hazard model 
+#&gt;  
+#&gt; Call:
 #&gt; survPen(formula = ~smf(fu) + rd(cluster), data = don, t1 = fu, 
 #&gt;     event = dead)
 #&gt; 
-#&gt; $formula
-#&gt; ~smf(fu) + rd(cluster)
+#&gt; Parametric coefficients:
+#&gt;              Estimate Std. Error z value  Pr(&gt;|z|)    
+#&gt; (Intercept) -0.759376   0.025514 -29.763 &lt; 2.2e-16 ***
+#&gt; ---
+#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #&gt; 
-#&gt; $coefficients
-#&gt;               Estimate Std. Error   z value      Pr(&gt;|z|)
-#&gt; (Intercept) -0.7593756 0.02551447 -29.76255 1.193121e-194
-#&gt; 
-#&gt; $edf.per.smooth
-#&gt;     smf(fu) rd(cluster) 
-#&gt;   1.4945540   0.1559687 
-#&gt; 
-#&gt; $random
-#&gt; [1] TRUE
-#&gt; 
-#&gt; $random.effects
+#&gt; Random effects (log(sd)):
 #&gt;              Estimate Std. Error
 #&gt; rd(cluster) -4.643896   19.86456
 #&gt; 
-#&gt; $likelihood
-#&gt; [1] -3111.288
-#&gt; 
-#&gt; $penalized.likelihood
-#&gt; [1] -3111.619
-#&gt; 
-#&gt; $nb.smooth
-#&gt; [1] 2
-#&gt; 
-#&gt; $smoothing.parameter
+#&gt; log-likelihood = -3111.3, penalized log-likelihood = -3111.6
+#&gt; Number of parameters = 30, effective degrees of freedom = 2.6505
+#&gt; LAML = 3116.3 
+#&gt;  
+#&gt; Smoothing parameter(s):
 #&gt;     smf(fu) rd(cluster) 
-#&gt;  72075.8785    442.1194 
+#&gt;    72076.00      442.12 
 #&gt; 
-#&gt; $parameters
-#&gt; [1] 30
+#&gt; edf of smooth terms:
+#&gt;     smf(fu) rd(cluster) 
+#&gt;     1.49460     0.15597 
 #&gt; 
-#&gt; $edf
-#&gt; [1] 2.650523
-#&gt; 
-#&gt; $method
-#&gt; [1] &quot;LAML&quot;
-#&gt; 
-#&gt; $criterion.val
-#&gt; [1] 3116.301
-#&gt; 
-#&gt; $converged
-#&gt; [1] TRUE
-#&gt; 
-#&gt; attr(,&quot;class&quot;)
-#&gt; [1] &quot;summary.survPen&quot;</code></pre>
+#&gt; converged= TRUE</code></pre>
 <p>Here, we have <span class="math inline">\(sd(w_j) =\)</span> exp(-4.6438963) <span class="math inline">\(=\)</span> 0.0096201. You can retrieve this value from the model like this</p>
 <pre class="r"><code>exp(summary(mod.frailty)$random.effects)[1]
 #&gt; [1] 0.009620142</code></pre>
@@ -3208,7 +3052,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
