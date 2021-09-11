@@ -1,4 +1,11 @@
 
+survPen v1.5.2
+==============
+
+Changes:
+* Arguments t0, t1, event and expected are transformed into numeric vectors (in case the user specifies an integer vector that used to make the C code bug)
+
+
 survPen v1.5.1
 ==============
 
