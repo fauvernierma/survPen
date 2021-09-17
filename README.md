@@ -2,7 +2,7 @@
 # survPen
 ## hazard and excess hazard modelling with multidimensional penalized splines
 [![badge](https://img.shields.io/badge/Launch-survPen-blue.svg)](https://mybinder.org/v2/gh/fauvernierma/survPen/master?urlpath=rstudio)
-[![Travis-CI Build Status](https://travis-ci.org/fauvernierma/survPen.svg?branch=master)](https://travis-ci.org/fauvernierma/survPen)
+[![Travis-CI Build Status](https://api.travis-ci.com/fauvernierma/survPen.svg?branch=master)](https://app.travis-ci.com/github/fauvernierma/survPen)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/fauvernierma/survPen?branch=master&svg=true)](https://ci.appveyor.com/project/fauvernierma/survpen)
 [![Coverage Status](https://img.shields.io/codecov/c/github/fauvernierma/survPen/master.svg)](https://codecov.io/github/fauvernierma/survPen?branch=master)
 [![DOI](https://zenodo.org/badge/181266005.svg)](https://zenodo.org/badge/latestdoi/181266005)
