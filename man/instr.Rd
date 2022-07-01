@@ -19,7 +19,8 @@ instr(str1, str2, startpos = 1, n = 1)
 number representing the nth position of str2 in str1
 }
 \description{
-Returns the position of the nth occurrence of str2 in str1. Returns 0 if str2 is not found
+Returns the position of the nth occurrence of str2 in str1. Returns 0 if str2 is not found.
+This code was first suggested by Abdelmonem Mahmoud Amer in https://stackoverflow.com/a/33005653/5421090
 }
 \examples{
 
