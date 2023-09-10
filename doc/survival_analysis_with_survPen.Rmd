@@ -1,0 +1,19 @@
+---
+title: "Survival_analysis_with_survPen"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Survival_analysis_with_survPen}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(survPen)
+```

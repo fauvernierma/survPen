@@ -7,6 +7,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // multmat
 MatrixXd multmat(const Map<MatrixXd> Mat1, const Map<MatrixXd> Mat2);
 RcppExport SEXP _survPen_multmat(SEXP Mat1SEXP, SEXP Mat2SEXP) {

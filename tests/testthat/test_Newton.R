@@ -30,7 +30,9 @@ test_that("NR.beta ok", {
 mod2 <- survPen(form,data,t1=time,event=event)
 
 # we need to reparameterize the model before fitting
-Newton2 <- NR.rho(repam(model.c)$build,rho.ini=-1,data,form,nb.smooth=1,detail.rho=FALSE)
+constructor <- repam(model.c)$build # model constructor
+constructor$optim.rho <- 1 # we tell it we want to estimate the log smoothing parameters (rho)
+Newton2 <- NR.rho(constructor,rho.ini=-1,data,form,nb.smooth=1,detail.rho=FALSE)
 
 # we then return to the initial parameterization
 coef.Newton2 <- as.vector(Newton2$U%*%Newton2$coef )

@@ -1,3 +1,12 @@
+survPen v1.6.0
+==============
+
+Changes:
+* There is a new internal way of specifying piecewise (excess) hazard via pwcst function. This specification internalizes the use
+of the cut function and performs an exact calculation of the cumulative hazard
+* Derivative calculations for LAML are no longer performed at fixed values of smoothing parameters
+* Examples for hazard ratio prediction have been added in the help of predict.survPen function
+
 
 survPen v1.5.2
 ==============
