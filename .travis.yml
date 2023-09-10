@@ -16,8 +16,8 @@ jobs:
   - r: devel
   - os: osx
   - r: release
+  - r: 4.2
+  - r: 4.1
   - r: 4.0
-  - r: 3.6
-  - r: 3.5
 
 
