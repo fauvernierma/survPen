@@ -1,9 +1,9 @@
 citHeader("To cite survPen in publications use:")
 
-citEntry(entry = "Article",
+bibentry(bibtype="Article",
   title        = "survPen: an R package for hazard and excess hazard modelling with multidimensional penalized splines",
-  author       = personList(as.person("Mathieu Fauvernier"),as.person("Laurent Remontet"),as.person("Zoé Uhry"),
-  as.person("Nadine Bossard"),as.person("Laurent Roche")),
+  author       = c("Mathieu Fauvernier","Laurent Remontet","Zoé Uhry",
+  "Nadine Bossard","Laurent Roche"),
   journal      = "Journal of Open Source Software",
   year         = "2019",
   volume       = "4",
@@ -19,3 +19,5 @@ citEntry(entry = "Article",
         "doi: 10.21105/joss.01434")
       
 )
+
+
