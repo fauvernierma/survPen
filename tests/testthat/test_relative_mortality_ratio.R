@@ -33,12 +33,12 @@ new.age <- 50
 pred.ratio <- predict(mod.ratio,data.frame(age=50,fu=5))
 
 test_that("Relative mortality ratio prediction ok", {
-  expect_true(abs(pred.ratio$ratio - 7.662618) < 1e-10)
+  expect_true(abs(pred.ratio$ratio - 7.6626182413580004038) < 1e-10)
 })
 
 test_that("Relative mortality ratio standard error ok", {
   expect_true(abs(summary(mod.ratio)$coefficients[2,2]
- - 0.002137259) < 1e-10)
+ -  0.0021372585539319003019) < 1e-10)
 })
    
   

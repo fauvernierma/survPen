@@ -23,12 +23,12 @@ nt <- c(0,3)
 pred.MI <- predict(mod_MI, newdata = data.frame(t1=nt))
 
 test_that("Marginal intensity prediction ok", {
-  expect_true(abs(pred.MI$haz[1] - 1.126653) < 1e-10)
+  expect_true(abs(pred.MI$haz[1] -  1.1266532434447120714) < 1e-10)
 })
 
 test_that("Marginal intensity standard error ok", {
   expect_true(abs(summary(mod_MI)$coefficients[1,2]
- -  0.0322801) < 1e-10)
+ -  0.032280101353462826996) < 1e-10)
 })
    
   
