@@ -9,7 +9,7 @@ context("error")
 
  test_that("wrong method gives error", {
   expect_error(survPen(~smf(fu),data=datCancer,t1=fu,event=dead,method="blabla"),
-  "method should be LAML or LCV")
+  "method should be 'LAML' or 'LCV'")
 })
  
 
