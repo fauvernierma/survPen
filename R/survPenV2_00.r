@@ -1623,7 +1623,7 @@ instr <- function(str1,str2,startpos=1,n=1){
 #' # The following code sets up everything we need in order to fit the model
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
-#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
+#' expected=rep(0,100),expected.name=NULL,type="overall",n.legendre=20,
 #' cl="survPen(form,data,t1=time,event=event)",beta.ini=NULL)
 #'
 model.cons <- function(formula,lambda,data.spec,t1,t1.name,t0,t0.name,event,event.name,expected,expected.name,type,n.legendre,cl,beta.ini){
@@ -2264,7 +2264,7 @@ model.cons <- function(formula,lambda,data.spec,t1,t1.name,t0,t0.name,event,even
 #' # Setting up the model
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
-#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
+#' expected=rep(0,100),expected.name=NULL,type="overall",n.legendre=20,
 #' cl="survPen(form,data,t1=time,event=event)",beta.ini=NULL)
 #'  
 #' # Retrieving the sum-to-zero constraint matrices and the list of knots
@@ -2506,7 +2506,7 @@ design.matrix <- function(formula,data.spec,t1.name,Z.smf,Z.tensor,Z.tint,list.s
 #' # Setting up the model before fitting
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
-#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
+#' expected=rep(0,100),expected.name=NULL,type="overall",n.legendre=20,
 #' cl="survPen(form,data,t1=time,event=event)",beta.ini=NULL)
 #'  
 #' # Reparameterization allows separating the parameters into unpenalized and 
@@ -3510,7 +3510,7 @@ survPen <- function(formula,data,t1,t0=NULL,event,expected=NULL,lambda=NULL,rho.
 #' # Setting up the model before fitting
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
-#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
+#' expected=rep(0,100),expected.name=NULL,type="overall",n.legendre=20,
 #' cl="survPen(form,data,t1=time,event=event)",beta.ini=NULL)
 #'  
 #' # fitting
