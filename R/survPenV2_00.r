@@ -4735,7 +4735,7 @@ print.summary.survPen <- function(x, digits = max(3, getOption("digits") - 2),
 #' # Setting up the model before fitting
 #' model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 #' t0=rep(0,100),t0.name="t0",event=event,event.name="event",
-#' expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
+#' expected=rep(0,100),expected.name=NULL,type="overall",n.legendre=20,
 #' cl="survPen(form,data,t1=time,event=event)",beta.ini=NULL)
 #'  
 #' # Estimating the regression parameters at given smoothing parameter (here lambda=0)
@@ -5631,13 +5631,13 @@ conf.int=0.95, method = "exact", n.legendre=50){
 	deriv.SNS <- - with(newdata,rowsum(w.SNS*surv*deriv.H,fu)) 
 
 	# Choose robust variance if available
-	if (!is.null(object$Vr)){
+	if (!is.null(model$Vr)){
 	
-		Variance <- object$Vr
+		Variance <- model$Vr
 
 	}else{
 	
-		Variance <- object$Vp # bayesian covariance matrix
+		Variance <- model$Vp # bayesian covariance matrix
 	
 	}
 
