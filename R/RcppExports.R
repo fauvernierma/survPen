@@ -127,3 +127,123 @@ Hess_rho <- function(X_GL, X_GL_Q, GL_temp, haz_GL, deriv2_rho_beta, deriv_rho_b
     .Call('_survPen_Hess_rho', PACKAGE = 'survPen', X_GL, X_GL_Q, GL_temp, haz_GL, deriv2_rho_beta, deriv_rho_beta, weights, tm, nb_smooth, p, n_legendre, deriv_rho_inv_Hess_beta, deriv_rho_Hess_unpen_beta, S_list, minus_eigen_inv_Hess_beta, temp_LAML, temp_LAML2, Vp, S_beta, beta, inverse_new_S, X, X_Q, temp_deriv3, temp_deriv4, event, expected, type, Ve, deriv_rho_Ve, mat_temp, deriv_mat_temp, eigen_mat_temp, method)
 }
 
+#' Gradient vector of LCV and LAML wrt rho (log smoothing parameters). Version for multiplicative decomposition : relative mortality ratio model
+#'
+#' @param X_GL list of matrices (\code{length(X.GL)=n.legendre}) for Gauss-Legendre quadrature
+#' @param GL_temp list of vectors used to make intermediate calculations and save computation time
+#' @param haz_GL list of all the matrix-vector multiplications X.GL[[i]]\%*\%beta for Gauss Legendre integration in order to save computation time
+#' @param deriv_rho_beta firt derivative of beta wrt rho (implicit differentiation)
+#' @param weights vector of weights for Gauss-Legendre integration on [-1;1]
+#' @param tm vector of midpoints times for Gauss-Legendre integration; tm = 0.5*(t1 - t0)
+#' @param nb_smooth number of smoothing parameters
+#' @param p number of regression parameters
+#' @param n_legendre number of nodes for Gauss-Legendre quadrature
+#' @param S_list List of all the rescaled penalty matrices multiplied by their associated smoothing parameters
+#' @param temp_LAML temporary matrix used when method="LAML" to save computation time
+#' @param Vp Bayesian covariance matrix
+#' @param S_beta List such that S_beta[[i]]=S_list[[i]]\%*\%beta
+#' @param beta vector of estimated regression parameters
+#' @param inverse_new_S inverse of the penalty matrix
+#' @param X design matrix for the model
+#' @param event vector of right-censoring indicators
+#' @param expected vector of expected hazard rates
+#' @param Ve frequentist covariance matrix
+#' @param mat_temp temporary matrix used when method="LCV" to save computation time
+#' @param method criterion used to select the smoothing parameters. Should be "LAML" or "LCV"; default is "LAML"
+#' @return List of objects with the following items:
+#' \item{grad_rho}{gradient vector of LCV or LAML}
+#' \item{deriv_rho_inv_Hess_beta}{List of first derivatives of Vp wrt rho}
+#' \item{deriv_rho_Hess_unpen_beta}{List of first derivatives of the Hessian of the unpenalized log-likelihood wrt rho}
+#' @export
+grad_rho_mult <- function(X_GL, GL_temp, haz_GL, deriv_rho_beta, weights, tm, nb_smooth, p, n_legendre, S_list, temp_LAML, Vp, S_beta, beta, inverse_new_S, X, event, expected, Ve, mat_temp, method) {
+    .Call('_survPen_grad_rho_mult', PACKAGE = 'survPen', X_GL, GL_temp, haz_GL, deriv_rho_beta, weights, tm, nb_smooth, p, n_legendre, S_list, temp_LAML, Vp, S_beta, beta, inverse_new_S, X, event, expected, Ve, mat_temp, method)
+}
+
+#' Hessian matrix of LCV and LAML wrt rho (log smoothing parameters). Version for multiplicative decomposition : relative mortality ratio model
+#'
+#' @param X_GL list of matrices (\code{length(X.GL)=n.legendre}) for Gauss-Legendre quadrature
+#' @param X_GL_Q list of transformed matrices from X_GL in order to calculate only the diagonal of the fourth derivative of the likelihood
+#' @param GL_temp list of vectors used to make intermediate calculations and save computation time
+#' @param haz_GL list of all the matrix-vector multiplications X.GL[[i]]\%*\%beta for Gauss Legendre integration in order to save computation time
+#' @param deriv2_rho_beta second derivatives of beta wrt rho (implicit differentiation)
+#' @param deriv_rho_beta firt derivatives of beta wrt rho (implicit differentiation)
+#' @param weights vector of weights for Gauss-Legendre integration on [-1;1]
+#' @param tm vector of midpoints times for Gauss-Legendre integration; tm = 0.5*(t1 - t0)
+#' @param nb_smooth number of smoothing parameters
+#' @param p number of regression parameters
+#' @param n_legendre number of nodes for Gauss-Legendre quadrature
+#' @param deriv_rho_inv_Hess_beta list of first derivatives of Vp wrt rho
+#' @param deriv_rho_Hess_unpen_beta list of first derivatives of Hessian of unpenalized log likelihood wrt rho
+#' @param S_list List of all the rescaled penalty matrices multiplied by their associated smoothing parameters
+#' @param minus_eigen_inv_Hess_beta vector of eigenvalues of Vp
+#' @param temp_LAML temporary matrix used when method="LAML" to save computation time
+#' @param temp_LAML2 temporary matrix used when method="LAML" to save computation time
+#' @param Vp Bayesian covariance matrix
+#' @param S_beta List such that S_beta[[i]]=S_list[[i]]\%*\%beta
+#' @param beta vector of estimated regression parameters
+#' @param inverse_new_S inverse of the penalty matrix
+#' @param X design matrix for the model
+#' @param X_Q transformed design matrix in order to calculate only the diagonal of the fourth derivative of the likelihood
+#' @param event vector of right-censoring indicators
+#' @param expected vector of expected hazard rates
+#' @param Ve frequentist covariance matrix
+#' @param deriv_rho_Ve list of derivatives of Ve wrt rho
+#' @param mat_temp temporary matrix used when method="LCV" to save computation time
+#' @param deriv_mat_temp list of derivatives of mat_temp wrt rho
+#' @param eigen_mat_temp vector of eigenvalues of mat_temp
+#' @param method criterion used to select the smoothing parameters. Should be "LAML" or "LCV"; default is "LAML"
+#' @return Hessian matrix of LCV or LAML wrt rho
+#' @export
+Hess_rho_mult <- function(X_GL, X_GL_Q, GL_temp, haz_GL, deriv2_rho_beta, deriv_rho_beta, weights, tm, nb_smooth, p, n_legendre, deriv_rho_inv_Hess_beta, deriv_rho_Hess_unpen_beta, S_list, minus_eigen_inv_Hess_beta, temp_LAML, temp_LAML2, Vp, S_beta, beta, inverse_new_S, X, X_Q, event, expected, Ve, deriv_rho_Ve, mat_temp, deriv_mat_temp, eigen_mat_temp, method) {
+    .Call('_survPen_Hess_rho_mult', PACKAGE = 'survPen', X_GL, X_GL_Q, GL_temp, haz_GL, deriv2_rho_beta, deriv_rho_beta, weights, tm, nb_smooth, p, n_legendre, deriv_rho_inv_Hess_beta, deriv_rho_Hess_unpen_beta, S_list, minus_eigen_inv_Hess_beta, temp_LAML, temp_LAML2, Vp, S_beta, beta, inverse_new_S, X, X_Q, event, expected, Ve, deriv_rho_Ve, mat_temp, deriv_mat_temp, eigen_mat_temp, method)
+}
+
+#' Cumulative hazard (integral of hazard) only
+#'
+#' @param X_GL list of matrices (\code{length(X.GL)=n.legendre}) for Gauss-Legendre quadrature
+#' @param weights vector of weights for Gauss-Legendre integration on [-1;1]
+#' @param tm vector of midpoints times for Gauss-Legendre integration; tm = 0.5*(t1 - t0)
+#' @param n_legendre number of nodes for Gauss-Legendre quadrature
+#' @param n number of individuals in the dataset
+#' @param beta vector of estimated regression parameters
+#' @param is_pwcst True if there is a piecewise constant baseline specified. False otherwise
+#' @param pwcst_weights if is_pwcst is TRUE, matrix of weights giving the time contribution of each individual on each sub-interval. Otherwise NULL
+#' @return cumulative hazard (integral of hazard)
+#' @export
+CumulHazard <- function(X_GL, weights, tm, n_legendre, n, beta, is_pwcst, pwcst_weights) {
+    .Call('_survPen_CumulHazard', PACKAGE = 'survPen', X_GL, weights, tm, n_legendre, n, beta, is_pwcst, pwcst_weights)
+}
+
+#' Cumulative hazard (integral of hazard) and its first and second derivatives wrt regression parameters beta
+#'
+#' @param X_GL list of matrices (\code{length(X.GL)=n.legendre}) for Gauss-Legendre quadrature
+#' @param weights vector of weights for Gauss-Legendre integration on [-1;1]
+#' @param tm vector of midpoints times for Gauss-Legendre integration; tm = 0.5*(t1 - t0)
+#' @param n_legendre number of nodes for Gauss-Legendre quadrature
+#' @param n number of individuals in the dataset
+#' @param p number of regression parameters
+#' @param beta vector of estimated regression parameters
+#' @param expected vector of expected hazard rates
+#' @param type "net", "overall" or "mult"
+#' @param is_pwcst True if there is a piecewise constant baseline specified. False otherwise
+#' @param pwcst_weights if is.pwcst is TRUE, matrix of weights giving the time contribution of each individual on each sub-interval. Otherwise NULL
+#' @return List of objects with the following items:
+#' \item{integral}{cumulative hazard (integral of hazard)}
+#' \item{f.first}{first derivative of cumulative hazard wrt beta}
+#' \item{f.second}{second derivative of cumulative hazard wrt beta}
+#' @export
+DerivCumulHazard <- function(X_GL, weights, tm, n_legendre, n, p, beta, expected, type, is_pwcst, pwcst_weights) {
+    .Call('_survPen_DerivCumulHazard', PACKAGE = 'survPen', X_GL, weights, tm, n_legendre, n, p, beta, expected, type, is_pwcst, pwcst_weights)
+}
+
+#' Gauss-Legendre evaluations
+#'
+#' @param X_GL list of matrices (\code{length(X.GL)=n.legendre}) for Gauss-Legendre quadrature
+#' @param n_legendre number of nodes for Gauss-Legendre quadrature
+#' @param beta vector of estimated regression parameters
+#' @return list of all the matrix-vector multiplications X.GL[[i]]\%*\%beta for Gauss Legendre integration in order to save computation time
+#' @export
+HazGL <- function(X_GL, n_legendre, beta) {
+    .Call('_survPen_HazGL', PACKAGE = 'survPen', X_GL, n_legendre, beta)
+}
+

@@ -149,6 +149,130 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// grad_rho_mult
+List grad_rho_mult(const List X_GL, const List GL_temp, const List haz_GL, const Map<MatrixXd> deriv_rho_beta, const Map<VectorXd> weights, const Map<VectorXd> tm, const int nb_smooth, const int p, const int n_legendre, const List S_list, const List temp_LAML, const Map<MatrixXd> Vp, const List S_beta, const Map<VectorXd> beta, const Map<MatrixXd> inverse_new_S, const Map<MatrixXd> X, const Map<VectorXd> event, const Map<VectorXd> expected, const Map<MatrixXd> Ve, const Map<MatrixXd> mat_temp, const String method);
+RcppExport SEXP _survPen_grad_rho_mult(SEXP X_GLSEXP, SEXP GL_tempSEXP, SEXP haz_GLSEXP, SEXP deriv_rho_betaSEXP, SEXP weightsSEXP, SEXP tmSEXP, SEXP nb_smoothSEXP, SEXP pSEXP, SEXP n_legendreSEXP, SEXP S_listSEXP, SEXP temp_LAMLSEXP, SEXP VpSEXP, SEXP S_betaSEXP, SEXP betaSEXP, SEXP inverse_new_SSEXP, SEXP XSEXP, SEXP eventSEXP, SEXP expectedSEXP, SEXP VeSEXP, SEXP mat_tempSEXP, SEXP methodSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const List >::type X_GL(X_GLSEXP);
+    Rcpp::traits::input_parameter< const List >::type GL_temp(GL_tempSEXP);
+    Rcpp::traits::input_parameter< const List >::type haz_GL(haz_GLSEXP);
+    Rcpp::traits::input_parameter< const Map<MatrixXd> >::type deriv_rho_beta(deriv_rho_betaSEXP);
+    Rcpp::traits::input_parameter< const Map<VectorXd> >::type weights(weightsSEXP);
+    Rcpp::traits::input_parameter< const Map<VectorXd> >::type tm(tmSEXP);
+    Rcpp::traits::input_parameter< const int >::type nb_smooth(nb_smoothSEXP);
+    Rcpp::traits::input_parameter< const int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const int >::type n_legendre(n_legendreSEXP);
+    Rcpp::traits::input_parameter< const List >::type S_list(S_listSEXP);
+    Rcpp::traits::input_parameter< const List >::type temp_LAML(temp_LAMLSEXP);
+    Rcpp::traits::input_parameter< const Map<MatrixXd> >::type Vp(VpSEXP);
+    Rcpp::traits::input_parameter< const List >::type S_beta(S_betaSEXP);
+    Rcpp::traits::input_parameter< const Map<VectorXd> >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< const Map<MatrixXd> >::type inverse_new_S(inverse_new_SSEXP);
+    Rcpp::traits::input_parameter< const Map<MatrixXd> >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const Map<VectorXd> >::type event(eventSEXP);
+    Rcpp::traits::input_parameter< const Map<VectorXd> >::type expected(expectedSEXP);
+    Rcpp::traits::input_parameter< const Map<MatrixXd> >::type Ve(VeSEXP);
+    Rcpp::traits::input_parameter< const Map<MatrixXd> >::type mat_temp(mat_tempSEXP);
+    Rcpp::traits::input_parameter< const String >::type method(methodSEXP);
+    rcpp_result_gen = Rcpp::wrap(grad_rho_mult(X_GL, GL_temp, haz_GL, deriv_rho_beta, weights, tm, nb_smooth, p, n_legendre, S_list, temp_LAML, Vp, S_beta, beta, inverse_new_S, X, event, expected, Ve, mat_temp, method));
+    return rcpp_result_gen;
+END_RCPP
+}
+// Hess_rho_mult
+MatrixXd Hess_rho_mult(const List X_GL, const List X_GL_Q, const List GL_temp, const List haz_GL, const List deriv2_rho_beta, const Map<MatrixXd> deriv_rho_beta, const Map<VectorXd> weights, const Map<VectorXd> tm, const int nb_smooth, const int p, const int n_legendre, const List deriv_rho_inv_Hess_beta, const List deriv_rho_Hess_unpen_beta, const List S_list, const Map<VectorXd> minus_eigen_inv_Hess_beta, const List temp_LAML, const List temp_LAML2, const Map<MatrixXd> Vp, const List S_beta, const Map<VectorXd> beta, const Map<MatrixXd> inverse_new_S, const Map<MatrixXd> X, const Map<MatrixXd> X_Q, const Map<VectorXd> event, const Map<VectorXd> expected, const Map<MatrixXd> Ve, const List deriv_rho_Ve, const Map<MatrixXd> mat_temp, const List deriv_mat_temp, const Map<VectorXd> eigen_mat_temp, const String method);
+RcppExport SEXP _survPen_Hess_rho_mult(SEXP X_GLSEXP, SEXP X_GL_QSEXP, SEXP GL_tempSEXP, SEXP haz_GLSEXP, SEXP deriv2_rho_betaSEXP, SEXP deriv_rho_betaSEXP, SEXP weightsSEXP, SEXP tmSEXP, SEXP nb_smoothSEXP, SEXP pSEXP, SEXP n_legendreSEXP, SEXP deriv_rho_inv_Hess_betaSEXP, SEXP deriv_rho_Hess_unpen_betaSEXP, SEXP S_listSEXP, SEXP minus_eigen_inv_Hess_betaSEXP, SEXP temp_LAMLSEXP, SEXP temp_LAML2SEXP, SEXP VpSEXP, SEXP S_betaSEXP, SEXP betaSEXP, SEXP inverse_new_SSEXP, SEXP XSEXP, SEXP X_QSEXP, SEXP eventSEXP, SEXP expectedSEXP, SEXP VeSEXP, SEXP deriv_rho_VeSEXP, SEXP mat_tempSEXP, SEXP deriv_mat_tempSEXP, SEXP eigen_mat_tempSEXP, SEXP methodSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const List >::type X_GL(X_GLSEXP);
+    Rcpp::traits::input_parameter< const List >::type X_GL_Q(X_GL_QSEXP);
+    Rcpp::traits::input_parameter< const List >::type GL_temp(GL_tempSEXP);
+    Rcpp::traits::input_parameter< const List >::type haz_GL(haz_GLSEXP);
+    Rcpp::traits::input_parameter< const List >::type deriv2_rho_beta(deriv2_rho_betaSEXP);
+    Rcpp::traits::input_parameter< const Map<MatrixXd> >::type deriv_rho_beta(deriv_rho_betaSEXP);
+    Rcpp::traits::input_parameter< const Map<VectorXd> >::type weights(weightsSEXP);
+    Rcpp::traits::input_parameter< const Map<VectorXd> >::type tm(tmSEXP);
+    Rcpp::traits::input_parameter< const int >::type nb_smooth(nb_smoothSEXP);
+    Rcpp::traits::input_parameter< const int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const int >::type n_legendre(n_legendreSEXP);
+    Rcpp::traits::input_parameter< const List >::type deriv_rho_inv_Hess_beta(deriv_rho_inv_Hess_betaSEXP);
+    Rcpp::traits::input_parameter< const List >::type deriv_rho_Hess_unpen_beta(deriv_rho_Hess_unpen_betaSEXP);
+    Rcpp::traits::input_parameter< const List >::type S_list(S_listSEXP);
+    Rcpp::traits::input_parameter< const Map<VectorXd> >::type minus_eigen_inv_Hess_beta(minus_eigen_inv_Hess_betaSEXP);
+    Rcpp::traits::input_parameter< const List >::type temp_LAML(temp_LAMLSEXP);
+    Rcpp::traits::input_parameter< const List >::type temp_LAML2(temp_LAML2SEXP);
+    Rcpp::traits::input_parameter< const Map<MatrixXd> >::type Vp(VpSEXP);
+    Rcpp::traits::input_parameter< const List >::type S_beta(S_betaSEXP);
+    Rcpp::traits::input_parameter< const Map<VectorXd> >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< const Map<MatrixXd> >::type inverse_new_S(inverse_new_SSEXP);
+    Rcpp::traits::input_parameter< const Map<MatrixXd> >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const Map<MatrixXd> >::type X_Q(X_QSEXP);
+    Rcpp::traits::input_parameter< const Map<VectorXd> >::type event(eventSEXP);
+    Rcpp::traits::input_parameter< const Map<VectorXd> >::type expected(expectedSEXP);
+    Rcpp::traits::input_parameter< const Map<MatrixXd> >::type Ve(VeSEXP);
+    Rcpp::traits::input_parameter< const List >::type deriv_rho_Ve(deriv_rho_VeSEXP);
+    Rcpp::traits::input_parameter< const Map<MatrixXd> >::type mat_temp(mat_tempSEXP);
+    Rcpp::traits::input_parameter< const List >::type deriv_mat_temp(deriv_mat_tempSEXP);
+    Rcpp::traits::input_parameter< const Map<VectorXd> >::type eigen_mat_temp(eigen_mat_tempSEXP);
+    Rcpp::traits::input_parameter< const String >::type method(methodSEXP);
+    rcpp_result_gen = Rcpp::wrap(Hess_rho_mult(X_GL, X_GL_Q, GL_temp, haz_GL, deriv2_rho_beta, deriv_rho_beta, weights, tm, nb_smooth, p, n_legendre, deriv_rho_inv_Hess_beta, deriv_rho_Hess_unpen_beta, S_list, minus_eigen_inv_Hess_beta, temp_LAML, temp_LAML2, Vp, S_beta, beta, inverse_new_S, X, X_Q, event, expected, Ve, deriv_rho_Ve, mat_temp, deriv_mat_temp, eigen_mat_temp, method));
+    return rcpp_result_gen;
+END_RCPP
+}
+// CumulHazard
+VectorXd CumulHazard(const List X_GL, const Map<VectorXd> weights, const Map<VectorXd> tm, const int n_legendre, const int n, const Map<VectorXd> beta, const bool is_pwcst, const Map<MatrixXd> pwcst_weights);
+RcppExport SEXP _survPen_CumulHazard(SEXP X_GLSEXP, SEXP weightsSEXP, SEXP tmSEXP, SEXP n_legendreSEXP, SEXP nSEXP, SEXP betaSEXP, SEXP is_pwcstSEXP, SEXP pwcst_weightsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const List >::type X_GL(X_GLSEXP);
+    Rcpp::traits::input_parameter< const Map<VectorXd> >::type weights(weightsSEXP);
+    Rcpp::traits::input_parameter< const Map<VectorXd> >::type tm(tmSEXP);
+    Rcpp::traits::input_parameter< const int >::type n_legendre(n_legendreSEXP);
+    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const Map<VectorXd> >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< const bool >::type is_pwcst(is_pwcstSEXP);
+    Rcpp::traits::input_parameter< const Map<MatrixXd> >::type pwcst_weights(pwcst_weightsSEXP);
+    rcpp_result_gen = Rcpp::wrap(CumulHazard(X_GL, weights, tm, n_legendre, n, beta, is_pwcst, pwcst_weights));
+    return rcpp_result_gen;
+END_RCPP
+}
+// DerivCumulHazard
+List DerivCumulHazard(const List X_GL, const Map<VectorXd> weights, const Map<VectorXd> tm, const int n_legendre, const int n, const int p, const Map<VectorXd> beta, const Map<VectorXd> expected, const String type, const bool is_pwcst, const Map<MatrixXd> pwcst_weights);
+RcppExport SEXP _survPen_DerivCumulHazard(SEXP X_GLSEXP, SEXP weightsSEXP, SEXP tmSEXP, SEXP n_legendreSEXP, SEXP nSEXP, SEXP pSEXP, SEXP betaSEXP, SEXP expectedSEXP, SEXP typeSEXP, SEXP is_pwcstSEXP, SEXP pwcst_weightsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const List >::type X_GL(X_GLSEXP);
+    Rcpp::traits::input_parameter< const Map<VectorXd> >::type weights(weightsSEXP);
+    Rcpp::traits::input_parameter< const Map<VectorXd> >::type tm(tmSEXP);
+    Rcpp::traits::input_parameter< const int >::type n_legendre(n_legendreSEXP);
+    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const Map<VectorXd> >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< const Map<VectorXd> >::type expected(expectedSEXP);
+    Rcpp::traits::input_parameter< const String >::type type(typeSEXP);
+    Rcpp::traits::input_parameter< const bool >::type is_pwcst(is_pwcstSEXP);
+    Rcpp::traits::input_parameter< const Map<MatrixXd> >::type pwcst_weights(pwcst_weightsSEXP);
+    rcpp_result_gen = Rcpp::wrap(DerivCumulHazard(X_GL, weights, tm, n_legendre, n, p, beta, expected, type, is_pwcst, pwcst_weights));
+    return rcpp_result_gen;
+END_RCPP
+}
+// HazGL
+List HazGL(const List X_GL, const int n_legendre, const Map<VectorXd> beta);
+RcppExport SEXP _survPen_HazGL(SEXP X_GLSEXP, SEXP n_legendreSEXP, SEXP betaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const List >::type X_GL(X_GLSEXP);
+    Rcpp::traits::input_parameter< const int >::type n_legendre(n_legendreSEXP);
+    Rcpp::traits::input_parameter< const Map<VectorXd> >::type beta(betaSEXP);
+    rcpp_result_gen = Rcpp::wrap(HazGL(X_GL, n_legendre, beta));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_survPen_multmat", (DL_FUNC) &_survPen_multmat, 2},
@@ -158,6 +282,11 @@ static const R_CallMethodDef CallEntries[] = {
     {"_survPen_deriv_R", (DL_FUNC) &_survPen_deriv_R, 3},
     {"_survPen_grad_rho", (DL_FUNC) &_survPen_grad_rho, 23},
     {"_survPen_Hess_rho", (DL_FUNC) &_survPen_Hess_rho, 34},
+    {"_survPen_grad_rho_mult", (DL_FUNC) &_survPen_grad_rho_mult, 21},
+    {"_survPen_Hess_rho_mult", (DL_FUNC) &_survPen_Hess_rho_mult, 31},
+    {"_survPen_CumulHazard", (DL_FUNC) &_survPen_CumulHazard, 8},
+    {"_survPen_DerivCumulHazard", (DL_FUNC) &_survPen_DerivCumulHazard, 11},
+    {"_survPen_HazGL", (DL_FUNC) &_survPen_HazGL, 3},
     {NULL, NULL, 0}
 };
 

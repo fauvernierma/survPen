@@ -1,4 +1,5 @@
 
+
 #include <RcppEigen.h>
 
 // [[Rcpp::depends(RcppEigen)]]
@@ -365,5 +366,426 @@ const Map<VectorXd> eigen_mat_temp, const String method) {
 
 
 
+//' Gradient vector of LCV and LAML wrt rho (log smoothing parameters). Version for multiplicative decomposition : relative mortality ratio model
+//'
+//' @param X_GL list of matrices (\code{length(X.GL)=n.legendre}) for Gauss-Legendre quadrature
+//' @param GL_temp list of vectors used to make intermediate calculations and save computation time
+//' @param haz_GL list of all the matrix-vector multiplications X.GL[[i]]\%*\%beta for Gauss Legendre integration in order to save computation time
+//' @param deriv_rho_beta firt derivative of beta wrt rho (implicit differentiation)
+//' @param weights vector of weights for Gauss-Legendre integration on [-1;1]
+//' @param tm vector of midpoints times for Gauss-Legendre integration; tm = 0.5*(t1 - t0)
+//' @param nb_smooth number of smoothing parameters
+//' @param p number of regression parameters
+//' @param n_legendre number of nodes for Gauss-Legendre quadrature
+//' @param S_list List of all the rescaled penalty matrices multiplied by their associated smoothing parameters
+//' @param temp_LAML temporary matrix used when method="LAML" to save computation time
+//' @param Vp Bayesian covariance matrix
+//' @param S_beta List such that S_beta[[i]]=S_list[[i]]\%*\%beta
+//' @param beta vector of estimated regression parameters
+//' @param inverse_new_S inverse of the penalty matrix
+//' @param X design matrix for the model
+//' @param event vector of right-censoring indicators
+//' @param expected vector of expected hazard rates
+//' @param Ve frequentist covariance matrix
+//' @param mat_temp temporary matrix used when method="LCV" to save computation time
+//' @param method criterion used to select the smoothing parameters. Should be "LAML" or "LCV"; default is "LAML"
+//' @return List of objects with the following items:
+//' \item{grad_rho}{gradient vector of LCV or LAML}
+//' \item{deriv_rho_inv_Hess_beta}{List of first derivatives of Vp wrt rho}
+//' \item{deriv_rho_Hess_unpen_beta}{List of first derivatives of the Hessian of the unpenalized log-likelihood wrt rho}
+//' @export
+// [[Rcpp::export]]		
+List grad_rho_mult(const List X_GL, const List GL_temp, const List haz_GL, 
+const Map<MatrixXd> deriv_rho_beta, const Map<VectorXd> weights,
+const Map<VectorXd> tm, const int nb_smooth, const int p, const int n_legendre,
+const List S_list, const List temp_LAML, const Map<MatrixXd> Vp, const List S_beta, 
+const Map<VectorXd> beta, const Map<MatrixXd> inverse_new_S,
+const Map<MatrixXd> X,
+const Map<VectorXd> event, const Map<VectorXd> expected,
+const Map<MatrixXd> Ve, const Map<MatrixXd> mat_temp, const String method) {
+		
+	VectorXd grad_rho = VectorXd::Zero(nb_smooth);
+	
+	List deriv_rho_Hess_unpen_beta(nb_smooth);
+	
+	List deriv_rho_inv_Hess_beta(nb_smooth);
+	
+	for (int j = 0; j < nb_smooth; j++)
+     {
+		 
+				deriv_rho_Hess_unpen_beta[j] = MatrixXd::Zero(p,p);	
+				
+				for (int i = 0; i < n_legendre; i++)
+				{
+
+					as<Map<MatrixXd> >(deriv_rho_Hess_unpen_beta[j]) -= as<Map<MatrixXd> >(X_GL[i]).transpose() * ((as<Map<MatrixXd> >(X_GL[i]).array().colwise() * 
+					(as<Map<VectorXd> >(as<List> (GL_temp[j])[i]).array()*tm.array()*expected.array()*weights(i))).matrix()) ;
+			
+			
+				}
+				
+				deriv_rho_inv_Hess_beta[j] = -Vp * (as<Map<MatrixXd> >(deriv_rho_Hess_unpen_beta[j]) - as<Map<MatrixXd> >(S_list[j])) * Vp ;
+
+				if (method=="LAML"){
+					
+					grad_rho(j) = 0.5*(as<Map<VectorXd> >(S_beta[j]).array() * beta.array()).sum() // grad_rho_ll
+				
+					- 0.5*(inverse_new_S.array()*as<Map<MatrixXd> >(temp_LAML[j]).array()).sum() // grad.rho.log.abs.S
+				
+					+ 0.5*(Vp.array()*(as<Map<MatrixXd> >(S_list[j]) - as<Map<MatrixXd> >(deriv_rho_Hess_unpen_beta[j])).array()).sum() ; //grad.rho.log.det.Hess.beta
+				}
+				
+				if (method=="LCV"){
+					
+					grad_rho(j) = (mat_temp.array()*as<Map<MatrixXd> >(deriv_rho_Hess_unpen_beta[j]).array()).sum() + 
+					
+					(-Ve.array()*as<Map<MatrixXd> >(S_list[j]).array()).sum() ;
+	 
+				}
+	 
+	 }
+	 
+
+	return List::create( 
+			_["grad_rho"]  = grad_rho, 
+			_["deriv_rho_inv_Hess_beta"]  = deriv_rho_inv_Hess_beta, 
+			_["deriv_rho_Hess_unpen_beta"] = deriv_rho_Hess_unpen_beta
+	) ;
+}
+	
+
+//' Hessian matrix of LCV and LAML wrt rho (log smoothing parameters). Version for multiplicative decomposition : relative mortality ratio model
+//'
+//' @param X_GL list of matrices (\code{length(X.GL)=n.legendre}) for Gauss-Legendre quadrature
+//' @param X_GL_Q list of transformed matrices from X_GL in order to calculate only the diagonal of the fourth derivative of the likelihood
+//' @param GL_temp list of vectors used to make intermediate calculations and save computation time
+//' @param haz_GL list of all the matrix-vector multiplications X.GL[[i]]\%*\%beta for Gauss Legendre integration in order to save computation time
+//' @param deriv2_rho_beta second derivatives of beta wrt rho (implicit differentiation)
+//' @param deriv_rho_beta firt derivatives of beta wrt rho (implicit differentiation)
+//' @param weights vector of weights for Gauss-Legendre integration on [-1;1]
+//' @param tm vector of midpoints times for Gauss-Legendre integration; tm = 0.5*(t1 - t0)
+//' @param nb_smooth number of smoothing parameters
+//' @param p number of regression parameters
+//' @param n_legendre number of nodes for Gauss-Legendre quadrature
+//' @param deriv_rho_inv_Hess_beta list of first derivatives of Vp wrt rho
+//' @param deriv_rho_Hess_unpen_beta list of first derivatives of Hessian of unpenalized log likelihood wrt rho
+//' @param S_list List of all the rescaled penalty matrices multiplied by their associated smoothing parameters
+//' @param minus_eigen_inv_Hess_beta vector of eigenvalues of Vp
+//' @param temp_LAML temporary matrix used when method="LAML" to save computation time
+//' @param temp_LAML2 temporary matrix used when method="LAML" to save computation time
+//' @param Vp Bayesian covariance matrix
+//' @param S_beta List such that S_beta[[i]]=S_list[[i]]\%*\%beta
+//' @param beta vector of estimated regression parameters
+//' @param inverse_new_S inverse of the penalty matrix
+//' @param X design matrix for the model
+//' @param X_Q transformed design matrix in order to calculate only the diagonal of the fourth derivative of the likelihood
+//' @param event vector of right-censoring indicators
+//' @param expected vector of expected hazard rates
+//' @param Ve frequentist covariance matrix
+//' @param deriv_rho_Ve list of derivatives of Ve wrt rho
+//' @param mat_temp temporary matrix used when method="LCV" to save computation time
+//' @param deriv_mat_temp list of derivatives of mat_temp wrt rho
+//' @param eigen_mat_temp vector of eigenvalues of mat_temp
+//' @param method criterion used to select the smoothing parameters. Should be "LAML" or "LCV"; default is "LAML"
+//' @return Hessian matrix of LCV or LAML wrt rho
+//' @export
+// [[Rcpp::export]]
+MatrixXd Hess_rho_mult(const List X_GL, const List X_GL_Q, const List GL_temp, const List haz_GL, 
+const List deriv2_rho_beta, const Map<MatrixXd> deriv_rho_beta, const Map<VectorXd> weights,
+const Map<VectorXd> tm, const int nb_smooth, const int p, const int n_legendre,
+const List deriv_rho_inv_Hess_beta, const List deriv_rho_Hess_unpen_beta, const List S_list, 
+const Map<VectorXd> minus_eigen_inv_Hess_beta, const List temp_LAML, const List temp_LAML2,
+const Map<MatrixXd> Vp, const List S_beta, const Map<VectorXd> beta, const Map<MatrixXd> inverse_new_S,
+const Map<MatrixXd> X, const Map<MatrixXd> X_Q,
+const Map<VectorXd> event, const Map<VectorXd> expected,
+const Map<MatrixXd> Ve, const List deriv_rho_Ve, const Map<MatrixXd> mat_temp, const List deriv_mat_temp, 
+const Map<VectorXd> eigen_mat_temp, const String method) {
+		
+	MatrixXd Hess_rho = MatrixXd::Zero(nb_smooth,nb_smooth);
+	
+	for (int j = 0; j < nb_smooth; j++)
+     {
+		 for (int j2 = 0; j2 < nb_smooth; j2++)
+			{
+				
+				VectorXd  diag_deriv2_Hess_unpen_beta = VectorXd::Zero(p);	
+				
+				for (int i = 0; i < n_legendre; i++)
+				{
+				
+					MatrixXd mat1 = (as<Map<MatrixXd> >(X_GL[i]).array().colwise() * as<Map<VectorXd> >(as<List> (GL_temp[j2])[i]).array()).matrix()  ;
+					
+					VectorXd vec1 = deriv_rho_beta.row(j);
+		
+		
+					MatrixXd mat2 = (as<Map<MatrixXd> >(X_GL[i]).array().colwise() * as<Map<VectorXd> >(haz_GL[i]).array()).matrix() ;
+		
+					VectorXd vec2 = as<Map<MatrixXd> >(deriv2_rho_beta[j2]).row(j) ;
+								
+		
+					VectorXd vec_temp = mat1 * vec1 + mat2 * vec2;
+		
+				
+					diag_deriv2_Hess_unpen_beta -= (as<Map<MatrixXd> >(X_GL_Q[i]).array().square().colwise()*(
+					vec_temp.array()*tm.array()*expected.array()*weights(i))).matrix().colwise().sum();
+			
+			
+				}
+				
+			
+				if (method=="LAML"){
+				
+					Hess_rho(j,j2) = 0.5*(-as<Map<MatrixXd> >(deriv_rho_inv_Hess_beta[j2]).array()*
+					(-as<Map<MatrixXd> >(deriv_rho_Hess_unpen_beta[j])+ as<Map<MatrixXd> >(S_list[j])).array()).sum() +
+				
+					0.5*(-minus_eigen_inv_Hess_beta.array()*diag_deriv2_Hess_unpen_beta.array()).sum() // Hess_rho_log_det_Hess_beta
+					
+					-0.5*(as<Map<MatrixXd> >(temp_LAML2[j2]).array()*as<Map<MatrixXd> >(temp_LAML[j]).array()).sum() + //Hess_rho_log_abs_S
+					
+					(as<Map<VectorXd> >(S_beta[j]).array() * deriv_rho_beta.row(j2).transpose().array() ).sum(); // Hess_rho_ll1
+					
+					
+					if (j==j2){
+
+						Hess_rho(j,j2) += 0.5*((Vp.array()*as<Map<MatrixXd> >(S_list[j2]).array()).sum() // Hess_rho_log_det_Hess_beta
+						
+						-(inverse_new_S.array()*as<Map<MatrixXd> >(temp_LAML[j2]).array()).sum() //-0.5*Hess_rho_log_abs_S
+						
+						+(as<Map<VectorXd> >(S_beta[j2]).array() * beta.array()).sum()); // Hess_rho_ll1
+
+					}
+				
+				}
+				
+				
+				if (method=="LCV"){
+					
+					Hess_rho(j,j2) = (eigen_mat_temp.array()*diag_deriv2_Hess_unpen_beta.array()).sum() +
+					(as<Map<MatrixXd> >(deriv_mat_temp[j2]).array()*as<Map<MatrixXd> >(deriv_rho_Hess_unpen_beta[j]).array()).sum() +
+					(-as<Map<MatrixXd> >(deriv_rho_Ve[j2]).array()*as<Map<MatrixXd> >(S_list[j]).array()).sum() ;
+
+					if (j==j2){
+
+						Hess_rho(j,j2) += (-Ve.array()*as<Map<MatrixXd> >(S_list[j2]).array()).sum() ;
+
+					}
+					
+				}	
+				
+				
+			}
+	 
+	 }
+	 
+	return(Hess_rho) ;
+	
+}
+
+
+//' Cumulative hazard (integral of hazard) only
+//'
+//' @param X_GL list of matrices (\code{length(X.GL)=n.legendre}) for Gauss-Legendre quadrature
+//' @param weights vector of weights for Gauss-Legendre integration on [-1;1]
+//' @param tm vector of midpoints times for Gauss-Legendre integration; tm = 0.5*(t1 - t0)
+//' @param n_legendre number of nodes for Gauss-Legendre quadrature
+//' @param n number of individuals in the dataset
+//' @param beta vector of estimated regression parameters
+//' @param is_pwcst True if there is a piecewise constant baseline specified. False otherwise
+//' @param pwcst_weights if is_pwcst is TRUE, matrix of weights giving the time contribution of each individual on each sub-interval. Otherwise NULL
+//' @return cumulative hazard (integral of hazard)
+//' @export
+// [[Rcpp::export]]
+VectorXd CumulHazard(const List X_GL, const Map<VectorXd> weights, const Map<VectorXd> tm, 
+const int n_legendre, const int n, const Map<VectorXd> beta,
+const bool is_pwcst, const Map<MatrixXd> pwcst_weights) {
+	
+	VectorXd integral = VectorXd::Zero(n);
+	
+	if (is_pwcst){
+	
+		for (int j = 0; j < n_legendre; j++)
+		{
+			integral += ((as<Map<MatrixXd> >(X_GL[j])*beta).array().exp()*
+			(pwcst_weights.col(j)).array()).matrix() ;	
+
+		} 
+		
+	} else {
+		
+		for (int j = 0; j < n_legendre; j++)
+		{	
+			integral += ((as<Map<MatrixXd> >(X_GL[j])*beta).array().exp()*
+			tm.array()*weights(j)).matrix() ;	
+			
+		}
+				
+		
+	}
+	 
+	return(integral); 
+
+}
+
+
+
+
+//' Cumulative hazard (integral of hazard) and its first and second derivatives wrt regression parameters beta
+//'
+//' @param X_GL list of matrices (\code{length(X.GL)=n.legendre}) for Gauss-Legendre quadrature
+//' @param weights vector of weights for Gauss-Legendre integration on [-1;1]
+//' @param tm vector of midpoints times for Gauss-Legendre integration; tm = 0.5*(t1 - t0)
+//' @param n_legendre number of nodes for Gauss-Legendre quadrature
+//' @param n number of individuals in the dataset
+//' @param p number of regression parameters
+//' @param beta vector of estimated regression parameters
+//' @param expected vector of expected hazard rates
+//' @param type "net", "overall" or "mult"
+//' @param is_pwcst True if there is a piecewise constant baseline specified. False otherwise
+//' @param pwcst_weights if is.pwcst is TRUE, matrix of weights giving the time contribution of each individual on each sub-interval. Otherwise NULL
+//' @return List of objects with the following items:
+//' \item{integral}{cumulative hazard (integral of hazard)}
+//' \item{f.first}{first derivative of cumulative hazard wrt beta}
+//' \item{f.second}{second derivative of cumulative hazard wrt beta}
+//' @export
+// [[Rcpp::export]]
+List DerivCumulHazard(const List X_GL, const Map<VectorXd> weights, const Map<VectorXd> tm, 
+const int n_legendre, const int n, const int p, const Map<VectorXd> beta, const Map<VectorXd> expected, 
+const String type, const bool is_pwcst, const Map<MatrixXd> pwcst_weights) {
+		
+	VectorXd temp = VectorXd::Zero(n);
+	VectorXd integral = VectorXd::Zero(n);
+	
+	MatrixXd temp2 = MatrixXd::Zero(n,p);	
+	MatrixXd f_first = MatrixXd::Zero(n,p);	
+	
+	MatrixXd f_second = MatrixXd::Zero(p,p);
+	
+	
+	if (is_pwcst){
+		
+		if(type=="mult"){
+			
+			for (int j = 0; j < n_legendre; j++)
+			{
+			temp = ((as<Map<MatrixXd> >(X_GL[j])*beta).array().exp()*
+			(pwcst_weights.col(j)).array()).matrix() ; 
+			
+			
+			temp2 = (as<Map<MatrixXd> >(X_GL[j]).array().colwise()*
+			(temp.array()*expected.array())).matrix();
+			
+			integral += temp ;		
+				
+			f_first += temp2 ;
+			
+			f_second += as<Map<MatrixXd> >(X_GL[j]).transpose()*temp2 ;
+			
+			}
+			
+		} else {
+			
+			
+			for (int j = 0; j < n_legendre; j++)
+			{
+			
+			temp = ((as<Map<MatrixXd> >(X_GL[j])*beta).array().exp()*
+			(pwcst_weights.col(j)).array()).matrix() ; 
+			
+			
+			temp2 = (as<Map<MatrixXd> >(X_GL[j]).array().colwise()*
+			temp.array()).matrix();
+			
+			integral += temp ;		
+				
+			f_first += temp2 ;
+			
+			f_second += as<Map<MatrixXd> >(X_GL[j]).transpose()*temp2 ;
+			
+			
+			}
+			
+		}
+		
+			
+	} else {
+		
+		if(type=="mult"){
+			
+			for (int j = 0; j < n_legendre; j++)
+			{
+			
+			temp = ((as<Map<MatrixXd> >(X_GL[j])*beta).array().exp()*
+			tm.array()*weights(j)).matrix() ;
+			
+			temp2 = (as<Map<MatrixXd> >(X_GL[j]).array().colwise()*
+			(temp.array()*expected.array())).matrix();
+			
+			integral += temp ;		
+				
+			f_first += temp2 ;
+			
+			f_second += as<Map<MatrixXd> >(X_GL[j]).transpose()*temp2 ;
+			
+			
+			}
+			
+		} else {
+			
+			for (int j = 0; j < n_legendre; j++)
+			{
+			
+			temp = ((as<Map<MatrixXd> >(X_GL[j])*beta).array().exp()*
+			tm.array()*weights(j)).matrix() ;
+			
+			temp2 = (as<Map<MatrixXd> >(X_GL[j]).array().colwise()*
+			temp.array()).matrix();
+			
+			integral += temp ;		
+				
+			f_first += temp2 ;
+			
+			f_second += as<Map<MatrixXd> >(X_GL[j]).transpose()*temp2 ;
+			
+			
+			}
+			
+		}
+		
+			
+			
+	}
+	
+	 
+	return List::create( 
+			_["integral"]  = integral,	
+			_["f.first"]  = f_first, 
+			_["f.second"] = f_second
+	) ;
+	
+}
+
+
+
+//' Gauss-Legendre evaluations
+//'
+//' @param X_GL list of matrices (\code{length(X.GL)=n.legendre}) for Gauss-Legendre quadrature
+//' @param n_legendre number of nodes for Gauss-Legendre quadrature
+//' @param beta vector of estimated regression parameters
+//' @return list of all the matrix-vector multiplications X.GL[[i]]\%*\%beta for Gauss Legendre integration in order to save computation time
+//' @export
+// [[Rcpp::export]]
+List HazGL(const List X_GL, const int n_legendre, const Map<VectorXd> beta) {
+		
+	List haz_GL(n_legendre);
+	
+	for (int j = 0; j < n_legendre; j++)
+    {	
+		haz_GL[j] = (as<Map<MatrixXd> >(X_GL[j])*beta).array().exp() ;
+			 
+	}
+	 
+	return(haz_GL);
+	
+}
 
 

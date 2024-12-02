@@ -60,6 +60,8 @@ knitr::opts_chunk$set(
 The `survPen` package was designed to fit hazard and excess hazard models with multidimensional penalized splines 
 allowing for time-dependent effects, non-linear effects and interactions between several covariates (Fauvernier et al. 2019). 
 The linear predictor in `survPen` is the logarithm of the (excess) hazard. 
+Since version 2.0.0, `survPen` allows models for the logarithm of the relative mortality ratio between a cohort and a reference population [here](#sectionR).
+Besides, models for the logarithm of the marginal hazard (intensity) are also available (with robust estimation of standard errors) [here](#sectionM).
 
 As the hazard function fully determines the distribution of the time-to-event, this modelling approach is actually 
 well-suited for many time-to-event analyses: the splines provide the flexibility required for modelling the hazard 
@@ -292,23 +294,30 @@ lines(new.time,pred.pen$surv.sup,lty=2)
 ```
 
 
-Hazard ratios and associated confidence intervals can be calculated directly
+Hazard ratios as well as survival differences (with associated confidence intervals) can be calculated directly
 
 
 The following example constructs a model with a tensor product spline of time and age 
 (see below for details about those models).
-We then predict the hazard ratio between ages 70 and 30 according to time using the type="HR" argument. 
+We then predict the hazard ratio and survival differences between ages 70 and 30 according to time using the type="HR" argument. 
 
 ```{r, fig.show='hold'}
 f.pen.age <- ~tensor(fu,age,df=c(5,5)) # see below for explanations about tensor models
 mod.pen.age <- survPen(f.pen.age,data=datCancer,t1=fu,event=dead)
 pred.pen.HR <- predict(mod.pen.age,data.frame(fu=new.time,age=70),newdata.ref=data.frame(fu=new.time,age=30),type="HR")
 
-par(mfrow=c(1,1))
-plot(new.time,pred.pen.HR$HR,type="l",ylim=c(0,15),main="Hazard ratio with CIs",
+par(mfrow=c(1,2))
+plot(new.time,pred.pen.HR$HR,type="l",ylim=c(0,15),main="Hazard ratio (age 70 vs 30)",
 xlab="time since diagnosis (years)",ylab="hazard ratio",col="red",lwd=lwd1)
 lines(new.time,pred.pen.HR$HR.inf,lty=2)
 lines(new.time,pred.pen.HR$HR.sup,lty=2)
+
+plot(new.time,pred.pen.HR$diff.surv,type="l",
+ylim=range(c(pred.pen.HR$diff.surv.inf,pred.pen.HR$diff.surv.sup)),
+main="Survival difference (age 70 vs 30)",xlab="time since diagnosis (years)",
+ylab="survival difference",col="red",lwd=lwd1)
+lines(new.time,pred.pen.HR$diff.surv.inf,lty=2)
+lines(new.time,pred.pen.HR$diff.surv.sup,lty=2)
 
 ```
 
@@ -1221,6 +1230,187 @@ xlab="time since diagnosis (years)",ylab="survival",lwd=lwd1)
 
 ```
 
+# Relative mortality ratio models {#sectionR}
+
+
+Another important feature of the `survPen` package is that it allows fitting penalized relative mortality 
+ratio models.
+
+As we discussed above, the excess mortality setting considers that the mortality (all causes) observed in 
+the patients ($h_O$) is actually decomposed as the sum of the expected 
+mortality $h_P$ and the excess mortality due to the pathology ($h_E$). 
+
+This may be written as:
+\[ h_O(t,x)=h_E(t,x)+h_P(a+t,z) \]
+
+One limitation of such a decomposition is that $h_E$ is considered positive. Indeed, sometimes this assumption
+is not met. For example, in prostate cancer patients with low stages at diagnosis, we observe an 'undermortality'
+due to selection effects and better overall medical care. In that case, the excess mortality is actually neagtive
+and the net survival setting fails to describe the reality of those patients.
+Besides, the excess mortality setting considers the studied disease as an independent cause of death
+(conditionally on the covariates) compared to the other causes. This point of view is not usely considered
+in multiple sclerosis epidemiology for example, where the disease is seen as a comorbidity impacting all pre-
+existing causes of death. In that case, the observed hazard is decomposed as product of population hazard and
+a relative mortality ratio $r$
+
+This may be written as:
+\[ h_O(t,x)=r(t,x)*h_P(a+t,z) \]
+
+This decomposition was first proposed in a modelling framework by Andersen et al. (1985). However Andersen's model
+was a non-flexible semi-parametric model.
+
+The `survPen` package allows modelling the relative mortality ratio $r$ as a multidimensional function of time and
+covariates. For $m$ covariates $(x_1,\ldots,x_m)$, if we note $r(t,x_1,\ldots,x_m)$ the relative mortality ratio 
+at time $t$, the model is as follows:
+\[ log[r(t,x_1,\ldots,x_m)]=\sum_j g_j(t,x_1,\ldots,x_m) \]
+
+Where the $g_j$ functions may be penalized unidimensional or penalized tensor product splines. All features
+described for the (excess) hazard setting still apply when fitting a relative mortality ratio model.
+One difference lies in the predictions. With a fitted relative mortality ratio model, you can only
+retrieve the relative mortality ratio and cumulative relative mortality ratio predictions (with CIs), as well as 
+the ratios of realtive mortality ratio (with type='HR'). 
+No survival prediction (let alone survival difference) will be directly available because its calculation depends on 
+expected mortality rates.
+
+Finally, one important difference between an excess hazard model and relative mortality ratio model is data preparation.
+For an excess hazard model we only need individual data with expected mortality rate at the time of death. Whereas in a
+relative mortality ratio model, the contribution to an individual to the likelihood requires all possible expected mortality rate
+values during the entire follow-up.
+Therefore, since the expected mortality rates come from national mortality tables usually available in 1-year intervals, we need to split the
+original dataset as many times as there are 1-year intervals during each individual's follow-up. The function `splitmult` will help you
+getting the splitdataset from the original one.
+
+Let's fit an example model on the log relative mortality ratio scale
+```{r, fig.show='hold'}
+
+library(survPen)
+data(datCancer)
+data(expected.table)
+
+#-------------------- creating split dataset for multiplicative model
+
+splitdat <- splitmult(datCancer, cut = (1:5), end = "fu", 
+event = "dead")
+			
+#-------------------- merging with expected mortality table
+
+# deriving current age and year (closest whole number)
+splitdat$age_current <- floor(splitdat$age + splitdat$fu + 0.5)
+
+splitdat$year_current <- floor(splitdat$yod + splitdat$fu + 0.5)
+
+splitdat <- merge(splitdat, expected.table, 
+                 by.x=c("age_current","year_current"), by.y=c("Age","Year"),all.x=T)
+
+
+# fitting model
+
+f1 <- ~smf(fu)
+
+# In terms of Gauss-Legendre quadrature, as the follow-up is split into up to 5 parts, the cumulative hazard approximation
+# requires less nodes than an approximation on the whole range of definition. If not supplied, the default number of nodes
+# for a relative mortality ratio model will be 10 (as opposed to 20 for an excess hazard model) 
+mod.ratio <- survPen(f1,data=splitdat,t1=fu,event=dead,expected=mx,method="LAML",type="mult")
+
+# predictions of the model
+new.time <- seq(0,5,length=100)
+pred.ratio <- predict(mod.ratio,data.frame(fu=new.time))
+
+lwd1 <- 2
+
+par(mfrow=c(1,1))
+plot(new.time,pred.ratio$ratio,type="l",ylim=range(c(pred.ratio$ratio.inf,pred.ratio$ratio.sup)),
+main="realtive mortality ratio with CIs",
+xlab="time since diagnosis (years)",ylab="relative mortality ratio",lwd=lwd1)
+lines(new.time,pred.ratio$ratio.inf,lty=2)
+lines(new.time,pred.ratio$ratio.sup,lty=2)
+
+```
+
+# Marginal hazard (intensity) models {#sectionM}
+
+In presence of correlated time-to-event data (for example recurrent event data), robust standard errors accounting for said correlation need to be derived.
+The `survPen` package allows deriving such robust standard errors based on sandwich estimators (often called Huber sandwich estimator, see also Coz et al. submitted to Biostatistics, for 
+an example in the recurrent event setting).
+
+The user only needs to specify the `cluster` variable defining the statistical units for which repeated observations are available.
+This specification is performed via the `cluster` argument.
+
+Let's fit an example model for the marginal intensity of hospitalization events in heart failure patients
+```{r, fig.show='hold'}
+
+library(survPen)
+data(HeartFailure)
+
+# We are going to fit an unpenalized spline on the log-marginal intensity in order to use the robust variance with 
+# a proper theoretical background. Indeed, with penalized splines it is advised to use
+# bootstrap for confidence intervals (Coz et al. submitted to Biostatistics).
+
+# Number of knots for an unpenalized natural cubic spline
+df.t <- 4
+k.t <-  c(quantile(HeartFailure$t1[HeartFailure[,"event"] == 1],seq(0,1,le=df.t)))
+
+# We consider a non-proportional effect of treatment
+mod_MI <- survPen(~ treatment + smf(t1, knots = k.t, by = treatment), 
+                        t0 = t0, 
+                        t1 = t1, data = HeartFailure, event = event, cluster=id, lambda=0)
+
+# predictions
+nt <- seq(0,3.27,le = 100)
+
+pred.MI <- expand.grid(t1 = nt, treatment = c(0,1))
+
+# marginal intensity
+pred.MI$MI <- predict(mod_MI, newdata = pred.MI)$haz
+pred.MI$MI.inf <- predict(mod_MI, newdata = pred.MI)$haz.inf
+pred.MI$MI.sup <- predict(mod_MI, newdata = pred.MI)$haz.sup
+
+
+# In the absence of a terminal event we can retrieve the expected number of cumulative events
+# according to time
+pred.MI$Expected_Nb_event <-  -log(predict(mod_MI, newdata = pred.MI)$surv)
+pred.MI$Expected_Nb_event.inf <-  -log(predict(mod_MI, newdata = pred.MI)$surv.sup)
+pred.MI$Expected_Nb_event.sup <-  -log(predict(mod_MI, newdata = pred.MI)$surv.inf)
+
+
+lwd1 <- 2
+
+vec.col <- c("red","forestgreen")
+
+par(mfrow=c(1,2))
+plot(nt,pred.MI$MI[pred.MI$treatment==0],type="l",
+main="marginal intensity with CIs",ylim=c(0,1.5),
+xlab="time (years)",ylab="marginal intensity",lwd=lwd1,col=vec.col[1])
+lines(nt,pred.MI$MI.inf[pred.MI$treatment==0],lty=2,col=vec.col[1])
+lines(nt,pred.MI$MI.sup[pred.MI$treatment==0],lty=2,col=vec.col[1])
+
+lines(nt,pred.MI$MI[pred.MI$treatment==1],lwd=lwd1,lty=1,col=vec.col[2])
+lines(nt,pred.MI$MI.inf[pred.MI$treatment==1],lty=2,col=vec.col[2])
+lines(nt,pred.MI$MI.sup[pred.MI$treatment==1],lty=2,col=vec.col[2])
+
+legend("bottomleft",c("exercise training","control"),col=vec.col,lty=1)
+
+plot(nt,pred.MI$Expected_Nb_event[pred.MI$treatment==0],type="l",
+main="Expected cumulative number of events",ylim=c(0,3),
+xlab="time (years)",ylab="expected cumulative number of events",lwd=lwd1,col=vec.col[1])
+lines(nt,pred.MI$Expected_Nb_event.inf[pred.MI$treatment==0],lty=2,col=vec.col[1])
+lines(nt,pred.MI$Expected_Nb_event.sup[pred.MI$treatment==0],lty=2,col=vec.col[1])
+
+lines(nt,pred.MI$Expected_Nb_event[pred.MI$treatment==1],lty=1,lwd=lwd1,col=vec.col[2])
+lines(nt,pred.MI$Expected_Nb_event.inf[pred.MI$treatment==1],lty=2,col=vec.col[2])
+lines(nt,pred.MI$Expected_Nb_event.sup[pred.MI$treatment==1],lty=2,col=vec.col[2])
+
+# Comparing naïve and robust standard errors
+
+naive <- sqrt(diag(mod_MI$Vp))
+
+robust <- sqrt(diag(mod_MI$Vr))
+
+print(naive)
+print(robust)
+
+```
+
 # Other useful functionalities
 
 
@@ -1325,7 +1515,9 @@ smoothing or regression parameters), it might indicate a convergence issue (see 
 
 # References
 
-- Charvat, H., Remontet, L., Bossard, N., Roche, L., Dejardin, O., Rachet, B., ... and Belot, A. (2016), A multilevel excess hazard model to estimate net survival on hierarchical data allowing for non linear and non proportional effects of covariates. Statistics in medicine, 35(18), 3066-3084. 
+- Andersen, P. K., Borch-Johnsen, K., Deckert, T., Green, A., Hougaard, P., Keiding, N., and Kreiner, S. (1985). A Cox regression model for the relative mortality and its application to diabetes mellitus survival data. Biometrics, 921-932.
+- Charvat, H., Remontet, L., Bossard, N., Roche, L., Dejardin, O., Rachet, B., ... and Belot, A. (2016). A multilevel excess hazard model to estimate net survival on hierarchical data allowing for non linear and non proportional effects of covariates. Statistics in medicine, 35(18), 3066-3084. 
+- Coz, E., Charvat, H., Maucort-Boulch, D., and Fauvernier, M. (submitted to Biostatistics). Flexible penalized marginal intensity models for recurrent event data. 
 - Danieli, C., Remontet, L., Bossard, N., Roche, L., and Belot, A. (2012). Estimating net survival: the importance of allowing for informative censoring. Statistics in medicine, 31(8), 775-786.
 - Estève, J., Benhamou, E., Croasdale, M., and Raymond, L. (1990) Relative survival and the estimation of net survival: elements for further discussion. Stat. Med., 9, 529-538.
 - Fauvernier, M., Roche, L., Uhry, Z., Tron, L., Bossard, N. and Remontet, L. (2019). Multi-dimensional penalized hazard model with continuous covariates: applications for studying trends and social inequalities in cancer survival, Journal of the Royal Statistical Society, series C.  <https://doi.org/10.1111/rssc.12368>. 

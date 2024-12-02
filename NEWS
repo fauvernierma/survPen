@@ -1,3 +1,22 @@
+survPen v2.0.0
+==============
+
+Changes:
+* New model available : penalized relative mortality ratio model (extension of Andersen's model (1985)) via option type="mult"
+* New function splitmult to split individual dataset according to 1-year interval to fit relative mortality ratio models
+* New dataset expected.table to given an example of reference mortality table (French women in that case)
+* Cumulative hazard calculation has been redesigned (along with first and second derivatives wrt beta) and written in C.
+The algorithm divided its memory usage by almost 3 when dealing with large datasets (> 100 000 individuals and 100 parameters).
+As a consequence, function model.cons no longer returns a haz.GL object as it was too computationaly expensive in terms of memory usage.
+* New function predSNS to derive standardized and population (net) survival with confidence intervals from a fitted model
+* New R object listWicss added in the data section to give the standard ICSS weights for age-standardized cancer survival calculation
+* Option type="HR" in the predict function now allows for calculation of survival difference with CIs
+* Vignette has been updated with survival difference predictions and relative mortality ratio model
+* In the summary, parametric coefficients are now also reported on the exponential scale along with CIs
+* n.legendre is now NULL as default. If not supplied it is set to 20 for (excess) hazard models and 10 for relative mortality ratio models 
+* Thanks to Elsa Coz, new argument cluster available to specify a cluster variable for marginal hazard (intensity) models 
+-> automatically derives robust standard errors in presence of correlated survival times (for example in recurrent events setting)
+
 survPen v1.6.0
 ==============
 
