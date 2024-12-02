@@ -119,7 +119,7 @@ event <- eval(substitute(event), data)
 # The following code sets up everything we need in order to fit the model
 model.c <- model.cons(form,lambda=0,data.spec=data,t1=t1,t1.name="time",
 t0=rep(0,100),t0.name="t0",event=event,event.name="event",
-expected=NULL,expected.name=NULL,type="overall",n.legendre=20,
+expected=rep(0,100),expected.name=NULL,type="overall",n.legendre=20,
 cl="survPen(form,data,t1=time,event=event)",beta.ini=NULL)
 
 }

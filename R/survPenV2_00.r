@@ -5745,7 +5745,7 @@ conf.int=0.95, method = "exact", n.legendre=50){
 #'
 #'
 #' splitdat <- merge(splitdat, expected.table, 
-#'                 by.x=c("age_current","year_current"), by.y=c("Age","Year"),all.x=T)
+#'                 by.x=c("age_current","year_current"), by.y=c("Age","Year"),all.x=TRUE)
 #'
 #'
 splitmult <- function (data, cut, start=NULL, end, event) 

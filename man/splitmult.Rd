@@ -47,7 +47,7 @@ splitdat$year_current <- floor(splitdat$yod + splitdat$fu + 0.5)
 
 
 splitdat <- merge(splitdat, expected.table, 
-                by.x=c("age_current","year_current"), by.y=c("Age","Year"),all.x=T)
+                by.x=c("age_current","year_current"), by.y=c("Age","Year"),all.x=TRUE)
 
 
 }
