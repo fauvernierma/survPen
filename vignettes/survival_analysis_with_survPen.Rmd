@@ -1330,7 +1330,7 @@ lines(new.time,pred.ratio$ratio.sup,lty=2)
 # Marginal hazard (intensity) models {#sectionM}
 
 In presence of correlated time-to-event data (for example recurrent event data), robust standard errors accounting for said correlation need to be derived.
-The `survPen` package allows deriving such robust standard errors based on sandwich estimators (often called Huber sandwich estimator, see also Coz et al. submitted to Biostatistics, for 
+The `survPen` package allows deriving such robust standard errors based on sandwich estimators (often called Huber sandwich estimator, see also Coz et al. article in preparation, for 
 an example in the recurrent event setting).
 
 The user only needs to specify the `cluster` variable defining the statistical units for which repeated observations are available.
@@ -1344,7 +1344,7 @@ data(HeartFailure)
 
 # We are going to fit an unpenalized spline on the log-marginal intensity in order to use the robust variance with 
 # a proper theoretical background. Indeed, with penalized splines it is advised to use
-# bootstrap for confidence intervals (Coz et al. submitted to Biostatistics).
+# bootstrap for confidence intervals (Coz et al. article in preparation).
 
 # Number of knots for an unpenalized natural cubic spline
 df.t <- 4
@@ -1517,7 +1517,7 @@ smoothing or regression parameters), it might indicate a convergence issue (see 
 
 - Andersen, P. K., Borch-Johnsen, K., Deckert, T., Green, A., Hougaard, P., Keiding, N., and Kreiner, S. (1985). A Cox regression model for the relative mortality and its application to diabetes mellitus survival data. Biometrics, 921-932.
 - Charvat, H., Remontet, L., Bossard, N., Roche, L., Dejardin, O., Rachet, B., ... and Belot, A. (2016). A multilevel excess hazard model to estimate net survival on hierarchical data allowing for non linear and non proportional effects of covariates. Statistics in medicine, 35(18), 3066-3084. 
-- Coz, E., Charvat, H., Maucort-Boulch, D., and Fauvernier, M. (submitted to Biostatistics). Flexible penalized marginal intensity models for recurrent event data. 
+- Coz, E., Charvat, H., Maucort-Boulch, D., and Fauvernier, M. (article in preparation). Flexible penalized marginal intensity models for recurrent event data. 
 - Danieli, C., Remontet, L., Bossard, N., Roche, L., and Belot, A. (2012). Estimating net survival: the importance of allowing for informative censoring. Statistics in medicine, 31(8), 775-786.
 - Estève, J., Benhamou, E., Croasdale, M., and Raymond, L. (1990) Relative survival and the estimation of net survival: elements for further discussion. Stat. Med., 9, 529-538.
 - Fauvernier, M., Roche, L., Uhry, Z., Tron, L., Bossard, N. and Remontet, L. (2019). Multi-dimensional penalized hazard model with continuous covariates: applications for studying trends and social inequalities in cancer survival, Journal of the Royal Statistical Society, series C.  <https://doi.org/10.1111/rssc.12368>. 

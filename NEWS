@@ -1,3 +1,24 @@
+
+survPen v2.0.3
+==============
+
+Changes:
+* At the end of NR.rho function, if the Hessian was not invertible at convergence with a unique and small eigen value, the diag function created a 
+0*0 matrix leading to failure. A dimension check has been added to prevent this behaviour
+
+survPen v2.0.2
+==============
+
+Changes:
+* A typo was corrected in the recurrent event section of the vignette
+
+survPen v2.0.1
+==============
+
+Changes:
+* In predict.survPen, for frailty models there was a mistake in the calculation of standard error with zero random effect ("exclude.random=TRUE")
+
+
 survPen v2.0.0
 ==============
 
